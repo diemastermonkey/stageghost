@@ -1,0 +1,14 @@
+#!/bin/sh
+# Crude startup script for DronesoundTV FX only
+# 2016 @garyd @diemastermonkey
+
+cd /pub/kits/sonicmonkeypi
+
+# Start "Attract Mode"
+killall AttractMode
+./AttractMode &
+
+# Setup Raspberry Pi GPIO last, it takes awhile
+# sudo ./uiFlashSetup
+
+

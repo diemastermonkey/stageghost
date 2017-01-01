@@ -1,0 +1,248 @@
+{"id":"Ay3VaY7Q4Es","snippet":{"title":"The DronesoundTV Livestream, Sunday  5:17 am
+
+","description":"Welcome to DronesoundTV, ambient sound and visuals sandbox you control from chat. To begin, try these:
+\r\n
+
+\r\n
+● (New!) Type NOTE to post an onscreen note!
+\r\n
+● Type SUB for Sub-Back Bot (and please subscribe!)
+\r\n
+● Type SHOUTOUT and watch the screen, for YouTube\'s coolest shoutouts
+\r\n
+● Type \"DRONE VOICEMAIL\" or other keyword, to add sounds
+\r\n
+● Type COMMANDS for more to do
+\r\n
+● Type RTFM for complete User Guide
+\r\n
+
+\r\n
+DroneBot  mixes millions of sound effects and music with \"lo-fi\" visuals, according to your whims.
+\r\n
+
+\r\n
+Type your commands directly into chat. Most commands tell you how to use them if you just type their name. Commands don\'t have to be entered in uppercase, it just reads easier.
+\r\n
+
+\r\n
+▬ Common Commands ▬
+\r\n
+COMMANDS (List all commands)
+\r\n
+SHOUTOUT (Coolest shoutouts on YouTube)
+\r\n
+MIX random (Random pre-selected music)
+\r\n
+DRONE voicemail (Add [voicemail] related samples)
+\r\n
+MOOD scifi (Change sfx genre. Type MOOD for a list.)
+\r\n
+BG (Change random background. Also try BG me)
+\r\n
+THEME default (Change layout. Type THEME for a list.)
+\r\n
+SUB (Our \"Sub-Back Bot\", for subs w/out private subs.)
+\r\n
+
+\r\n
+▬ New User Guide 1.0 ▬
+\r\n
+https://docs.google.com/document/d/1RIjdt0-NWft7Inn0GdLpTTwE3QejkxU8J4bpz_JoyJw/pub
+\r\n
+
+\r\n
+▬ Exlusive Features ▬
+\r\n
+● Sub-back Bot 
+\r\n
+World\'s first automatic sub-back bot for YouTube.
+\r\n
+
+\r\n
+● YouTube\'s Coolest Shoutouts
+\r\n
+Just type SHOUTOUT. Feel free to abuse, your shoutouts keep Dronebot awake.
+\r\n
+
+\r\n
+● Disappearing Ink
+\r\n
+Subscriber exclusive: Put a hyphen (the \"dash\" character, \"-\") in front of anything in chat, and it vanishes in a few seconds. Example:
+\r\n
+
+\r\n
+    - This message will self destruct
+\r\n
+
+\r\n
+● Random SoundCloud
+\r\n
+Type MIX RANDOM to play from a random selection of curated tracks. SoundCloud experts, type MIX by itself for advanced instructions. Note: The track author MUST allow downloads. For example:
+\r\n
+
+\r\n
+MIX http://soundcloud.com/mike-leghorn/chromatic-fantasy
+\r\n
+
+\r\n
+▬ Documentation ▬
+\r\n
+●  User Guide 1.0 - https://docs.google.com/document/d/1RIjdt0-NWft7Inn0GdLpTTwE3QejkxU8J4bpz_JoyJw/pub
+\r\n
+● Crash Course - https://www.youtube.com/watch?v=fYspO5hkMnU
+\r\n
+● DTV Tech Talk - https://www.youtube.com/watch?v=wfhicpvfwoM
+\r\n
+● Diagram - https://cdn.hackaday.io/images/10261470291442867.png
+\r\n
+
+\r\n
+▬ Subscriber Benefits ▬
+\r\n
+Subs get access to Beta stuff, including...
+\r\n
+
+\r\n
+  .ANSI
+\r\n
+  Add lo-fi animations! Type .ANSI (with dot) to begin.
+\r\n
+
+\r\n
+  .STYLE
+\r\n
+  Srsly. Hack own theme via PasteBin.  .STYLE for help. *Beta*!
+\r\n
+
+\r\n
+▬ Advanced Droning ▬
+\r\n
+The main activity here is the mixing of sound effects into a collage of soothing, intriguing, confusing or exciting sound. It\'s something of an art in itself.
+\r\n
+
+\r\n
+Type \"Drone\" followed by any single word. Related sounds are added over the next 1-3 minutes.
+\r\n
+
+\r\n
+These examples are easy to notice:
+\r\n
+
+\r\n
+Drone interview
+\r\n
+Drone cosmonauts
+\r\n
+
+\r\n
+Instruments make good keywords too.
+\r\n
+
+\r\n
+Find sounds on http://freesound.org and use the SoundID or author name.  For example:
+\r\n
+
+\r\n
+Drone 331330
+\r\n
+Drone TexasMusicForge
+\r\n
+
+\r\n
+Note: Only sounds between 20 and 120 seconds long can be played.
+\r\n
+
+\r\n
+To add sounds with a given Beats Per Minute:
+\r\n
+
+\r\n
+Drone 90bpm
+\r\n
+Drone 140bpm
+\r\n
+
+\r\n
+▬ How It Works ▬
+\r\n
+Complete Geek Intel at Hackaday:
+\r\n
+https://hackaday.io/project/11971-dronetv-autonomous-pirate-dronesound-livestream
+\r\n
+
+\r\n
+Here at DronesoundTV, a Raspberry Pi single-board Linux computer uses keywords and your requests to choose sounds from the latest uploads at http://freesound.org.
+\r\n
+
+\r\n
+It modifies and remixes them according to the artist\'s own obscure sampling technique and livestreams the results directly to You (Tube).
+\r\n
+
+\r\n
+Popular sounds are \"followed\" to samples similar in BPM and pitch, which become part of the mix and again may be followed to new samples.
+\r\n
+
+\r\n
+▬ StageGhost ▬
+\r\n
+The back-end of DroneBot is \"StageGhost\", a product-soon to be released in beta (stay tuned to get your own!).
+\r\n
+
+\r\n
+StageGhost manages the chat, handles user requests, bans cursing violators, posts sampling credits and does pretty much everything else. Many more features are in the works. 
+\r\n
+
+\r\n
+Use the \"COMMANDS\" command for a list of everything DroneBot can currently do for you.
+\r\n
+
+\r\n
+▬ Code ▬
+\r\n
+U geeky bro? K, check out Early Adopter\'s Kit (for Linux) at
+\r\n
+https://hackaday.io/project/11971-dronetv-autonomous-pirate-dronesound-livestream
+\r\n
+
+\r\n
+* IF YOU LIKE DTV, please tell friends! I hope to Kickstart a Mac Mini for the stream, greatly improving audio quality.*
+\r\n
+
+\r\n
+▬ Commented Drones ▬
+\r\n
+Drone 331330 # Weird cool with vocoder
+\r\n
+Drone 165241 # The Janitor Story
+\r\n
+
+\r\n
+▬ DronesoundTV the Art Project ▬
+\r\n
+DronesoundTV is a Conceptual Art project under development by lo-fi performance artist \"Die, Master Monkey\" (@garyd) and Interactive Designer \"OkBop\".
+\r\n
+
+\r\n
+▬ Subscribe ▬
+\r\n
+Subscribe and stay tuned, I will be offering easy all-in-one kits soon. Check out http://youtube.com/diemastermonkey for more lo-fi beats, drone and artsy stuff.
+\r\n
+
+\r\n
+▬ Credits ▬
+\r\n
+Freesound.org API (thank you!!)
+\r\n
+YouTube Data and LiveStream APIs (thank you!!)
+\r\n
+MakeAGif.com
+\r\n
+sox
+\r\n
+img2txt
+\r\n
+caca-utils
+\r\n
+Perl, Java/script and a wee bit of Python
+\r\n"}}

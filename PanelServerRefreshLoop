@@ -1,0 +1,16 @@
+#!/bin/sh
+# Update the index file with PanelRefresh
+# NEW: Update content.html also, transition to that asap
+# Not the Right Way to Do Things - DMM
+
+while (true); 
+  do touch content.html
+  ./PanelServerRefresh > content.html.tmp; 
+  sleep 1.0;
+  # Only update from temp if nonzero size, readable, and newer than current
+  # To do: Move to PanelServerRefresh itself
+  if test -s content.html.tmp -a -f content.html.tmp -a content.html.tmp -nt content.html; then
+    cp content.html.tmp content.html; 
+  fi
+  sleep 3.0;   # Mandatory throttle
+done

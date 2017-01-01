@@ -1,0 +1,60 @@
+#!/bin/sh
+# Just change themes randomly, on timer
+# To do: Do only if no one's changed in long time
+# To do: Expand into general "attract mode" timer
+# dmm
+
+CHAT_FILE="ytCheck-chat.log"; # File to check for chat action
+CHAT_TIMEOUT=39;    # If no chat in this long, do attract post
+THEME_TIMEOUT=79;   # Inactivity timer for theme (minutes)
+BG_TIMEOUT=59;      # For background command
+MIX_TIMEOUT=31;     # Music import timer minutes
+TITLE_TIMEOUT=5;    # Randomize title if unchanged in these minutes
+
+while (true); do
+  # echo "AttractMode: `date`"; 
+
+  # Chat activity check - if no chat in X time, blurb
+  CHAT=`find ./$CHAT_FILE -mmin -$CHAT_TIMEOUT | xargs`;
+  if test -z "$CHAT"; then 
+    ./ytSinglePost "`commands/tip`"
+    touch $CHAT_FILE
+  fi
+
+  # If .theme file exists, is older than X minutes, randomize theme
+  THEMEFILE=`find ./PanelServer.theme -mmin +$THEME_TIMEOUT | xargs`;
+  if test ! -z "$THEMEFILE"; then 
+    k=`./randomFile themes/ | sed s/themes//g | sed 's/\///g' | xargs`; 
+    ./ytSinglePost "[Attract] Dronebot is bored - I am changing the visual theme to $k !"
+    commands/theme $k USERIDNOTPROVIDED;   # 2nd arg user key disused here
+  fi
+
+  # If current theme/*.bg file exists, is older, randomize
+  THEME=`cat PanelServer.theme | xargs`;
+  BGTEST=`find themes/$THEME/PanelServer.bg -mmin +$BG_TIMEOUT | xargs`;
+  if test ! -z "$BGTEST"; then  
+    ./ytSinglePost "[Attract] I am changing the background, with the BG command.";
+    commands/bg random;
+  fi
+
+  # If no mix requests for long time, queue up a track!
+  # To do: personal list of faves
+  QUEUE=`find ./remix.queue -mmin +$MIX_TIMEOUT | xargs`;
+  if test ! -z "$QUEUE"; then 
+    k=`./randomFile links/ | sed s/links//g | sed 's/\///g' | xargs`; 
+    # TRACK="http://soundcloud.com/rvnez/beatz-boutique-mucho-bueno"
+    TRACK=`cat links/$k | xargs`;
+    ./ytSinglePost "[Attract] Its been a while since a remix. I will queue-up $TRACK"
+    commands/mix $TRACK; 
+  fi
+
+  # Randomize title from config/dronetv.titles on timeout
+  # To do: Make configurable
+  TITLETEST=`find config/dronetv.title -mmin +$TITLE_TIMEOUT | xargs`;
+  if test ! -z "$TITLETEST"; then 
+    # Simply pass through to user-level 'title' command (append 'system' user)
+    commands/title random system
+  fi
+
+  sleep 120; 
+done

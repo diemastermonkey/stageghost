@@ -1,0 +1,92 @@
+#!/usr/bin/perl
+# QUICK HACK OF Super cheap ban-by-poster-id with mostly static keys
+# Intended to be fed from chat logs
+# DronesoundTV 2016 @garyd @diemastermonkey
+
+# Note: Excerpt of post-ban response includes username AND profile image
+#   "displayName": "Ray The Dream",
+#    "profileImageUrl": "https://yt3.ggpht.com/-ENDqZeY7WYE/AAAAAAAAAAI/AAAAAAAAAAA/hfI3KOk6-Eg/s88-c-k-no-rj-c0xffffff/photo.jpg"
+
+# Command to use for posting a response in chat
+my $PostCommand = "./ytSinglePost";  # Append message in quotes
+
+# Arg 1 is ChannelID of user to ban, or die
+my $BanUserChannelID = shift (@ARGV)
+  or die ("\nUsage: $0 YouTube_ChannelID_of_User_to_Ban\n\t$!\n");
+chomp ($BanUserChannelID);
+
+# YouTube API Endpoint
+my $API = "https://www.googleapis.com/youtube/v3/liveChat/bans";
+# POST https://www.googleapis.com/youtube/v3/liveChat/bans?part=snippet&key={YOUR_API_KEY}
+
+# User OAuth token as described in *4-api*.txt
+# To be maintained by external tool
+my $OATokenFile = "ytOauthToken.txt";
+my $OAToken = `cat $OATokenFile`; chomp ($OAToken);
+
+# LiveChatID (to be maintained by external tool)
+# $LIVECHATID="EiEKGFVDWHdacTY0ZktlZjNJbE5SclI1Vjl4ZxIFL2xpdmU";
+my $LiveChatID = `cat config/dronetv.livechatid`; chomp ($LiveChatID);
+
+# For an insert (post, ban, mod) AuthorChannelID is me, my ID
+my $MyChannelID = `cat config/dronetv.channelid`; chomp ($MyChannelID);
+
+# Fixed set of ban messages
+my @Messages = (
+  "(Dronebot) Sorry man, you banned.",
+  "(Dronebot) Baaaaaanhammmerrrrr!",
+  "(Dronebot) Let me introduce you to my little BANNED."
+);
+
+# Cheese version
+# $CMD =  
+#    # Get with post and json header
+#    "/usr/bin/curl -H \"Content-Type: application/json\" -X POST -d "
+$CMD =  
+  # Get with post and json header
+  # JSON fields, brutally
+  # IMPORTANT NOTE: API docs say "key=APIKEY" in URI below, but
+  # only "access_token=oauthtoken" has worked for me!
+  #
+  "/usr/bin/curl --silent -H \"Content-Type: application/json\" -X POST -d "
+  . "\'{\"snippet\":{\"liveChatId\":\"_LIVE_CHAT_ID_\",\"type\":\"_BAN_TYPE_\",\"banDurationSeconds\":\"_BAN_DURATION_SECONDS_\",\"bannedUserDetails\":{\"channelId\":\"_BAN_USER_CHANNEL_ID_\"}}}\'"
+  . " \"_API_?part=snippet&access_token=_ACCESSTOKEN_\"";
+
+
+  # Compose request via fields 
+  $temp = $CMD;
+  $temp =~ s/_MSG_/$MSG/g;
+  $temp =~ s/_ACCESSTOKEN_/$OAToken/g;
+  $temp =~ s/_API_/$API/g;
+  $temp =~ s/_LIVE_CHAT_ID_/$LiveChatID/g;
+  $temp =~ s/_BAN_USER_CHANNEL_ID_/$BanUserChannelID/g;
+
+  # Ban type/time - currently fixed
+  # $temp =~ s/_BAN_TYPE_/temporary/g; # For temporary
+  $temp =~ s/_BAN_TYPE_/permanent/g;   # For permanent?
+  $temp =~ s/_BAN_DURATION_SECONDS_/90/g;
+
+  # Execute request
+  $Results = `$temp`;
+
+  # Debug log
+  open (DEBUG, ">> $0.log");
+  print (DEBUG "\nProcessed ban for $BanUserChannelID");
+  print (DEBUG "\nBan call: $temp");
+  print (DEBUG "\nResponse: $Results");
+  close (DEBUG);
+
+  # Post a response in chat
+  # KLUDGE: Getting name the CHEESY way, use JSON::Decode
+  #   "displayName": "Ray The Dream",
+  $DisplayName = $1 if ($Results =~ /displayName\"\:\s*\"([\w\d\s\.\,]+)/);
+  $MessageOut = "Sorry, $DisplayName - you are banned for...EVER! "
+              . "Apparently you crossed the line. Redress mb, but not today.";
+
+  $Results = `$PostCommand "$MessageOut"`;
+  
+  print ("\n## DEBUG - Response to ban chat response post ### \n");
+  print ($Results);
+  print ("\n"); 
+
+# Fin

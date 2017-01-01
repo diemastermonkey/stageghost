@@ -1,0 +1,92 @@
+body  {
+  /* Theme-controlled background in this theme */
+  /* background-image: url("backgrounds/1378336_590447271015775_1016537443_n-594x310.jpg"); */
+  /* background-image: url("themes/.future/MM_Overlay_1999_1.png"); */
+  /* background-color: #6600ff; */
+  background-color: #000000;
+  opacity 1.0;  /* For transitions to other */
+}
+
+/* Overlaid notice displayed temporarily */
+.notice {
+  display: none;
+  position: absolute;
+  opacity: 0.25;
+  transition: opacity 10s;
+  left: 30%;
+  top: 30%;
+  width: 70%;
+  height: 70%;
+}
+
+/* User-supplied notes
+   usernotes: div in which they all sit
+   usernote: each note
+*/
+/* Optional:  Constrain notes to area of screen
+   by setting margins/width/padding/left/top etc here
+*/
+
+/* Override some settings from panels/usernote.css */
+.usernotes {
+  z-index: 0;
+  position: absolute;
+  top: 1%; left: 1%;
+  width: 100%; height: 100%;
+}
+
+.usernote {
+  color: #FFFFFF;
+  background-color: #6600ff;
+  background-opacity: 0.66 !important;
+  opacity: 0.80;
+}
+
+/* Special foreground image in front of bg and masks */
+.foreground {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 138%;
+  height: 100%;
+}
+
+/* Both masks hidden in this theme */
+.toprightmask {
+  display: none;
+}
+
+.main_left_mask {
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #00FF00;
+}
+
+/* Hacked up waveform moved around resized etc */
+.midright {
+  position: absolute;
+  top: 72%;
+  left: 4.55em;
+  opacity: 1.00;
+  width: 239px;
+  height: 48px;
+}
+
+/* BROKEN: An upper right info panel
+   Translucent in this theme because Art */
+.upperrightbox {
+  display: none;
+  overflow: hidden;
+  top: 12%;
+  margin-left: 10%;
+  margin-right: 12%;
+  width: 100%;
+  padding: 0.40em;
+  background-color: #004488;
+  background-opacity: 1.0;
+  opacity: 1.0; 
+  vertical-align: text-bottom;
+}

@@ -1,0 +1,5 @@
+#!/usr/bin/perl
+# Spit-out a random file from notices. 
+# 2016 @garyd @diemastermonkey
+@all = split (/\n/, `ls -1 notices/*.txt`);
+print `cat @all[rand(scalar(@all))]`;

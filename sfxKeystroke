@@ -1,0 +1,9 @@
+#!/bin/sh
+# For use with adPlayer, sfx for console 'typing' effect
+# Play a tiny slice of clickity sample (at rate -l low quality)
+# 2016 @garyd @diemastermonkey
+Sample="sfx/keystroke_sounds.wav"
+Sample_Len=42.0       # Hardwired for speed
+Offset=`perl -e "print rand ($Sample_Len) + 3.0;"`
+Length=`perl -e "print rand (0.3) + 0.08;"`
+play -V0 -q --volume 0.24 $Sample trim $Offset $Length rate -l

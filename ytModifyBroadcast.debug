@@ -1,0 +1,46 @@
+
+./ytModifyBroadcast: Debug: Template is 
+/usr/bin/curl --silent -H "Content-Type: application/json" -X PUT  --data @./ytModifyBroadcast.json "https://www.googleapis.com/youtube/v3/liveBroadcasts?part=snippet&access_token=ya29.CjHGA2zHq8LxwW2VDFtXP3yYGEU9Hi-EJ83halATuiWMM-VFHkCum1KDnZOm9Wr6L3E5" 
+./ytModifyBroadcast: Debug: Raw response is 
+{
+ "kind": "youtube#liveBroadcast",
+ "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/7UdRFjN8-nilWwpIv1bTFhnFAy8\"",
+ "id": "Ay3VaY7Q4Es",
+ "snippet": {
+  "publishedAt": "2016-12-21T07:08:14.000Z",
+  "channelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+  "title": "The DronesoundTV Livestream, Sunday  5:17 am",
+  "description": "Welcome to DronesoundTV, ambient sound and visuals sandbox you control from chat. To begin, try these:\r\n\r\n● (New!) Type NOTE to post an onscreen note!\r\n● Type SUB for Sub-Back Bot (and please subscribe!)\r\n● Type SHOUTOUT and watch the screen, for YouTube's coolest shoutouts\r\n● Type \"DRONE VOICEMAIL\" or other keyword, to add sounds\r\n● Type COMMANDS for more to do\r\n● Type RTFM for complete User Guide\r\n\r\nDroneBot  mixes millions of sound effects and music with \"lo-fi\" visuals, according to your whims.\r\n\r\nType your commands directly into chat. Most commands tell you how to use them if you just type their name. Commands don't have to be entered in uppercase, it just reads easier.\r\n\r\n▬ Common Commands ▬\r\nCOMMANDS (List all commands)\r\nSHOUTOUT (Coolest shoutouts on YouTube)\r\nMIX random (Random pre-selected music)\r\nDRONE voicemail (Add [voicemail] related samples)\r\nMOOD scifi (Change sfx genre. Type MOOD for a list.)\r\nBG (Change random background. Also try BG me)\r\nTHEME default (Change layout. Type THEME for a list.)\r\nSUB (Our \"Sub-Back Bot\", for subs w/out private subs.)\r\n\r\n▬ New User Guide 1.0 ▬\r\nhttps://docs.google.com/document/d/1RIjdt0-NWft7Inn0GdLpTTwE3QejkxU8J4bpz_JoyJw/pub\r\n\r\n▬ Exlusive Features ▬\r\n● Sub-back Bot \r\nWorld's first automatic sub-back bot for YouTube.\r\n\r\n● YouTube's Coolest Shoutouts\r\nJust type SHOUTOUT. Feel free to abuse, your shoutouts keep Dronebot awake.\r\n\r\n● Disappearing Ink\r\nSubscriber exclusive: Put a hyphen (the \"dash\" character, \"-\") in front of anything in chat, and it vanishes in a few seconds. Example:\r\n\r\n    - This message will self destruct\r\n\r\n● Random SoundCloud\r\nType MIX RANDOM to play from a random selection of curated tracks. SoundCloud experts, type MIX by itself for advanced instructions. Note: The track author MUST allow downloads. For example:\r\n\r\nMIX http://soundcloud.com/mike-leghorn/chromatic-fantasy\r\n\r\n▬ Documentation ▬\r\n●  User Guide 1.0 - https://docs.google.com/document/d/1RIjdt0-NWft7Inn0GdLpTTwE3QejkxU8J4bpz_JoyJw/pub\r\n● Crash Course - https://www.youtube.com/watch?v=fYspO5hkMnU\r\n● DTV Tech Talk - https://www.youtube.com/watch?v=wfhicpvfwoM\r\n● Diagram - https://cdn.hackaday.io/images/10261470291442867.png\r\n\r\n▬ Subscriber Benefits ▬\r\nSubs get access to Beta stuff, including...\r\n\r\n  .ANSI\r\n  Add lo-fi animations! Type .ANSI (with dot) to begin.\r\n\r\n  .STYLE\r\n  Srsly. Hack own theme via PasteBin.  .STYLE for help. *Beta*!\r\n\r\n▬ Advanced Droning ▬\r\nThe main activity here is the mixing of sound effects into a collage of soothing, intriguing, confusing or exciting sound. It's something of an art in itself.\r\n\r\nType \"Drone\" followed by any single word. Related sounds are added over the next 1-3 minutes.\r\n\r\nThese examples are easy to notice:\r\n\r\nDrone interview\r\nDrone cosmonauts\r\n\r\nInstruments make good keywords too.\r\n\r\nFind sounds on http://freesound.org and use the SoundID or author name.  For example:\r\n\r\nDrone 331330\r\nDrone TexasMusicForge\r\n\r\nNote: Only sounds between 20 and 120 seconds long can be played.\r\n\r\nTo add sounds with a given Beats Per Minute:\r\n\r\nDrone 90bpm\r\nDrone 140bpm\r\n\r\n▬ How It Works ▬\r\nComplete Geek Intel at Hackaday:\r\nhttps://hackaday.io/project/11971-dronetv-autonomous-pirate-dronesound-livestream\r\n\r\nHere at DronesoundTV, a Raspberry Pi single-board Linux computer uses keywords and your requests to choose sounds from the latest uploads at http://freesound.org.\r\n\r\nIt modifies and remixes them according to the artist's own obscure sampling technique and livestreams the results directly to You (Tube).\r\n\r\nPopular sounds are \"followed\" to samples similar in BPM and pitch, which become part of the mix and again may be followed to new samples.\r\n\r\n▬ StageGhost ▬\r\nThe back-end of DroneBot is \"StageGhost\", a product-soon to be released in beta (stay tuned to get your own!).\r\n\r\nStageGhost manages the chat, handles user requests, bans cursing violators, posts sampling credits and does pretty much everything else. Many more features are in the works. \r\n\r\nUse the \"COMMANDS\" command for a list of everything DroneBot can currently do for you.\r\n\r\n▬ Code ▬\r\nU geeky bro? K, check out Early Adopter's Kit (for Linux) at\r\nhttps://hackaday.io/project/11971-dronetv-autonomous-pirate-dronesound-livestream\r\n\r\n* IF YOU LIKE DTV, please tell friends! I hope to Kickstart a Mac Mini for the stream, greatly improving audio quality.*\r\n\r\n▬ Commented Drones ▬\r\nDrone 331330 # Weird cool with vocoder\r\nDrone 165241 # The Janitor Story\r\n\r\n▬ DronesoundTV the Art Project ▬\r\nDronesoundTV is a Conceptual Art project under development by lo-fi performance artist \"Die, Master Monkey\" (@garyd) and Interactive Designer \"OkBop\".\r\n\r\n▬ Subscribe ▬\r\nSubscribe and stay tuned, I will be offering easy all-in-one kits soon. Check out http://youtube.com/diemastermonkey for more lo-fi beats, drone and artsy stuff.\r\n\r\n▬ Credits ▬\r\nFreesound.org API (thank you!!)\r\nYouTube Data and LiveStream APIs (thank you!!)\r\nMakeAGif.com\r\nsox\r\nimg2txt\r\ncaca-utils\r\nPerl, Java/script and a wee bit of Python",
+  "thumbnails": {
+   "default": {
+    "url": "https://i.ytimg.com/vi/Ay3VaY7Q4Es/default_live.jpg",
+    "width": 120,
+    "height": 90
+   },
+   "medium": {
+    "url": "https://i.ytimg.com/vi/Ay3VaY7Q4Es/mqdefault_live.jpg",
+    "width": 320,
+    "height": 180
+   },
+   "high": {
+    "url": "https://i.ytimg.com/vi/Ay3VaY7Q4Es/hqdefault_live.jpg",
+    "width": 480,
+    "height": 360
+   },
+   "standard": {
+    "url": "https://i.ytimg.com/vi/Ay3VaY7Q4Es/sddefault_live.jpg",
+    "width": 640,
+    "height": 480
+   },
+   "maxres": {
+    "url": "https://i.ytimg.com/vi/Ay3VaY7Q4Es/maxresdefault_live.jpg",
+    "width": 1280,
+    "height": 720
+   }
+  },
+  "scheduledStartTime": "1970-01-01T00:00:00.000Z",
+  "actualStartTime": "2016-12-22T00:29:47.000Z",
+  "isDefaultBroadcast": true,
+  "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU"
+ }
+}

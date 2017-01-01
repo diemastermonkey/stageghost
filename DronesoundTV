@@ -1,0 +1,134 @@
+#!/usr/bin/perl
+# DronesoundTV: Next generation display manager
+# Loop forever cycling randomly among displays
+# 2016 @garyd @diemastermonkey
+
+# my $Nice = "nice -n 2";	# Low-priority w/nice
+my $Nice = " ";	# Low-priority w/nice
+
+# New: When "Door Game Display" file present/fresh, 
+# display that for awhie then repeat
+my $DoorFile = "door_active.txt";
+my $DoorTimeout = 2;   # Mins till door displays stale
+my $DoorCheck = "find -name $DoorFile -cmin -".$DoorTimeout;
+
+# Array of simple single-command-line screen displays
+# --------------------------------------------------------
+@Savers = (
+  # New! Spacebattle display
+  # "clear; commands/.spacebattle; clear; sleep 1;",
+
+  # New! CodeScroller random code display
+  "clear; $Nice ./CodeScroller; sleep 1; clear;",
+
+  # New: Simply display the latest Shout Out in response to request
+  # DISABLED #  Needs dressup
+  # "clear; cat ytCheck-shoutout.ans; sleep 30; clear; ",
+
+  # Crude ansi animation, user showcase version
+  "clear; $Nice ./ansiAnimation showcase; clear;",
+  "clear; $Nice ./ansiAnimation showcase; clear;",
+  "clear; $Nice ./ansiAnimation showcase; clear;",
+
+  # Crude ansi frame animation
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+  "clear; $Nice ./ansiAnimation; clear;", "clear; $Nice ./ansiAnimation; clear;",
+
+  # Diversionary/Fake/Semi-fake Displays
+  # Retired # "./adPlayer ads/sys-keywords.txt ; cat keywords.txt | sed \"s/ /\\n/g;\" | sort -u | xargs; sleep 9; ./adPlayer ads/user-resaver.txt; ",
+  "./adPlayer ads/sys-fortune.txt ; fortune; echo; uptime; echo; sleep 13; ./adPlayer ads/user-resaver.txt; ",
+
+  # Games/amusements
+  # Working perl one-liner rock scissors paper lizard spock
+  "./adPlayer ads/user-rspls-1.txt; perl -e 'print ((ROCK, PAPER, SCISSORS, LIZARD, SPOCK)[rand(5)].\"\\n\");' echo; sleep 8; ./adPlayer ads/user-resaver.txt; clear; perl stationid_random",
+  "./adPlayer ads/user-rspls-1.txt; perl -e 'print ((ROCK, PAPER, SCISSORS, MONKEY, SPOCK)[rand(5)].\"\\n\");' echo; sleep 8; ./adPlayer ads/user-resaver.txt; clear; perl stationid_random",
+
+  # Working perl one-liner downhill skier
+  "./adPlayer ads/user-downhill-1.txt; perl -e 'until (\$c++ == 18) { \$l=rand(3); print \"\\t|\\t\".(\" \" x \$l.\"V\").(\" \" x (3-\$l)).\"\\t|\".\"\\n\"; sleep 1;} '; echo; sleep 3; ./adPlayer ads/user-resaver.txt; clear; perl stationid_random",
+
+  # Perl one-liner: Vertical landscape
+  # "./adPlayer ads/perl-vertical-landscape-1; ./perl-vertical-landscape; sleep 1; ./adPlayer ads/user-resaver.txt; clear; perl stationid_random",
+
+  # Real (and fake) notices
+  # "clear; ./adrandom; sleep 30;",     # ie community bulletin board
+
+  # Ansi/sound displays/logos/etc
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+  "perl ansiRandom | ./ansiScroll;", 
+
+  # Retired - obsolete
+  # "clear; sh ansiSpectro remix/excerpt.wav; sleep 15;clear; ",         # Sonic graphic
+
+  "clear; echo; perl stationid_random; sleep 30; ",                 # Station ID
+
+  # Full status report (Retired! New HTML themes do better job)
+  # "clear; uptime; sh status_report; sleep 12; ",              # Real system report
+);
+
+# Main
+# ---------------------------------------------------
+# Choose, rest, forever - interrupt if Door displays
+while (true) {
+
+  # If fresh door display exists show instead
+  $Check = `$DoorCheck`;
+  if (length($Check)) {   
+   # Results not even used
+   print (`clear`);
+   print (`cat $DoorFile`);  # Display door
+   print ("\n\n");    # Temporary kludge
+   print ("\n");    # Temporary kludge
+   sleep (8);		# Will just re-post
+   next;
+  }
+
+  # Else spawn a random display
+  system(@Savers[int(rand(scalar(@Savers)))]);
+  sleep (1); # Sanity clause
+}

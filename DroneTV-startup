@@ -1,0 +1,40 @@
+#!/bin/sh
+# Crude startup script for DronesoundTV
+# Probably missing several things
+# 2016 @garyd @diemastermonkey
+
+cd /pub/kits/sonicmonkeypi
+
+# Panel Server first, at least UI up
+# ./PanelServerRefreshLoop &> /dev/null &
+# ./PanelServer &> /dev/null &
+./PanelServer-startup &
+
+# Start YouTube OAuth Token Maintenance Loop
+# ./ytRefreshLoop &> /dev/null &
+# Start YouTube Chat Polling Loop
+# ./ytCheckLoop &> /dev/null &
+./ytTools-startup &
+
+# Start DroneTV Sound (note kludge version)
+# ./DroneTV >> log.txt &
+./DroneTV-kludgeloop &> /dev/null &
+
+# Start Onboard Synth
+# ./synthLoop &> /dev/null &
+
+# Start FX stuff incl. "Attract Mode"
+# ./AttractMode &> /dev/null &
+./FX-startup &
+
+# Setup Raspberry Pi GPIO last, it takes awhile
+sudo ./uiFlashSetup &
+
+echo " "
+echo " Reminder, run"
+echo " "
+echo "              ./DronesoundTV"
+echo " "
+echo " ...to start the lo-fi animations."
+echo " "
+

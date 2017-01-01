@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+# Flash RPI GPIO pin 
+# Required: pin already set up
+# @garyd @diemastermonkey
+
+# Flash X times - leave in whatever state it was in
+$OGState = `cat /sys/class/gpio/gpio21/value`; chomp ($OGState);
+for ($i=0; $i < 45; $i++) {
+  
+  $r = `echo "$V" > /sys/class/gpio/gpio21/value 2> /dev/null`; 
+  `sleep 0.25`;  # Unix sleep is faster
+  if ($V) { $V = 0 } else {$V=1;}
+}
+
+$r = `echo "1" > /sys/class/gpio/gpio21/value 2> /dev/null`; 
+sleep (7); # Stay on a while
+
+# Restore original state
+$r = `echo "$OGState" > /sys/class/gpio/gpio21/value 2> /dev/null`; 

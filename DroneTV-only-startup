@@ -1,0 +1,26 @@
+#!/bin/sh
+# Variation that only starts the Freesound processes
+# Probably missing several things
+# 2016 @garyd @diemastermonkey
+
+# Muy importante
+cd /pub/kits/sonicmonkeypi
+
+# Start DroneTV Sound (note kludge version)
+# ./DroneTV >> log.txt &
+./DroneTV-kludgeloop &> /dev/null &
+
+# Start Onboard Synth
+# ./synthLoop &> /dev/null &
+
+killall AttractMode
+./AttractMode &
+
+echo " "
+echo " Reminder, run"
+echo " "
+echo "              ./DronesoundTV"
+echo " "
+echo " ...to start the lo-fi animations."
+echo " "
+

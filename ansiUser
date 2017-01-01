@@ -1,0 +1,6 @@
+#!/bin/sh
+# Arg 1: path to user image
+# Fill height mostly
+# img2txt --contrast=3.0 --gamma=0.60 --height=22 --width=46 $1
+# Better on screen?
+img2txt --contrast=2.0 --gamma=0.60 --height=16 --width=33 $1

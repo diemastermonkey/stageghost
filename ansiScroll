@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+# Simply scroll data from pipe up screen
+# Not just for ansi anymore / 2016 @garyd @diemastermonkey
+#
+
+# Scroll off screen first
+for ($i=0; $i < 28; $i++) {
+  print "\n";
+  `/bin/sleep 0.25`;
+}
+
+while (<STDIN>) {
+  print $_;
+  `/bin/sleep 0.25`;
+}
+
+# Extra lines to scroll off screen
+for ($i=0; $i < 28; $i++) {
+  print "\n";
+  `/bin/sleep 0.25`;
+}

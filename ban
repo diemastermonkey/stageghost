@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+# Simple banlist helper for DroneTV/sonicmonkeypi
+# @garyd @diemastermonkey 2016
+
+$NewBan = shift (@ARGV) or die ("\nUsage:\n\t$0 \<SoundAuthor or SoundID\> \n\n");
+chomp ($NewBan);
+
+
+# Inform if already banned
+$Banned = `cat banlist.txt`; chomp ($Banlist);
+if ($Banlist =~ /\b$NewBan\b/mi) {
+  print ("\nDronebot: $NewBan already banned.");
+  exit(0);
+}
+
+# Else just rudely append it
+$Ignored = `echo $NewBan >> banlist.txt`;
+
+
+print ("\nDronebot: $NewBan added to bans. Begone!");
+
+# New: Also kill sound if playing, using following syntax
+$PID = `ps -ef | egrep "play" | egrep "$NewBan"`;
+$PID =~ s/^\w+\s+//; 
+$PID =~ s/^(\d+).*/$1/g;
+if ($PID != "") {
+ $Ignored = kill `ps -ef $PID`
+}
+
+

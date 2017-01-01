@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# DroneTV: Get BroadcastId, LiveChatId, VideoStreamID via 
+# user's YTOAuth and "mine" parameter. See:
+# https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/list
+# 2016 @diemastermonkey / @garyd
+# Requires Cpanel::JSON::XS, YouTube API Key, Channel ID
+# ---------------------------------------------------------------
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+my $Get = "/usr/bin/curl --silent -o -";
+# User's YTOauth from config
+my $YTOAuthToken = `cat config/dronetv.youtubeoauthtoken`; 
+chomp ($YTOAuthToken);
+# API Endpoint
+my $API = "https://www.googleapis.com/youtube/v3/liveBroadcasts";
+my $FieldsRequired = 5;    # If less parsed, no files written
+
+# Get live broadcasts for oauth user's account plus other fields
+# Note: fields=items(id,snippet(channelId,liveChatId,title))
+my $LiveBroadcastSearch = "$API"
+  . "?part=snippet"
+  . "&broadcastType=persistent"
+  . "&maxResults=1"
+  . "&mine=true"
+  . "&channelId=$YTChannelID&eventType=live&type=video"
+  . "&fields=items(id%2Csnippet(channelId%2CliveChatId%2Ctitle%2Cdescription))"
+  . "&access_token=$YTOAuthToken";
+
+# Main
+# ---------------------------------------------------------------
+# Search for current live streams by the user
+my $RawLiveBroadcasts = `$Get "$LiveBroadcastSearch"`;
+my $Decoded = decode_json $RawLiveBroadcasts;
+my %Data; 
+
+# Parse response
+$JsonItems = $$Decoded{'items'};
+$Item = shift (@$JsonItems);
+$Data{'livestreamid'} = $$Item{'id'};
+$Data{'videourl'} = "https://www.youtube.com/watch?v=" . $Data{'livestreamid'};
+$Snippet = $$Item{'snippet'};
+$Data{'channelid'} = $$Snippet{'channelId'};
+$Data{'livechatid'} = $$Snippet{'liveChatId'};
+$Data{'title'} = $$Snippet{'title'};
+
+# Note description field needs weird escaping
+# Nope # $Data{'description'} = quotemeta($$Snippet{'description'});
+$Data{'description'} = $$Snippet{'description'};
+# Manual cleanup
+$Data{'description'} =~ s/([\'\"\\])/\\$1/gso;  # Escapes quotes
+# Exclaimation points are fine leave as is
+# $Data{'description'} =~ s/(\!)/\\$1/gso;      # Escapes exclaim
+$Data{'description'} =~ s/$/\r\n\\r\\n/gmo;
+
+# Print each field and, if valid, WRITE updated config files
+foreach $Field (keys(%Data)) {
+  print ("\n$Field : $Data{$Field}");
+  if (scalar(keys(%Data)) >= $FieldsRequired) {
+    open (OUT, ">config/dronetv.$Field") or die;
+    print (OUT $Data{$Field});
+    close (OUT);
+  }
+}
+
+# fin

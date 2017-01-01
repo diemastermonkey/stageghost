@@ -1,0 +1,36 @@
+#!/bin/sh
+# Station-wide status report for DronesoundTV
+# 2016 @diemastermonkey @garyd
+
+PITCH=`cat DroneTV.pitch`
+BPM=`cat beatbot.bpm`
+SAMPLES=`ps -ef | egrep -i "play " | egrep -vi "synth " | wc -l`
+CACHEFILES=`find cache -name \*.ogg\* |  wc -l`
+CACHEWORDS=`find cache -name \*.cache | egrep -vi "data" | wc -l`
+CACHESIZE=`du -h cache | sed "s/cache//"`
+SYNTH=`cat synthOnboard.synth`
+SYNTHPITCH=$((30 + $PITCH % 80))
+VOICES=`ps -ef | egrep -i "play " | egrep -i "synth" | wc -l`
+MOOD=`cat DroneTV.mood | xargs`;
+
+# Sound
+echo " " 
+echo "  Mood          : $MOOD   "
+echo "  Active samples: $SAMPLES,     Pitch: $PITCH hz,    Bpm: $BPM, "
+echo "  Cache: $CACHESIZE,        $CACHEWORDS keywords,      $CACHEFILES samples  "
+echo
+# echo " \________________________________________________________________________/"
+echo "  _Freesound__Sound Designer____________Length____________________Keyword_"
+# tail -150 log.txt | egrep Id | tail -4 | sed "s/^/ /g"
+tail -150 log.txt | egrep Id | tail -$(($SAMPLES)) | sed "s/^/ /g"
+echo " \________________________________________________________________________/"
+echo " "
+
+# Synth
+echo "  Synthesis"
+echo "  ________________________________________________________________________"
+echo " |  Voices active: $VOICES,      Pitch: $SYNTHPITCH hz,     BPM: $BPM,  "
+echo " |  Waveform: $SYNTH  "
+echo " \________________________________________________________________________/"
+
+

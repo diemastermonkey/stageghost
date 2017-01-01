@@ -1,0 +1,95 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# DroneTV: Modify the existing broadcast specified in dronetv.livebroadcastid
+# Uses user's YTOAuth and "mine" parameter. See:
+# https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/list
+# https://developers.google.com/youtube/v3/live/docs/liveBroadcasts/update
+# IMPORTANT: "Update" endpoint uses a PUT (yes, PUT, not POST or anything human)
+# 2016 @diemastermonkey / @garyd
+# Requires Cpanel::JSON::XS, YouTube API Key, Channel ID
+#
+# Args:  field=value
+# snippet.title="long ass title here"
+# snippet.description="long ass description here" 
+# status.privacyStatus= (?)
+# contentDetails.enableClosedCaptions=?
+# contentDetails.startWithSlate=?
+# ---------------------------------------------------------------
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+# To URI escape long-ass description field
+use URI::Escape;
+
+# Simple config getter
+# $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+  return ($out);
+}
+
+# Settings
+# -----------------------------------------------------
+my $UpdateStreamData = "./ytGetStreamIDs";
+my $Get = "/usr/bin/curl --silent -o -";
+my $Post= "/usr/bin/curl --silent -H \"Content-Type: application/json\" -X POST -d ";
+my $Put = "/usr/bin/curl --silent -H \"Content-Type: application/json\" -X PUT ";
+
+my $YTOAuthToken = fnConfigGet ("dronetv.youtubeoauthtoken"); 
+my $YTChannelId = fnConfigGet ("dronetv.channelid"); 
+my $YTLiveStreamId = fnConfigGet ("dronetv.livestreamid"); # Aka videoid
+chomp ($YTOAuthToken);
+
+# Get description, which currently must be presented at time of title update
+# Currently supports ONLY title, in arg 1
+my $Update = shift (@ARGV) 
+  or die ("$0 usage: $0 title_to_set");
+
+# Description MUST reside in config/dronetv.description
+# as it must be provided in update or it is blanked!
+# Note: Don't configGet it, that breaks it
+# First, make sure description file up-to-date
+# my $Result = `UpdateStreamData`;
+
+# To do: Check result for errors 
+open (IN, "<config/dronetv.description") or die ("\n$0 fatality: Cant open config/dronetv.description");
+@Description = <IN>;
+close (IN);
+$Description = join (/\n/, @Description);   # No uri escaping
+# Dont # $Description = uri_escape(join (/\n/, @Description));
+
+# JSON Syntax for Post (append to $Post), API URL at end w/sox syntax
+my $API = "https://www.googleapis.com/youtube/v3/liveBroadcasts";
+# With (broken) Description parm
+my $JSON = 
+  "{\"id\":\"$YTLiveStreamId\",\"snippet\":{\"title\":\"$Update\",\"description\":\"$Description\"}}";
+
+# New: Create a json file for the PUT, includes both title update and dronetv.description
+open (JSON, ">$0.json") or die;
+print (JSON $JSON);
+close (JSON);
+
+# Template combines curl syntax with args and json
+# Use curl 'put/post fields from file (@) and url encode it (vs --data)' syntax
+my $Template = "$Put --data \@$0.json " . "\"$API?part=snippet&access_token=$YTOAuthToken\" ";
+
+# Main
+# TO DO: Error checking! :(
+# ---------------------------------------------------------------
+# Execute the HTTP transaction, dump to log
+my $Raw = `$Template`;
+
+# Dump results into one-off debug log
+open (OUT, ">$0.debug") or die;
+print (OUT "\n$0: Debug: Template is \n$Template");
+print (OUT "\n$0: Debug: Raw response is \n$Raw");
+close (OUT);
+
+

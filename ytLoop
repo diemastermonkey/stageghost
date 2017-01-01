@@ -1,0 +1,12 @@
+#!/bin/sh
+# Just keep checking youtube for requests
+# Spawn players for keywords when found
+# Note bg, so they CAN pile up - beware
+cd /pub/kits/sonicmonkeypi
+./ytRefreshTokens
+./ytSinglePost "[Dronebot] Hi, I am back!"
+killall ytCheck   # in case leftovers
+while (true); do 
+  ./ytCheck &> ytCheck-raw.txt 
+  sleep 7.5
+done

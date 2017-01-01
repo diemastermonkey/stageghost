@@ -1,0 +1,143 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# YouTube API: Get info on a user by channel ID for DronesoundTV
+# Uses [userchannelid].name file to test freshness vs $RefreshTime
+# If stale, will get new name/pic AND test subscriber status
+# Note this costs API quota, so tuning $RefreshTime matters.
+# 2016 @garyd @diemastermonkey
+# Pass YouTube ID in arg 1. Requires Cpanel::JSON::XS
+# ---------------------------------------------------------------
+
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+
+  # Remove comments, blanks, limit to single line of data
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+
+  return ($out);
+}
+
+# Settings 
+# User records cached this many MINUTES, tho some scripts may clear 
+my $RefreshTime = 60 * 24;
+my $UserCache="users";		# Path to user data cache dir
+my $YTPost = "./ytSinglePost";  # What used to post to chat
+
+# my $Get = "/usr/bin/GET"; # alt
+my $Get = "/usr/bin/curl --silent -o -";
+my $YTOauthToken = fnConfigGet ("dronetv.youtubeoauthtoken");
+my $YTChannelID = fnConfigGet ("dronetv.channelid");
+my $YTChatID = fnConfigGet ("dronetv.livechatid");
+
+# Args or die
+$UserChannelID = shift (@ARGV)
+  or die ("\nUsage:\n\t$0 YOUTUBE_USER_CHANNEL_ID\n");
+chomp ($UserChannelID);
+
+# API strings (must be after args as interpolates them)
+
+# Proper UserInfo via Channels:List (vs Search)
+# From doc: GET https://www.googleapis.com/youtube/v3/channels?part=snippet&id=UCBJjDo7AnKcpO5s9hNs1ngg&maxResults=1&fields=items%2Fsnippet&key={YOUR_API_KEY}
+
+# 20161227 gad: switch from key=api_token to user oauth access_token=
+my $YTUserInfo = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$UserChannelID&maxResults=1&fields=items%2Fsnippet&access_token=$YTOauthToken";
+
+# Subscriber record for "ChannelID" matching "User Ch ID"
+# This is what should be checked: The "list of that users subscriptions which match (dronesoundTV's) channel ID." You may NOT list all their subscriptions, only yourself if present.
+# GET https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=UCXwZq64fKef3IlNRrR5V9xg&forChannelId=UCBJjDo7AnKcpO5s9hNs1ngg&maxResults=1&key={YOUR_API_KEY}
+
+my $YTUserSub = "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=$UserChannelID&forChannelId=$YTChannelID&maxResults=1&access_token=$YTOauthToken";
+
+# Return existing username or nothing
+# ---------------------------------------------------------------
+sub fnUserName {
+  $f = `find users/ -mmin -$RefreshTime -name $UserChannelID.name | xargs`;
+  if ($f =~ /$UserChannelID/) {
+      return (`cat $UserCache/$UserChannelID.name`);
+  }
+}
+
+# If exists and fresher than Refreshtime, just spit out name and ditch
+$UserName = fnUserName();
+if ($UserName =~ /\w/) {
+  print($UserName);
+  exit;
+}
+
+# Else get fresh user and sub info
+my $RawChat = `$Get "$YTUserInfo"`;  # Actually is info results
+my $RawSub  = `$Get "$YTUserSub"`;   # Subscriber record if subbed
+
+# Dump raw to debug log
+open (OUT, "> $0-debug.txt");
+print (OUT "\nDebug: ytusersub syntax: $YTUserSub");
+print (OUT "\nDebug: Arg UserChannelID = $UserChannelID");
+print (OUT "\nDebug: Raw search response is \n$RawChat");
+print (OUT "\nDebug: Raw subscriber response is \n$RawSub");
+close (OUT);
+
+# INSERT ERROR CHECKING HERE LIKE FOR UH REQUEST PI DUH
+
+my $decoded = decode_json $RawChat;
+my $subscribed = decode_json $RawSub;
+
+# To do: Only if subscribed, dump json subscriber record to file
+# Crude, but if subbed json will contain "totalResults": 1 so grep that
+# Remove any pre-existing either way, noting if existed=pre-subbed
+$PreSub = 1 if (-r "$UserCache/UserChannelID.sub");
+`rm $UserCache/$UserChannelID.sub &> /dev/null`;
+if ($RawSub =~ /\"totalResults\"\: 1/) {
+  $IsSub = 1;
+  open (OUT, ">$UserCache/$UserChannelID.sub") or die ("\n\a$0 : $!\n");
+  print (OUT $RawSub);
+  close (OUT);
+}
+
+# Get other data from user's channel response
+# Simply iterate all items ignoring what we don't need
+$items = $$decoded{'items'};
+foreach $item (@$items) {        # NOW SUPERFLUOUS
+  $snipdataref = $$item{'snippet'};
+  $ch_title   = $$snipdataref{'title'};
+  $thumbnails = $$snipdataref{'thumbnails'}; # Default thumb
+  $default    = $$thumbnails{'default'};
+  $image_url  = $$default{'url'};            # Url of default thumb
+
+  # Fetch image, create initial user files
+  open (OUT, ">$UserCache/$UserChannelID.name") or die ("\n\a$0 : $!\n");
+  print (OUT $ch_title);
+  close (OUT);
+
+  # Fetch profile image crudely
+  $Ignored = `$Get "$image_url" > $UserCache/$UserChannelID.jpg`;
+
+  # Log raw data for debuggin
+  $LogEntry = "\n$0: ch_title=$ch_title, "
+    . "image_url=$image_url";
+  open (LOG, ">> $0-raw.log")
+    or die ("\nCannot write log file $0-raw.log\n$0\n\n");
+  print (LOG $LogEntry);
+  close (LOG);
+}
+
+# New: If new sub, write notice directly to panel
+# also to chat
+if (! $PreSub && $IsSub) {
+  open (OUT, ">PanelServerNotice.html");
+  print (OUT "<b>Welcome, $ch_title !</b>");
+  close (OUT);
+}
+
+# Spit out (newly created) name
+print (fnUserName());
+

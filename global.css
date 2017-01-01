@@ -1,0 +1,72 @@
+/* Topmost styling file for DronesoundTV 
+	 To do: Move to ./panels/ 
+   2016 @garyd @diemastermonkey
+*/
+
+/* Disable browser scrollbars througout */
+html {
+  overflow:hidden;
+}
+
+body {
+  color: #FFFFFF;    /* font color */
+  font-size: 1.19em;
+  overflow:hidden;  /* Here, or above? */
+}
+
+/* Alerts/popups for soundcloud/music attributions ONLY */
+soundcloudartist {
+  font-size: 8.0em;
+}
+
+/* User profile images that appear in the "lobby" 
+   In some themes, styled in .body, fix that
+*/
+.lobby-pic {
+  width: 40px;
+  padding-left: 2px; 
+  padding-right: 2px;
+}
+
+/* ATM all divs are boxes, border them globally */
+div {
+  border: #C0C0C0 solid 1px;
+}
+
+/* Top right (un) mask for Pi Cam */
+.toprightmask {
+  position: absolute;
+  background: #00ff00; /* green screen ie mask */
+  top: 0.6em;
+  right: 1.5em;
+  width: 31%;
+  height: 35%;
+}
+
+/* Middle right panel often waveform etc */
+.midright {
+  position: absolute;
+  background: #000000;
+  opacity: 0.9;
+  top: 39%;
+  right: 1.4em;
+  width: 257px;  /* legacy - fix this */
+  height: 153px;
+  overflow: hidden;
+}
+
+.bottom {
+  overflow: hidden;
+  margin-top: 42%;
+  margin-left: 0.4em;
+  margin-right: 1.10em;
+  margin-bottom: 0.96em;
+  min-height: 3.6em;
+  max-height: 3.6em;
+  padding: 0.40em;
+  color: #ffffff;
+  background-color: #000000;
+  opacity: 0.9;
+  vertical-align: text-bottom;
+}
+

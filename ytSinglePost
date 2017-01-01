@@ -1,0 +1,80 @@
+#!/usr/bin/perl
+# Simple single-chat-msg-post, pass msg as quoted arg 1
+# DronesoundTV 2016 @garyd @diemastermonkey
+# To do: Update to newer api code
+# Update: Adds msgid (returned from msg post) to 
+# ytCheck.processed - so it neednt read itself
+
+# Simple, cheap, safe config file reader
+# Read a single value from a single thus-named file
+# Use a naming convention to support multi-user/session
+# Returns value or empty (q: what if value 'empty'?)
+# Example use:
+#   $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+
+  # Remove comments, blanks, limit to single line of data
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+
+  return ($out);
+}
+
+# Message from args
+$Message = shift (@ARGV)
+  or die ("\nUsage:\n\t$0 \"Message to send\"\n");
+my $MSG = $Message;
+
+# Tokens, config, etc (clean this up)
+my $AUTHOR_CHANNEL_ID = fnConfigGet ("dronetv.channelid"); 
+my $LIVECHAT_ID = fnConfigGet ("dronetv.livechatid");
+my $ACCESS_TOKEN = fnConfigGet ("dronetv.youtubeoauthtoken");
+# Tracks messages we've already handled 
+my $ProcessedFile = "ytCheck.processed";
+
+# New improved "brutally get field from raw json"
+# Doesnt care about nesting, works only on first unique field name
+sub fnGetField {
+  my $Data = shift (@_);
+  my $Field = shift (@_);
+  return ($1) if ($Data =~ /\"$Field\":\s*\"(.*)\"\,/);
+  return ("unknown");    # If still here, not found
+}
+
+# Main, cheese version
+# -----------------------------------
+$CMD =  
+   # Get with post and json header
+   "curl --silent -H \"Content-Type: application/json\" -X POST -d "
+   # JSON fields, brutally
+   . "\'{\"snippet\":{\"authorChannelId\":\"_AUTHOR_CHANNEL_ID_\",\"type\":\"textMessageEvent\",\"textMessageDetails\":{\"messageText\":\"_MSG_\"},\"liveChatId\":\"_LIVECHAT_ID_\"}}\'"
+   # URI
+   . " \"https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&access_token=_ACCESSTOKEN_\"";
+
+$temp = $CMD;
+$temp =~ s/_MSG_/$MSG/g;
+$temp =~ s/_ACCESSTOKEN_/$ACCESS_TOKEN/g;
+$temp =~ s/_LIVECHAT_ID_/$LIVECHAT_ID/g;
+$temp =~ s/_AUTHOR_CHANNEL_ID_/$AUTHOR_CHANNEL_ID/g;
+
+# Execute the request
+$Results = `$temp`;
+
+# New: Diag log
+open (LOG, ">$0.log") or print ("\nWarning: Cant open $0.log\n");
+if (LOG) { print (LOG "Command was: $temp"); print (LOG $Results); }
+close (LOG);
+
+# New: Append msgid to processed so ytCheck doesn't eat it
+open (OUT, ">>$ProcessedFile"); # or ignore
+print (OUT "\n".fnGetField ($Results, "id")); # Newline important
+close (OUT);
+
+# Fin

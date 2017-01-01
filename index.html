@@ -1,0 +1,181 @@
+<html>
+<!-- Next-Gen StageGhost/PanelServer Master Template
+     for DronesoundTV 10/2016 @garyd @diemastermonkey 
+     aka "Controller". Includes 'content.html', generated
+     by PanelServerRefresh
+     This doesn't reload itself (except by last-resort browser plugin),
+     except via ajax, etc, the inner content is to reload itself if necessary.
+-->
+<head>
+  <script 
+    src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
+
+  <!-- Would be controller.js -->
+  <script type="text/javascript">
+    var iCycleTime = 5000;    // ms between updates
+    var oTimer = null;
+    var sLastServerMsg = "";  // So processed only once
+
+    // Array of "tv static" images randomly changed in background, which
+    // show when other elements are loading, or glitch-out for a bit
+    // NOTE: Must be SERVER relative!
+    var sFXImages = [
+       "/backgrounds/fx_tvstatic_0.gif",
+       "/backgrounds/fx_tvstatic_1.gif",
+       "/backgrounds/fx_tvstatic_2.gif",
+       "/backgrounds/fx_tvstatic_3.gif",
+       "/backgrounds/fx_tvstatic_4.gif",
+       "/backgrounds/fx_tvstatic_5.gif"
+    ];
+
+    // Once page first loaded, set handlers etc
+    function fnOnLoaded () {
+      fnStatus ("Loaded");
+      $(document).ajaxComplete (function () { fnLog ("AjaxComplete"); });
+      $(document).ajaxError (function () { fnLog ("AjaxError"); });
+      // $(document).ajaxSuccess (function (data) {fnServerResponse(data); });
+      fnLog ("Controller: Initial load complete.");
+
+      // Set new background 'noise' image, now that loaded ok
+      var iSelected = Math.round (Math.random() * sFXImages.length);
+      fnLog ("Controller: Updating to background " + iSelected);
+      document.body.style.backgroundImage = 
+        "url('" + sFXImages[iSelected] + "');";
+
+      // Start timer for server updates
+      fnTimer();        // Also initial server check
+    }
+
+    // Handle server check/UI update timer, set for next cycle
+    function fnTimer () {
+      // Perform per-cycle work here
+      fnServerCheck(); 
+      // Reinstate single-fire timer, see ya soon
+      oTimer = setTimeout (fnTimer, iCycleTime); 
+    }
+
+    function fnServerCheck () {     // Initiate ajax check
+      fnStatus ("Server...");
+      fnLog ("Checking server for updates...");
+      // Place ajax request while specifying response handler
+      $.get ("cgi/server.status",
+        function (data) { 	   // Specs dual completion handler
+          fnServerResponse (data); // see alt args
+        }
+      );
+    }
+
+    function fnServerResponse (data) {  // Handle ajax response
+      // Code
+      fnLog ("Ajax success");
+      fnStatus ("Idle");  // Might not stay long
+
+      // Only process new server responses
+      if (data == sLastServerMsg) {
+        return;  // Ignore, nothing new
+      }
+
+      // Store as latest server response
+      sLastServerMsg = data;
+      fnLog ("New command from server: " + data);
+  
+      // Special commands
+      /*
+      if (data == "reload") {
+        fnLog ("RELOAD command from server! Reloading...");
+        window.location.reload(false);   // Crude reload all
+        return;
+      }
+      */
+
+      // Simple handler: Any server response with equals treated
+      // as a field update/passed to fnElementSet
+      aVal = data.split ("=");
+      if (aVal.length > 1) {
+        fnElementSet (aVal[0], aVal[1]);
+        fnLog ("Element " + aVal[0] + " set to " + aVal[1]);
+        return;  // Done here
+      }
+
+      // If not tok=val pair, treat as source spec
+      // for 'content-main' iframe. NOT best solution.
+      // Mb just use getElementById().src=
+      fnLog ("Updating content-main to " + data);
+      $('#content-main').html(
+        '<iframe id="content-main" src="' 
+          + data 
+          + '">Loading...</iframe>'
+      );
+      // fnElementSet ("content-main", "<b>Alternate</b>");
+      document.getElementById ("content-main").src = data;
+      // $('#content-main').html("<b>Alternate content</b>");  // DEBUGGING
+    }
+
+    // Crudely update a DIV (only) element BY ID from server updates
+    // in form "element=html" ie "status-label=<b>shoutout!</b>"
+    // this recieves ("status-label", "<b>shoutout!</b>")
+    // completely replaces element's html, not just text content
+    function fnElementSet (sElement, sContent) {
+      $('#' + sElement).html(
+        '<div id=' + sElement + '>' + sContent + '</div>'
+      );
+    }
+
+    // Simple console logger
+    function fnLog (argMsg) {console.log ("index.html: " + argMsg);}
+
+    // Simple UI status updater
+    function fnStatus (argMsg) {
+      $('#status-label').html('<span id="status-label">' + argMsg + '</span>');
+    }
+
+  </script>
+
+  <!-- To do: Move most of styling to global.css,
+       set background to match inner content's bg
+  -->
+  <style>
+    html {overflow: hidden;}
+    body {
+      height: 100%; width: 100%; 
+      /* Default bg, see also fnLoaded */
+      background-image: url('backgrounds/fx_tvstatic_0.gif');
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }
+    .controller     {position: absolute; height: 100%; width: 100%;}
+    .status-label   {position: absolute; bottom: 4%; right: 2%; opacity: 0.25;}
+    .branding-label {position: absolute; top: 2%; right: 2%;}
+    .content        {position: absolute; height: 100%; width: 100%;}
+    .content-main   {
+       position: absolute; 
+       float: left; 
+       height: 100%; width: 100%; 
+       left: 0; top: 0;
+       border: none;
+       padding: 0;
+    }
+  </style>
+
+</head>
+<body onLoad="fnOnLoaded();">
+
+  <!-- Invisible Controller, Admin Interface, Shows on glitch or reloads -->
+  <div id="controller" class="controller">
+    <div id="status-label" class="status-label"> [status] </div>
+  </div>
+
+  <div id="branding-label" class="branding-label">
+    <font color="#777777"><h1><b>DronesoundTV</b></h1></font>
+  </div>
+
+  <!-- Visible content generated via PanelServer, consumes entire surface -->
+  <div id="content" class="content">
+    <iframe id="content-main" class="content-main" src="content.html">Loading...
+    </iframe>
+  </div>
+
+  <!-- Footer if intended to be on everything -->
+</body>
+</html>

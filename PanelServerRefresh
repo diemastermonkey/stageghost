@@ -1,0 +1,314 @@
+#!/usr/bin/perl
+# Simple PanelServer prototype
+# Replaces tokens in the current theme file(s)
+# Mostly from other files or runtime commands
+# 2016 @garyd @diemastermonkey
+
+  # Which theme (a relative path) to use or default
+  my $Theme = `cat PanelServer.theme`; chomp ($Theme);
+  $Theme = "default" unless ($Theme);
+
+  # Config
+  # --------------------------------------------------------
+  my %Config;
+  $Config {'MOODFILE'} = "DroneTV.mood";	# Location of various data
+  $Config {'USERPATH'} = "users";
+  $Config {'MAXNAMELEN'} = `cat config/dronetv.maxnamelen`; chomp ($Config{'MAXNAMELEN'});
+  $Config {'NOTETIME'} = `cat config/dronetv.notetime`; chomp ($Config{'NOTETIME'});
+  $Config {'LOBBYFILE'} = "panels/lobby.html";
+  $Config {'LOBBYIMAGELIST'} = "panels/lobbyimages.jsp";  # Just list of images
+  $Config {'LOBBYTIME'} = 20;  # How many mins user files considered active in lobby
+  $Config {'LOBBYSIZE'} = 14;  # Max user pics to be shown in lobby
+  $Config {'MUSICPLAYER'} = `cat config/dronetv.musicplayer`; chomp ($Config{'MUSICPLAYER'});
+  # $Config {'PLAYERTEST'} = "ps -ef | egrep -e '$MP .* remix' | wc -l"; # should be 3
+  # Simpler player test: Just watch for imported.mp4
+  $Config {'PLAYERTEST'} = "ps -ef | egrep imported.mp4"; # If gte 1 is playing
+  # To detect if song playing
+  $Config {'MIXCREDSCMD'} = "tail -1 remix.queue";
+  $Config{'CREDS_LENGTH'} = 4;		# How many rows sfx creds shown
+
+  # User-configurable media etc
+  $Config {'MEDIA_ID'} = `cat panels/DroneTV.media`;
+  chomp ($Config {'MEDIA_ID'});
+
+  # Mainline
+  # --------------------------------------------------------
+  # $h = `cat PanelServer.header`; # No chomp! # chomp ($h);
+  $b = `cat themes/$Theme/PanelServer.body`; chomp ($b);
+  # Snarf template
+  $css = `cat themes/$Theme/PanelServer_Template.css`; chomp ($css);
+  $rgb = `cat themes/$Theme/PanelServer.rgb`; chomp ($rgb); # Page color
+  $bg = `cat themes/$Theme/PanelServer.bg`; chomp ($bg);    # BG Image
+
+  # Panel contents mostly from manual commands
+
+  # Current mood
+  $mood = `cat $Config{'MOODFILE'}`; chomp ($mood);
+
+  # Latest X creds
+  $c_msgs = "Credits: " . `tail -1 DroneTV.creds`; chomp ($c_msgs); # Rename to c_creds
+  # Listing of all themes
+  $c_themes = "Available themes: " . `ls -1 themes/ | xargs | sed "s/ /, /g"`;
+  # Fresh fortune
+  $c_fortune = `fortune`; chomp ($c_fortune);
+  # System status direct from user status command
+  $c_status = `commands/status`; chomp ($c_status);
+
+  # Simple chat log excerpt (update: longer, display must crop)
+  $c_chatlog = `tail -11 ytCheck-chat.log`;
+  $c_chatlog =~ s/^.*msgtext=//gm;  # Discards all but msgtext
+  $c_chatlog =~ s/$/\<br\>/gm;      # htmlify: linebreaks
+  $c_chatlog =~ s/^drone/\<b\>drone\<\/b\>/gm;  # htmlify bold 'drone'
+
+  # Offsite image urls from files
+  $img_wave = `cat DroneTV.waveform`; chomp ($img_wave);
+  $img_spectro = `cat DroneTV.spectro`; chomp ($img_spectro);
+
+  # Curated YouTube video ids
+  $c_videos = `cat DroneTV.videos`; chomp ($c_videos);
+  # One selected randomly from current list
+  @temp = split (/\n/, $c_videos);
+  $c_random_video = @temp[int(rand(@temp))];
+
+  # Image and other info about latest request
+  # YTCheck makes image 'requestor.jpg', we just ignore
+  # it if its old and use static empty pixel
+  $c_requestorimage = "emptypixel.png";
+  # OG # $k = `find ./requestor.jpg -mmin -3 | xargs`;
+  $k = `find panels/requestor.id -mmin -3 | xargs`;  # To do: use .id file
+  if ($k =~ /\w/) {                        # If recent results found
+    $c_requestorimage = "requestor.jpg";   # Beware hardwired fnames 
+    $c_requestorname = `cat requestor.name`; chomp ($c_requestorname);
+    $c_requestorid = `cat panels/requestor.id`; chomp ($c_requestorid);
+
+    # Checking a radio button: Set c_membertoken to the token
+    # which sits where 'checked' would in the HTML template
+    # it gets replaced below
+    $c_membertoken = "_CHECK_GUEST_";		   # Assume guest
+    if (-r "$Config{'USERPATH'}/$c_requestorid.sub") {
+      $c_membertoken = "_CHECK_MEMBER_" ;
+    }
+    if (-r "$Config{'USERPATH'}/$c_requestorid.elite") {
+      $c_membertoken = "_CHECK_ELITE_";
+    }
+  }
+
+  # $Config{CREDS_LENGTH} latest credits from panels/credits.html replaces _CREDITS_HTML_
+  # They are table rows, insert inside a table
+  $credits_html = `tail -$Config{'CREDS_LENGTH'} panels/credits.html`; chomp ($credits_html);
+
+  # Fancier 'mix' credits - populate 'mix_creds' field with most recent
+  # mix creds only if $Config{PLAYERTEST} returns something
+  # Example creds:
+  #   https://soundcloud.com/zaguan/broonzy
+  @Test = `$Config{'PLAYERTEST'}`;
+  if (@Test > 2) {
+    # Bit kludge prepending text, but easier clean output
+    $credsraw = `$Config{'MIXCREDSCMD'}`;
+    $credsraw =~ s/http:\/\///g;		 # cleanups
+    # $credsraw =~ s/soundcloud.com/SoundCloud/g;	# kludge
+    $credsraw =~ s/soundcloud.com\///g;	# kludge
+    # $credsraw =~ s/\/ /\/ /gso;	 # Insane but just spaces out /'s
+    # Restrict to 24 chars
+    if (length ($credsraw) > 35) { $credsraw = substr ($credsraw, 0, 35); }
+    chomp ($credsraw);
+    $mix_creds = "| Mix <b>$credsraw</b>";
+  } else { 
+    $mix_creds = "";    # else empty, to be clear
+  }
+
+  # NEW Generate "Lobby Display" - the latest Chat users, with enhancements
+  # Uses freshness of files in ./users, crudely generates panels/lobby.html
+  # If no files there fresher than $Config{'LOBBYTIME'}, no display at all
+  # ALSO replaces _LOBBY_ token in body and templates. WARE hardwired max limit!
+  $p = $Config{'USERPATH'};
+  $t = $Config{'LOBBYTIME'};
+  # $s = `find $p -mmin -$t -name \\*.jpg | tail -$Config{'LOBBYSIZE'} | xargs`;	
+  $s = `find $p -mmin -$t -name \\*.jpg | tail -$Config{'LOBBYSIZE'} | xargs`;	
+  chomp ($s);
+  # Dump image list as js var to separate file for other stuff
+  open (OUT, ">$Config{'LOBBYIMAGELIST'}");
+  print (OUT "var sLobbyImageList = \"$s\";\n");
+  close (OUT);
+  # $s =~ s/$p\///g; # Keeping relative path ie "users/"
+  @C = split (/ /, $s);  # Probably consolidate with -v
+  @Chatters = reverse (@C);
+  open (OUT, ">$Config{'LOBBYFILE'}");  # Or ignore
+  # Ps this is faster done with Map
+  foreach $Image (@Chatters) {
+    # New: Get their latest chat msg if recent enough
+    $uid = $Image; 
+    $uid =~ s/users\///g; $uid =~ s/\.jpg//g;  # Only ytid remains
+    # To do: limit to recent msgs (date is on each entry)
+    $lastmsg = `tail -7 ytCheck-chat.log | egrep $uid | tail -1`; chomp ($lastmsg);
+    $lastmsg =~ s/.*msgtext.//g;      	       # Only chat msg remains
+    $lastmsg = substr ($lastmsg, 0, 12);       # Limit to this much (to do, add ...)
+
+    `echo "DEBUG: msg is $msg uid is $uid" >> $0.debug`;
+
+    # Compile image and chatbubble html (New: Skip chatbubble if no msg found)
+    if (length($lastmsg) > 0) {
+      $LobbyContent .= "<div style=\"float:left;z-index:12;\" class=\"chatbubble\">";
+      # $LobbyContent .= "Droner";
+      $LobbyContent .= "<span class=\"chatbubble-text\">$lastmsg</span>";
+      $LobbyContent .= "</div>";
+      # $LobbyContent .= "<img src=\"$Image\" id=\"lobby-pic\" class=\"lobby-pic\" style=\"float:left;\" width=\"40px\" /> ";
+    }
+    $LobbyContent .= "<img src=\"$Image\" id=\"lobby-pic\" class=\"lobby-pic\" width=\"40px\" /> ";
+
+    # Og, just this - now, complete lobbycontent printed at end only:
+    # print (OUT "<img src=\"$Image\" id=\"lobby-pic\" class=\"lobby-pic\" width=\"40px\" /> ");
+
+  }
+
+  # In addition to in-template replacement, write to complete file in panels path
+  print (OUT $LobbyContent);
+  close (OUT);
+
+  # Generate latest 'notice' plus (maintenance) clear it out
+  # if over X minutes old
+  $k = `find ./PanelServerNotice.html -mmin -4 | xargs`;
+  chomp ($k);
+  unless ($k =~ /\w/) {
+    # Notice file is expired, clear it while here
+    `truncate --size=0 PanelServerNotice.html`; 
+  }
+
+  # Generate user on-screen 'notes', into _NOTES_ token
+  # A list of divs, to be placed according to users '.coords' setting
+  $userpath = $Config{'USERPATH'};
+  $t = $Config{'NOTETIME'};
+  $notes_scalar = `find $userpath -mmin -$t -name \\*.note | xargs`;
+  chomp ($notes_scalar);
+  @notes = split (/\n|\s/, $notes_scalar);
+  # Iterate un-expired notes, generating a div for each
+  # The position is either random or the user's '.coords' file settings
+  $Notes = "<!-- User Notes generated by $0 -->";
+  $Notes .= "\n<!-- Debug: notes_scalar = $notes_scalar -->";
+  $Notes .= "\n<!-- Debug: notes split = ".scalar(@notes)." -->";
+  foreach $note (@notes) {
+    # Read note content
+    open (IN, "<$note") or next; @notecontent = <IN>; close (IN);
+    $note_content = join (" ", @notecontent); chomp ($note_content);
+   
+    # Get the username for built-in preface, shorten if need
+    $u = $note; $u =~ s/\.note/.name/g;
+    $user = substr (`cat $u`, 0, $Config{'MAXNAMELEN'});
+    chomp ($user);
+ 
+    # Get the user's .coords setting or generate random coords
+    # as a percent of screen, to be inserted as style
+    $x = 2 + int(rand(60));      # Hardwired default ranges
+    $y = 2 + int(rand(60));      # as percents
+    # Read user .coords file or use random
+    $coords = "left:$x\%; top:$y\%;";
+    $c = $note; $c =~ s/\.note/.coords/g;
+    if (-r $c) { $coords = `cat $c`; chomp ($coords); }
+
+    # Append results to the usernotes html output
+    $Notes .= 
+      "\n<!-- Note for $user -->"
+      . "\n  <div id='usernote' class='usernote' "
+      . " style='$coords'"       # Inside tag
+      . ">\n"                    # End div tag inner!
+      . " <span style=\"font-size:18px\">$user</span><br/>"
+      . "$note_content" 
+      . "\n</div>";
+  }                                       # End foreach
+  $Notes .= "\n<!-- End of User Notes -->\n";
+
+  # Finally, update all header tokens here at once
+  # $h =~ (...)
+  # ------------------------------------------------------
+
+  # Update tokens in body
+  $b =~ s/_BRGB_/$rgb/gso;  # Retire probably
+  # $b =~ s/_BG_IMAGE_/$bg/gso;  # Moved to css
+  $b =~ s/_C_BOTTOM_/$c_msgs/gso; # Rename to c_creds
+  $b =~ s/_THEMES_/$c_themes/gso;
+  $b =~ s/_FORTUNE_/$c_fortune/gso;
+  $b =~ s/_C_MIDRIGHT_/$img_wave/gso;  # Backwards compatible
+  $b =~ s/_I_WAVEFORM_/$img_wave/gso;  # New waveform token
+  $b =~ s/_I_SPECTRO_/$img_spectro/gso;  # Spectro token
+  $b =~ s/_C_STATUS_/$c_status/gso;
+  $b =~ s/_C_RANDOMVIDEO_/$c_random_video/gso;  # Only replaces last part of url
+  $b =~ s/_C_CHATLOG_/$c_chatlog/gso;
+  $b =~ s/_CREDITS_HTML_/$credits_html/gso;
+  $b =~ s/_REQUESTORIMAGE_/$c_requestorimage/gso;   # Old syntax
+  $b =~ s/_REQUESTORNAME_/$c_requestorname/gso;
+  $b =~ s/_REQUESTOR_IMAGE_/$c_requestorimage/gso;  # New syntax
+  $b =~ s/_REQUESTOR_NAME_/$c_requestorname/gso;
+  $b =~ s/_LOBBY_/$LobbyContent/gso;
+  $b =~ s/_USERNOTES_/$Notes/gso;     # See users/*.note
+  $b =~ s/_MOOD_/$mood/gso;
+  $b =~ s/_MIXCREDS_/$mix_creds/gso;
+  $b =~ s/_MEDIA_ID_/$Config{'MEDIA_ID'}/gso;
+
+  # Update 'shoutout' radio button, kind of opposite logic:
+  # c_membertoken is set to the text of the token we want 
+  # replaced with 'checked', sitting where it must, to check radio
+  $b =~ s/$c_membertoken/checked/so;
+
+  # Update tokens in CSS, write out
+  # Remember these are going to app root not theme subdir
+  $css =~ s/_BRGB_/$rgb/gso;
+  $css =~ s/_BG_IMAGE_/$bg/gso;
+  open (CSS, "> PanelServer_Main.css"); # or silently ignore
+  print (CSS $css);
+  close (CSS);
+
+  # Simply output body
+  print ($b);
+
+  # New: Generate JS files for themes, etc
+  fnSamplesToJS();
+
+# Function: Generate compact data of the samples 
+# actually playing, into a .js for external use
+sub fnSamplesToJS {
+  my $RawPS = `ps -ef |egrep -i "play \\-"`;
+  chomp ($RawPS);
+  $RawPS =~ s/\s+rate \-.//gmo;      # Flat out ignored
+  $RawPS =~ s/\-t\s*//gmo;
+  $RawPS =~ s/^.*keystroke.*$//gmo;  # Remove special keystroke sounds
+
+  $RawPS =~ s/^.*cache\//file /gmo;  # Keep only data
+
+  # Permit only one numeric value per (word char) field name
+  # ie "echo 1.3 0.7 13.55" becomes "echo 1.3"
+  #
+  $RawPS =~ s/\s(\D+)/\,$1/gmo;
+  $RawPS =~ s/(\D+)\s/$1\:/gmo;  # tokenify ie field:value
+  $RawPS =~ s/(\s\d+\.*\d*){1,}//gmo;
+  $RawPS =~ s/file/\nfile/gmo;   # Kludges
+  $RawPS =~ s/\.ogg//gmo;  
+
+  # Begin output with preface
+  my $sOutput = "// Generated " . `date` 
+    . "//  by $0"
+    . "\nvar aSoundLights = new Array();";
+
+  @RawPS = split (/\n/, $RawPS);
+  my $iCount = 0;
+  foreach $Line (@RawPS) {
+    chomp($Line);
+    $Line =~ s/\,/\,\n/gmo;   # commas to comma+newline
+    $Line =~ s/^/  /gmo;      # Indent
+    # $Line =~ s/\,\}/\}/gmo;      # To tired: Remove errant final commas
+    # Kludge: skip empty records
+    next unless ($Line =~ /\w+\:\d+/); # Ignore, no data
+   
+    $sOutput .= "\n"
+      . "\naSoundLights[$iCount] = {\n"
+      . $Line
+      . "};";
+    $iCount++;
+  }                           # End for
+
+  # Write to .js file
+  open (OUT, ">panels/SamplesJS.js")
+    or return; 
+  print (OUT $sOutput."\n");
+  close (OUT);
+}
+

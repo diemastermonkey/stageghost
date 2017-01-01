@@ -1,0 +1,8 @@
+#!/bin/sh
+# Note sox options set dimensions, color quantization, no text
+sox $1 ./spectro-mono.wav remix - 2> /dev/null
+sox ./spectro-mono.wav -n spectrogram -r -x 180 -y 62 -q 32 2> /dev/null
+echo " Excerpt______________________Peak_Amplitude_###_|_Peak_RMS_###_|_Frequency_### "
+# Sed used to shift right by one char, so one shaved off right. border
+img2txt --contrast=0.15 --gamma=1.0 --height=20 --width=78 spectrogram.png | sed "s/^/ /;"
+

@@ -1,0 +1,26 @@
+{
+ "kind": "youtube#subscription",
+ "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/2CMWEqeotBFxltKqymNtna_AKBc\"",
+ "id": "0x_TKU14sEMGg9LRAAD89xdSe86pi_U57QSVPsyqk3A",
+ "snippet": {
+  "publishedAt": "2017-01-01T05:09:47.000Z",
+  "title": "Gamer4Dayz",
+  "description": "",
+  "resourceId": {
+   "kind": "youtube#channel",
+   "channelId": "UCZjH51kigOmihjiFqxnCm2w"
+  },
+  "channelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+  "thumbnails": {
+   "default": {
+    "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+   },
+   "medium": {
+    "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+   },
+   "high": {
+    "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+   }
+  }
+ }
+}

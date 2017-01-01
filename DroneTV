@@ -1,0 +1,747 @@
+#!/usr/bin/perl
+# -----------------------------------------------------
+# DroneTV aka Sonicmonkey for tiny Linuxes
+# 2016 @diemastermonkey / @garyd
+# Required: 
+#   1. A FreeSound API key - get one here:
+#      http://freesound.org/help/developers/ 
+#   2. curl, play (sox) - or edit $Get and $Player
+#      /bin/sh (forked)
+#
+# Optional:
+#   Add keywords in keywords.txt
+#   Edit output format in format.txt
+#   Add banned sound authors to banlist.txt!
+#
+# To do / missing features
+#   Almost no error checking 
+#   Cache expirey - it grows forever
+#   Connect it to outside world
+# -----------------------------------------------------
+
+# Simple, cheap, safe config file reader
+# Read a single value from a single thus-named file
+# Use a naming convention to support multi-user/session
+# Returns value or empty (q: what if value 'empty'?)
+# Example use:
+#   $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+
+  # Remove comments, blanks, limit to single line of data
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+
+  return ($out);
+}
+
+# Default search keywords (by DMM)
+my $DefaultKeywords = "140295 148446";
+
+# Global low pass filter
+my $Filter = `cat DroneTV.filter`; chomp ($Filter);
+
+# New Civilized Settings structure (To do: update old stuff below)
+my (%Config);
+$Config{'Volume'} 	= fnConfigGet ("dronetv.volume");
+# If running, duck volume:
+$Config{'DuckProcess'} 	= fnConfigGet ("dronetv.ducktest");
+$Config{'DuckVolume'} 	= fnConfigGet ("dronetv.duckvolume");
+# 1-in-X chance of "wandering" to similar sounds
+$Config{'WanderDie'} 	= fnConfigGet ("dronetv.wander");
+# At what system load do we rest
+$Config{'RestLoad'} 	= fnConfigGet ("dronetv.restload");
+# Top X Freesound results used
+$Config{'SearchDepth'} 	= fnConfigGet ("dronetv.searchdepth");
+
+# Old Fashioned Settings (move all to %Config)
+my $RestLoad = $Config{'RestLoad'};  # Fix backwards compat kludge
+my $SearchDepth = $Config{'SearchDepth'}; 
+my $PlayOverlap = fnConfigGet ("dronetv.overlap"); # pct overlap sample play
+my $MinLen=4; my $MaxLen=220;   # Len limits of samples
+my $CreditsOut = "panels/credits.html"; # New creds outfile
+my $ConfigRefresh = 5;          # How often (cycles) to re-read cfgs
+# Template for creds records
+my $CreditsHTML = "\n<tr><td>_ID_</td><td>_AUTHOR_</td><td>_LEN_</td><td>_KEYWORD_</td></tr>";
+
+# System commands
+my $Uptime = `uptime | cut --delimiter=\" \" --fields=12`;
+$Uptime =~ s/\,//g;
+my $Get="/usr/bin/curl --silent -o -";
+my $Token = fnConfigGet ("dronetv.freesoundtoken"); # Old way
+$Config{'Token'} = $Token;                          # New way
+my $Format=`cat format.txt`;    # No err check
+my $Remixes = "remixes";	# Where remixes go
+my $Banlist = `cat banlist.txt`; chomp ($Banlist);
+my $RunCount = -1;		# -1 forever
+my $CycleCount = 0;             # For periodic events
+# Workaround forces run-once requests to post to chat, tho not 100 pct accurate
+my $CredsBuffer;
+my $Request = 0;		# If was a user request
+my ($Selected, $SoundLength, $Keyword, $SoundAuthor, $SoundCached);
+
+# Sound player command with fields
+# my $Player="/usr/bin/play -V0 -q "
+my $Player = "/usr/bin/play -V0 -q "
+  . " --volume _VOLUME_ "      # Volume (isnt it 1 by default?)
+  # ." --buffer 256 "    # Increase process buffer, default 8192
+  . "\"cache/_SOUNDID_.ogg\" "             # Filename
+  # . " fade _FIN_ _RIDE_ _FOUT_ "  # Docs say here but I prefer at end!
+  . " rate -l"            # -m or -h or -l quality
+  # Heavy load?
+  . " _OOPS_ "          # out-of-phase aka Karaoke, present or not 
+  . " _CHORUS_ "        # Basically a super short delay phase shifted
+  . " contrast 0.9 "     # Compare to gain
+  # . " silence 1 1 1 "  # Broken? trim front/back silence
+  # Reverse disabled till load decreased
+  . " _REVERSE_ "         # either present or not (INSANE)
+  # Disabled for perf/overlap with echoes
+  . " _ECHOPARMS_ "       # Actually its the delay effect
+  . " _ECHOES_ "          # The actual echo effect not delay
+  . " _REVERB_ "          # Either on or off
+  . " _PHASER_ "          # Phaser either on or off
+  # . " _TREMOLO_ "         # LFO filter
+  . " repeat _REPEATS_ "  # Range 0 (one play) to N
+  . " lowpass _FILTER_ "	 # Low-pass filter default 2-pole, hz
+  . " fade _FIN_ _RIDE_ _FOUT_ "  # Was here but per dox moved up
+  # Bend disabled - brutally tanks CPU?
+  #  ." _BENDPARMS_ "       # Lo rez/parms at runtime VERY expensive
+  . " _SPEED_ "           # Speed effect if present
+  ." ";
+
+# Freesound API and search strings
+# -----------------------------------------------------
+my $Host="http://www.freesound.org/apiv2";
+# Ware the escaping
+my $Search="search/text/?query=_KEYWORD_&token=$Token"
+  ."&page_size=$SearchDepth"     # Hardwired results size (og was 150)
+  ."&filter=duration:\\[$MinLen\%20TO\%20$MaxLen\\]";
+my $Download="$Get \"_AUDIOURL_\" > cache/_SOUNDID_.ogg";
+
+# Info w/some analysis for later similarity matches
+my $Info="sounds/_SOUNDID_/?descriptors=lowlevel.pitch.mean,rhythm.bpm,lowlevel.average_loudness"
+  . "&token=$Token";
+my $Touch="/usr/bin/touch ";	# filename wll be appended
+my %Listings;                   # Search listing cache
+
+# When populated, Next (a sound ID) played instead of random selection
+my $Next = "";
+
+# Standby: A rolling list of high-rated known-cached files
+# to be played while waiting on high loads
+my (@Standby);
+my $Rests = 0;	# Tracks rested cycles
+
+# Get single-instance field from Freesound details
+# ------------------------------------------------------
+sub fnField {
+  my $field = shift (@_);
+  my $data = shift (@_); 
+  $match = "none";
+  $match = $1 if (
+    $data =~ /\"$field\"\:\s*\"*([^\\\"]+)\"*(\,|\n|\})/
+  );
+  return ($match);
+}
+
+# Cache a set of keyword query results to disk
+# ------------------------------------------------------
+sub fnCacheWrite {
+  my $word = shift (@_);
+  my $data = shift (@_);
+  open (OUT, ">cache/$word.cache")
+    or die ("\nFatal: Can't write cache/$word.cache .\n");
+  print (OUT $data);
+  close (OUT);
+}
+
+# Read a cache
+# ------------------------------------------------------
+sub fnCacheRead {
+  my $word = shift (@_);
+  open (IN, "<cache/$word.cache")
+    or die ("\nFatal: Can't read cache/$word.cache.\n");
+  my $data = <IN>;
+  close (IN);
+  $ignored = `$Touch cache/$word.cache`; # For crude cache expiry
+  return ($data);
+}
+
+# Sound player 
+# ------------------------------------------------------
+sub fnPlay {
+  my $cmd = shift (@_);
+  open (PLAY, "|/bin/sh|")
+    or die ("\nFatal: Can't open player with $Player\n");
+  # print (PLAY "$cmd \&");
+  # print (PLAY "$cmd 2> $0-debug.log \&");  # with stderr mute
+  print (PLAY "$cmd \&");
+  close (PLAY);
+}
+
+# Grok keywords 
+# ------------------------------------------------------
+sub fnKeywords {
+  # Start with default keywords
+  @Keywords = split (/\s+/, $DefaultKeywords);
+
+  # Append contents of 'keywords.txt' if exists
+  # New: Overwrite, don't append
+  if (-r "keywords.txt") { 
+    $raw = `cat keywords.txt`; 	# Brutal
+    @Keywords = split (/\n+|\s+|\,/, $raw);
+  }
+
+  # 20161014 Remove all symbol content except hyphens
+  # allows simply pasting freesound urls directly into files
+  # (still disallowed via chat due to YouTube tho)
+  # grep (@Keywords, s/http//g);  # Just remove them all
+}
+
+# Tell if should run or wait - if beatbot active, high load
+# or whatever. Return -1 if no rest or reason (string)
+# ------------------------------------------------------
+sub fnShouldRest {
+  # Check load: "/average: \d.\d\d/; print $&;
+# BROKEN:
+  my $Load = `$Uptime`; chomp ($Load);
+  $Load =~ s/\,//g;  # Kludge cleanup
+
+  ## DEBUGGING ##
+  print ("Debug: Load is $Load vs. $RestLoad");
+
+  # CPU Load throttle - broken?
+  return ("cpu $Load") if ($Load > $RestLoad); # shunt
+
+  # Insert code: Check if beatbot active
+  return ("beats") if (-f "BeatBot.active");   # shunt
+
+  # Insert code: Check if user request pending
+  
+  # Still here? Good to not rest
+  return (-1);
+}
+
+# Add to fixed standby list, pushing oldest out
+# SoundIDs in list guaranteed cached, hi rated
+# ------------------------------------------------------
+sub fnStandbyAdd {
+  my $argID = shift (@_);
+  # Warning: Fixed list size
+  my $Discard = shift (@Standby) if (scalar(@Standby) > 8);
+  push (@Standby, $argID);
+}
+
+# Simple logger
+# ------------------------------------------------------
+sub fnDebug {
+  my $Out = shift (@_);
+  open (DEBUG, ">>$0.debug")
+    or die ("\nFatal: Cant open debug log $0.debug\n");
+  print (DEBUG "\nDebug: $Out");
+  close (DEBUG);
+}
+
+# Simple (html-ish) creds updater 
+# See $CreditsOut, $CreditsHTML, 
+# ------------------------------------------------------
+sub fnCreditsHTML {
+  $Out = $CreditsHTML;        # Start w/template
+  $Out =~ s/_ID_/$Selected/g; # Replace tokens
+  $Out =~ s/_LEN_/$SoundLength/g;
+  $Out =~ s/_KEYWORD_/$Keyword/g;
+  $Out =~ s/_AUTHOR_/$SoundAuthor/g;
+  # Add later:  $SoundCached, # cache indicator
+  # "$SoundName ($SoundBPM bpm)",   # title plus kludged bpm
+  open (OUT, ">>$CreditsOut");  # NO ERROR CHECK!
+  print (OUT "$Out");
+  close (OUT);
+}
+
+# Mainline
+# ------------------------------------------------------
+fnDebug ("$0 started.");
+
+# Halt immediately if no $Config{'freesountoken'} / $Token !
+if (! length ($Token)) {
+  fnDebug ("Aborting: No config/dronetv.freesoundtoken setting.");
+  fnDebug ("Set API token in config/dronetv.freesoundtoken or via Setup.");
+  print ("\n"."#" x 54);
+  print ("\n# DroneTV Disabled: No Freesound API Token Provided! #");
+  print ("\n# Set config/dronetv.freesoundtoken - See User Guide #");
+  print ("\n"."#" x 54 . "\n\n");
+  exit();			# LITERALLY EXIT
+}
+
+# First digit in argv, if any, treated as runcount
+if (grep (/\d/, @ARGV)) {
+  $RunCount = shift (@ARGV);
+  fnDebug ("RunCount set to $RunCount via args");
+}
+
+# Get (or update) keywords
+fnKeywords();
+
+# New: If "Request" anywhere in args, treat as user request
+# i.e. prioritize, no mods, report to chat
+if (grep(/Request/, @ARGV)) {
+  pop (@ARGV);
+  $Request = 1;
+}
+
+# Append keywords from cmd line if any
+if (grep(s/\=//, @ARGV)) { 
+  @Keywords = @ARGV;       # Override all with =keyword
+} else {                   # Else append all (or none)
+  push (@Keywords, shift (@ARGV)) if (@ARGV);
+
+  # IMPORTANT: Lowercase all keywords!
+  grep ($_ = lc ($_), @Keywords);
+
+  fnDebug ("Keywords appended from args: ".scalar(@Keywords)." total keywords.");
+}
+
+# Make cache dir if no exist
+unless (-d "cache") { `mkdir cache`; };
+
+# Loop either forever, or till RunCount exhausted
+while ($RunCount < 0 or $RunCount > 0) {
+
+  # NEW: Rest a bit if load too high or whatever
+  $Rest = fnShouldRest();
+  if ($Rest != -1) {
+    fnDebug ("Resting because load  $Rest");
+    $Rests++;	# If rested long, play a standby
+    if ($Rests % 10 == 0) {
+      # Set a standby as "Next", skip sleep
+      fnDebug ("Rested too long, playing a standby");
+      $Next = 
+	@Standby[int(rand(scalar(@Standby)))];
+      $Keyword =          # indicate why played
+        "$Next ($Rest)";
+    } else {
+      print ("\rResting because $Rest\...\n");
+      # sleep ($MaxLen / 2);	# Dont sleep long
+      sleep ($MinLen);
+      next;
+    }
+  } else {
+    $Rests = 0;   # Reset rests
+  }
+
+  # If still here, continuing
+  $CycleCount++;
+  $RunCount--;
+  # Kludge: If exceed data type it will wrap to negate and stop!
+  $RunCount = -1 if ($RunCount < -32700);   # Safety margin
+
+  # If time to refresh settings
+  if ($CycleCount % $ConfigRefresh == 0) {
+    $Banlist = `cat banlist.txt`; chomp ($Banlist); # Refresh brutally
+    fnKeywords();         # Currently discards cmd-line additions
+    $Filter = `cat DroneTV.filter`; chomp ($Filter);
+    $Filter = 60 if ($Filter < 60);  # Sanity check filter
+  }
+
+  # Choose a keyword search unless a "next" already set
+  if ($Next eq "") {
+    $KeywordIndex = int(rand(@Keywords));
+    $Keyword = @Keywords[$KeywordIndex];
+    $Query = "$Host/$Search";
+    $Query =~ s/_KEYWORD_/$Keyword/g;
+
+    # Use cached results if found
+    if (-r "cache/$Keyword.cache") {
+      $WasCached = 1;
+      $Listing = fnCacheRead($Keyword); 
+    } else {
+      $WasCached = 0;
+      $Listing = `$Get \"$Query\"`; 
+      fnCacheWrite ($Keyword, $Listing);  # Add to cache
+    }
+
+    # Grok search listing
+    $Sounds = $1 if ($Listing =~ /\"count\"\:\s*(\d+)\,/);
+    @ListingFields = split (/\,/, $Listing);
+    @SoundIDs = grep (/\"id\"\:\s*\d+/, @ListingFields); 
+    @SoundIDs = grep (s/\D+//g, @SoundIDs);
+
+    # Pick a sound ID
+    $Selected = @SoundIDs[int(rand(scalar(@SoundIDs)))]; 
+  }
+
+  # Ignore all that if Next specified (cheesy)
+  unless ($Next eq "") {
+    # print ("\nNote: Next specified as $Next ...");
+    $Selected = $Next;
+    $Next = "";
+  }
+
+  # Use cached sound metadata if found
+  # Temporary API throttle workaround:
+  # If data cache < 88 bytes, it was an API throttle notice
+  # Fetch the latest (assuming situation resolved)
+  $DataCacheFile = "cache/$Selected-data.cache";
+  if ( (stat ($DataCacheFile))[7] > 100  && -r "$DataCacheFile") {
+    $SoundMeta = fnCacheRead("$Selected\-data"); 
+    $SoundCached = "|";		# Indicate was cached
+  } else {
+    # Get the sound metadata record
+    $Query = "$Host/$Info";
+    $Query =~ s/_SOUNDID_/$Selected/g;
+    $SoundMeta = `$Get \"$Query\"`; 
+    fnCacheWrite ("$Selected\-data", $SoundMeta); # Add to cache 
+    $SoundCached = ">";
+  }
+
+  # print ("\nProcessing fields...");
+
+  # Get fields out of raw results
+  # HQ $SoundPreview = fnField ("preview-hq-ogg", $SoundMeta);
+  $SoundID = $Selected;		# Convenience
+  $SoundWaveform = fnField ("waveform_l", $SoundMeta); # Image urls
+  $SoundSpectro = fnField ("spectral_l", $SoundMeta);
+  $SoundPreview = fnField ("preview-lq-ogg", $SoundMeta); # Lo fi
+  # $SoundPreview = fnField ("preview-hq-ogg", $SoundMeta); # Hi fi
+  $SoundAuthor = fnField ("username", $SoundMeta);
+  $SoundName = fnField ("name", $SoundMeta);
+  $SoundDesc = fnField ("description", $SoundMeta);
+  $SoundLength = fnField ("duration", $SoundMeta);
+  $SoundRating = fnField ("avg_rating", $SoundMeta);
+  $SoundLicense = fnField ("license", $SoundMeta);
+  $SoundURL = fnField ("url", $SoundMeta);
+  $SoundSimilar = fnField ("similar_sounds", $SoundMeta);
+  $SoundAnalysis = fnField ("analysis", $SoundMeta);
+  # EXPERIMENTAL new bpm NOTE: Smashed to INT !
+  $SoundBPM = int(fnField ("bpm", $SoundMeta));  
+  $SoundPitchMean = int(fnField ("mean", $SoundMeta));  # VERY sloppy grok
+
+  # Quick cleanup
+  $SoundURL =~ s/http:\/\///gi;
+  $SoundLicense =~ s/http:\/\///gi;
+
+  # New: Stupidly skip if author or ID on banlist
+  # WARNING, a silent eternal loop possible here! FIX !
+  # if ($Banlist =~ /$SoundAuthor/i or $Banlist =~ /$Selected/i) { 
+  if ($Banlist =~ /\n$SoundAuthor\n/mi or $Banlist =~ /\n$Selected\n/mi) { 
+    printf ("\nSkipping banned $SoundAuthor / $Selected");  # For humans
+    fnDebug ("Skipping banned $SoundAuthor / $Selected");
+    next;  # Skip rest of loop
+  }
+
+  # Output Info
+  # Not displayed: $SoundRating $SoundSimilar $SoundAnalysis
+  $Formatted = sprintf ($Format, 
+    $Selected,	  # id
+    $SoundAuthor, # author
+    $SoundLength, # len
+    $SoundCached, # cache indicator
+    $Keyword,     # keyword
+    $SoundRating, # aka stars 
+    "$SoundName ($SoundBPM bpm)",   # title plus kludged bpm
+    $SoundLicense,# license
+    $SoundURL,    # URL
+    $SoundDesc    # desc
+  ); 
+
+  # KLUDGEFIX: No print if empty search results
+  unless ($SoundAuthor eq "none") {
+    print ("\n");   # Breaks trailing display
+    print ($Formatted);
+    print ("\n\n");	# Make 10 lines high
+  } else {
+    fnDebug ("Error: Empty SoundAuthor - no search results for keyword $Keyword query $Query");
+    # If no results and a request, report to chat if no matches found
+    if ($Request == 1) {
+      $Ignored = `/usr/bin/perl ytSinglePost "Sorry, no matches for $Keyword! Try naming things that make sound: Instruments, animals, places - for example cello, lions, arcade, paris, or radio."`;
+      next;
+    }
+  }
+
+  # New: Write median pitch into shared file (not critical)
+  unless ($TempUrl eq "none") {
+    open (PITCH, ">$0.pitch") 
+      or print (
+        "\nWarning: Cant write to pitch file $0.pitch\n");
+    print (PITCH $SoundPitchMean);
+    close (PITCH);
+  }
+
+  # New: Spawn a chat message post w/creds
+  # Temporary: Only half the time, it's spammy.
+  # New: Batch-up creds, post two per message
+  $TempURL = $SoundURL; $TempURL =~ s/www\.//g;  # Cleanup for post
+
+  # Kludgefix: If Author/url unset, there were no search matches
+  # Shim-in a message for the chat, overwriting PostMsg
+  # unless ($TempUrl =~ "/none/") {
+  unless ($TempUrl =~ "/none/i") {
+    $PostMsg = ucfirst($Keyword)
+      . "/$SoundAuthor " . "http://" . $TempURL;
+    # Kludge: If request (or last run) post to channel as well
+    if ($Request == 1) {
+      $Ignored = `/usr/bin/perl ytSinglePost "Request! $PostMsg"`;
+    }
+
+    # Creds usually written to file instead of chat
+    if (length($CredsBuffer)) {
+      open (CREDS, ">>$0.creds");  # or ignore
+      print (CREDS "\n$CredsBuffer $PostMsg");
+      close (CREDS);
+
+      # Newer: HTMLish creds to new location
+      fnCreditsHTML();
+
+      $CredsBuffer = "";  # Reset
+    } else {
+      # Starts new accumulate, don't output
+      $CredsBuffer = ucfirst($Keyword)
+        . "/$SoundAuthor " . "http://" . $TempURL . "\n";
+    }
+  } 
+
+  # Crude audio cache
+  if (-r "cache/$Selected.ogg") {
+    # To do: expire old caches. Touch if used so we know.
+    $Ignored = `$Touch cache/$Selected.ogg`;
+  } else {        # BruteCache (tm)
+    fnDebug ("BruteCaching(tm) $Selected");
+    $Query = $Download;
+    $Query =~ s/_AUDIOURL_/$SoundPreview/g;
+    $Query =~ s/_SOUNDID_/$Selected/g;
+    $SoundMeta = `$Query`; 
+  }
+
+  # Set parameters of SOX effects 
+  # -------------------------------------------------
+
+  # Volume: Normally configured, sometimes ducked-out
+  # To do: Detect loud samples, avoid surprises
+  $Volume = $Config{'Volume'};
+  $test = `ps -ef | egrep "$Config{'DuckProcess'}" | egrep -v "grep" | xargs`;
+  if (length($test) > 2) {
+    $Volume = $Config{'DuckVolume'};
+  }
+
+  # Set up fade in/out
+  # NEW: If longer than max, limit 'run' to max
+  $FadeIn = $SoundLength * 0.15;
+  $FadeOut = $SoundLength * 0.30;
+  $FadeIn = 10 if ($FadeIn > 10);
+  $FadeOut = 20 if ($FadeOut > 20);
+  $FadeRide = 0; # Makes ride all remaining len
+  if ($SoundLength > $MaxLen * 1.25) {
+    fnDebug ("Limiting fade run length to something like $MaxLen per settings.");
+    $FadeRide = $MaxLen * 1.25;
+  } 
+
+  # Handle echo or none Update: actually is half-delay
+  # To do: link to detected bpm
+  $EchoParms = " ";			# dumb
+  if (int(rand(6)) == 0) {    
+    $EchoTime = 0.10 + rand(3.3);
+    $EchoParms = " delay $EchoTime ";   # 2nd ch delayed
+  }
+
+  # (RETIRED) Repeats: Shorter samples repeat more, max 45s
+  $Repeats = 0;
+  # $Repeats += int(rand(2)) if ($SoundLength < 18); # If larger, 0 
+  $Repeats += 1 if ($Request == 1); # Loop all requests
+
+  # Apply bends to _BENDPARMS_ unless too short
+  $BendParms = "";
+  $BendTemp = "";
+  # Bends disabled till perf fixed
+  # $Bends = int(rand(2));
+  $Bends = 0;
+  $Bends = 0 if ($SoundLength < 61);
+  # Always bend loops
+  # $Bends = 1 if ($Repeats > 0);  # too much cpu
+  $sections = $SoundLength / 4;
+  for ($i=0; $i < $Bends ; $i++) {
+    $BendDelay = $sections * $i;
+    # Pitch bend. To do: Base on sample tone
+    $BendTime = $sections / 2;      # Boring but safe?
+    $BendCents = -1 * (int(rand(111)) + 222);
+    # Random bend up disabled for bug hunt:
+    # $BendCents *= -1 if (0 == int(rand(3))); # maybe invert
+    $BendTemp .= "$BendDelay,$BendCents,$BendTime ";
+  }
+
+  if ($Bends) {
+    # Parms trade quality for speed
+    $BendParms = "bend -f 12 -o 12 $BendTemp";
+    # $BendParms = "bend $BendTemp";  # Default frame/oversample
+  }
+
+  # Rarely, enable reverse play - kinda cpu expensive too
+  $Reverse = "";   # dumb
+  if (int(rand(16)) == 0) {
+    $Reverse = "reverse";
+  }
+
+  # FX: Echos, actual echo/echos not half delay for cavern effect
+  # Sox syntax: echo gain-in gain-out <delay decay>
+  $Echoes = "";   # dumb
+  if (int(rand(7)) == 0) {
+    $la = 0.05 + rand(0.15); $ra = 0.05 + rand(0.15);
+    $Echoes = " echos "
+      . " " . rand(0.5) + 0.1      # Gain in/out
+      . " " . rand(0.5) + 0.1
+      . " " . 20 + rand(300)      # Delay
+      . " " . 20 + rand(300);     # Decay
+    # DEBUG: OVERWRITE WITH OG SYNTAX
+    $Echoes = " echos 0.8 0.7 $EchoTime $la $EchoAsym $ra";
+  }
+
+  # FX: Reverb is common
+  $Reverb = "";  
+  if (int(rand(3)) == 0) {
+    $reverb = " reverb ";  # Default, no parms
+  }
+
+  # FX: Chorus
+  # OG parms " chorus 0.7 0.9 55 0.4 0.25 2 -t ";
+  # Sox syntax: 
+  #  chorus gain-in gain-out <delay decay speed depth -s|-t>
+  $Chorus = "";   # dumb
+  if (int(rand(1)) == 1337) {   # DEBUG: DISABLED
+    $Chorus = " chorus "
+      . " " . rand(0.90) + 0.2  # Gain in/out
+      . " " . rand(0.90) + 0.2
+      . " " . rand(55) + 11     # Delay
+      . " " . rand(0.70) + 0.3  # Decay
+      . " " . rand(0.70) + 0.2  # Speed
+      . " " . rand(0.50) + 0.1  # Depth
+      . " -t ";                 # Triangular
+  }
+
+  # FX: Out-of-Phase aka Karaoke
+  $Oops = "";
+  if (int(rand(16)) == 0) { $Oops = " oops "; }
+
+  # FX: Phaser  (to do, sync to X)
+  # Sox Syntax: phaser gain-in gain-out delay decay speed -t
+  # OG parms: . "0.89 0.85 3 0.24 2"
+  $Phaser = "";   # dumb
+  if (int(rand(1)) == 1337) {       # DEBUG: DISABLED
+    $Phaser = " phaser " 
+      . " " . rand(0.90) + 0.1   # Gain in/out
+      . " " . rand(0.90) + 0.1
+      . " " . rand (5)           # Delay time
+      . " " . rand(0.4)          # Decay
+      . " " . rand(3)            # Speed
+      . " -t ";                  # Triangular (end)
+  }
+
+  # TX: Tremolo (to do, sync to BPM)
+  $Tremolo = "";   # dumb
+  if (int(rand(16)) == 0) {
+    $Tremolo = " tremolo "
+       . " " . rand(4) + 3        # Rate
+       . " " . rand(30) + 1;      # Depth
+  }
+
+  # Most common, speed effect (slow only, never w/bends) 
+  $Speed = "";   # dumb
+  # if ($Bends < 1 && int(rand(2)) == 0) {
+  if (int(rand(2)) == 0) {
+    $s = rand(0.70) + 0.50;  # Range 
+    $Speed = " speed $s ";
+    # Even more rare, a fixed super slow rate
+    if (int(rand(5)) == 0) {
+      $Speed = "speed 0.40 ";
+    }
+  }
+
+  # If request (RunCount 0), defeat most effects
+  # Thanks to FILM4LD4N for feature request!
+  if ($Request == 1) {
+    $Speed = " speed 1.0 ";       # FX
+  }
+
+  # Replace tokens in play syntax
+  $Play = $Player; 
+  $Play =~ s/_SOUNDID_/$Selected/g;
+  $Play =~ s/_VOLUME_/$Volume/g;
+  $Play =~ s/_FIN_/$FadeIn/g;
+  $Play =~ s/_RIDE_/$FadeRide/g;
+  $Play =~ s/_FOUT_/$FadeOut/g;
+  $Play =~ s/_FILTER_/$Filter/g;
+  $Play =~ s/_REPEATS_/$Repeats/g;
+  $Play =~ s/_SPEED_/$Speed/g;
+  $Play =~ s/_OOPS_/$Oops/g;  
+  $Play =~ s/_CHORUS_/$Chorus/g;  
+  $Play =~ s/_PHASER_/$Phaser/g;  
+  $Play =~ s/_TREMOLO_/$Tremolo/g;  
+  $Play =~ s/_REVERSE_/$Reverse/g;
+  $Play =~ s/_ECHOES_/$Echoes/g;
+  $Play =~ s/_ECHOPARMS_/$EchoParms/g;
+  $Play =~ s/_REVERB_/$Reverb/g;    # Note defeats echos
+  # $Play =~ s/_BENDPARMS_/$BendParms/g; # Disabled 
+
+  # Finally play sound - no longer checking length
+  # as we're using FadeRun to limit played length anyways
+  fnPlay ($Play);
+  fnDebug ("$Play");
+
+  # Wait for 1/Xth length of the audio
+  $SleepTime = int ($SoundLength * $PlayOverlap);
+  sleep ($SleepTime);
+
+  # FOLLOW: Choose a related sound to play next
+  # IF rating high enough - and lucky
+  # MOSTLY duped in main logic, fix that
+
+if ($SoundRating > 3.2 && int(rand($Config{'WanderDie'})) == 0) {
+    fnDebug ("Following similarities for $Selected");
+    # Fetch 'similar' URL
+    # Related: &descriptors_filter=.lowlevel.pitch.mean:[90 TO 110]
+    # Broken? Still returns long ones
+    $turl = "http://www.freesound.org/apiv2/sounds/$SoundID/similar/?token=$Token"
+      ."&filter=duration:\\[$MinLen\%20TO\%20$MaxLen\\]"; 
+    $SimilarRaw = `$Get \"$turl\"`; 
+
+    # Grok IDs from it, pick one
+    @ListingFields = split (/\,/, $SimilarRaw);
+    @SoundIDs = grep (/\"id\"\:\s*\d+/, @ListingFields); 
+    @SoundIDs = grep (s/\D+//g, @SoundIDs);
+
+    # Cancel this, on empty results (none similar)
+    next if (scalar(@ListingFields < 1));
+
+    # Pick one
+    $Selected = @SoundIDs[int(rand(scalar(@SoundIDs)))]; 
+    $Next = $Selected;
+
+    # Kludge: "keyword" to reflect the "follow"
+    $Keyword = "Followed from $SoundID";  # current, not next, id
+
+}
+  # Remix: If high rating, long enough, becomes latest remix source
+  # New: Also added to standby list
+  fnStandbyAdd ($SoundID) if ($SoundRating > 2.3);
+  # New: Remix disabled but image urls saved for displays
+  open (OUT, ">DroneTV.waveform");
+  print (OUT $SoundWaveform);  # Its a URL
+  close (OUT);
+  open (OUT, ">DroneTV.spectro");
+  print (OUT $SoundSpectro);  # Its a URL
+  close (OUT);
+
+  # BPM: Possibly update the global bpm file
+  $SoundBPM =~ s/\D+//g;  # Superfluous?
+  if ($SoundBPM > 20 && $SoundBPM < 220) {
+    $Ignored = `echo $SoundBPM > beatbot.bpm`;
+  }
+
+}    # End while
+
+fnDebug ("Quitting - RunCount $RunCount"); # Fin
+

@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# StageGhost/DronesoundTV
+# Delete a YouTube chat message by the messageid, from the channel
+# identified in config/*.youtubeoauthtoken
+# 2016 @diemastermonkey / @garyd
+# Requires Cpanel::JSON::XS
+# Important: Request is a DELETE (not GET or PUT or POST etc)
+# Also important: DO NOT keep logs, this is a privacy feature
+# ---------------------------------------------------------------
+
+# Required arg 1: Chat Message ID (provided by YT via ChatMessages.List
+my $ChatMessageID = shift (@ARGV)
+  or die ("\n\a$0 <YouTube Chat Message ID>\n"); 
+chomp ($ChatMessageID);
+
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+
+# Setups
+# my $UserInfoCmd = "./ytUserInfo";  # What turns ch id into user data 
+my $Get = "/usr/bin/curl --request DELETE --silent -o -";
+
+# Crudely get latest keys
+my $YTOAuthToken = `cat config/dronetv.youtubeoauthtoken`; chomp ($YTOAuthToken);
+my $YTChannelID = `cat config/dronetv.channelid`; chomp ($YTChannelID);
+my $YTChatID = `cat config/dronetv.livechatid`; chomp ($YTChatID);
+
+# CRUCIAL! 
+# To use in a user context, use access_token parm, NOT key= 
+# No # my $YTMessageDelete = "https://www.googleapis.com/youtube/v3/liveChat/messages?id=$ChatMessageID&key=$YTOAuthToken";
+# Yes:
+my $YTMessageDelete = "https://www.googleapis.com/youtube/v3/liveChat/messages?id=$ChatMessageID&access_token=$YTOAuthToken";
+
+# Main
+# --------------------------------------------------------
+my $Response = `$Get "$YTMessageDelete"`;  # Quotes very important
+
+# Insert error checking 
+print $Response;
+
+# Debug log
+open (OUT, ">$0.log") or die;
+print (OUT "\n$0: Called to delete $ChatMessageID");
+print (OUT "\n$0: Complete call: $YTMessageDelete");
+print (OUT "\n$0: Response: $Response");
+close (OUT);
+
+# Fin

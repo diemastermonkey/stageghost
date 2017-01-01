@@ -1,0 +1,15 @@
+#!/bin/sh
+while (true); 
+  do 
+  ./DroneTV 15 &>> log.txt & 
+  ./DroneTV 30 >> log.txt  
+  # Rest, looping till no play instances
+  # Running=`ps | grep play`
+  # while (test -n "$Running");
+  # do
+  #   echo "Resting..."
+  #   sleep 0.5
+  #   Running=`ps | grep play`
+  # done
+  # echo "Resuming..."
+done

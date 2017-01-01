@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+# Select and spit-out one random file from images, as ansi
+$images = `ls -1 images/*`;
+@all = split (/\n/, $images);
+$r = int(rand(scalar(@all)));
+$image = @all[$r];
+
+# Hardwired call to ansiPhoto
+print (`./ansiPhoto $image`);

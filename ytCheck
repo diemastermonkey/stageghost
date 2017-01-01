@@ -1,0 +1,359 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# DroneTV: YouTube Chat Conduit  - 2016 @diemastermonkey / @garyd
+# Requires Cpanel::JSON::XS
+# 
+# Retrieves latest 'page' of chat messages from designated channel's
+# live stream. Fails alot. Leaves you to figure everything else out.
+# ---------------------------------------------------------------
+
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+
+# Simple, cheap, safe config file reader
+#   $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+  # Remove comments, blanks, limit to single line of data
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+  return ($out);
+}
+
+# Setups
+my $Player = "./DroneTV";          # What plays requests
+# Do NOT use fnConfigGet for expletives, it breaks them
+my $ExpletiveList = `cat config/dronetv.expletives`; chomp ($Expletives);
+@Expletives = split (/\n/, $ExpletiveList);
+my $BanCmd = "perl ytCheapBan";	# Append targets channel ID
+my $UserInfoCmd = "./ytUserInfo";  # What turns ch id into user data 
+my $MessageDelete = "./ytMessageDelete";  # What turns ch id into user data 
+
+# All executable files in ./commands are chat-accessible commands
+# New, supports symlink 'aliases' for commands  (move later, may not be needed)
+my $CommandDir = "commands/";
+# All executible files and links
+my @AllCommands = `find -H $CommandDir/ -executable -type f`;
+push (@AllCommands, `find -H $CommandDir/ -executable -type l`);
+grep (s/$CommandDir//g, @AllCommands);   # Cleanup
+grep (s/\///g, @AllCommands);   # Cleanup
+
+# Regular user cmds start w/alpha, sub-only cmds w/dots
+my @Commands = grep (/^\w/, @AllCommands);
+# Append SubCommands only if user is a sub!
+my @SubCommands = grep (/^\./, @AllCommands);
+
+my $Get = "/usr/bin/curl --silent -o -";
+# Alternate # my $Get = "/usr/bin/GET"; 
+
+# Get latest keys, ids, etc
+my $YTChannelID = fnConfigGet ("dronetv.channelid");
+my $YTChatID = fnConfigGet ("dronetv.livechatid");
+# New? Alt via user Oauth token in access_token= instead
+my $YTOAuthToken = fnConfigGet ("dronetv.youtubeoauthtoken");
+
+# About message in process
+my $msgid, $msgtype, $msgtext, $msgtimestamp;
+my $msgauthorchannel;
+my $MsgAuthorName = "Unknown";
+
+my $Subscriber = -1;		# Assume speaker not sub
+my $Invisible = -1;		# If true, invisibility feature in use
+
+# Crudely get list of processed msgids
+my @Processed = split (/\n/, `cat $0.processed`);
+
+# API Urls crudely hard/template-coded
+# Search for given ch ID (not the right way)
+# Live Broadcasts method returns livechat ID (sheesh)
+# We should get it from results, but just haradwired below for test
+# Messages method finally returns chat info, given chat ID 
+# which we MUST retrieve each time to be safe
+
+# Limit to 200 in response, saves 300 responses
+# Via Oauth token:
+my $YTChat = "https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&liveChatId=$YTChatID&maxResults=200&access_token=$YTOAuthToken";
+
+# Sound player function
+# ------------------------------------------------------
+sub fnPlay {
+  my $cmd = shift (@_);
+  open (PLAY, "|/bin/sh|")
+    or die ("\nFatal: Can't open player with $Player\n");
+  print (PLAY "$cmd \&");
+  close (PLAY);
+}
+
+# Handle new user (should be in UserNewSetup or something)
+# --------------------------------------------------------
+sub fnUserNew {
+  # Crudely add to new users list
+  $ignored = `echo \"$msgauthorchannel\" >> $0.users`;
+
+  # NEW: Set welcome theme - and maybe a job to reinstate other theme after?
+  # `echo ".welcome" > PanelServer.theme`; 
+
+  # TO DO: Spawn job to get their properties ie mod sub etc
+  #
+  # print "\nDEBUG: $UserInfoCmd $msgauthorchannel \n"; 
+  # $MsgAuthorName = `$UserInfoCmd $msgauthorchannel`; chomp ($MsgAuthorName);
+  $MsgAuthorName = `./ytUserInfo $msgauthorchannel`; chomp ($MsgAuthorName);
+  # $MsgAuthorName = "Unknown" if (length($MsgAuthorName) < 5);
+}
+
+# Simple logger
+# ------------------------------------------------------
+sub fnDebug {
+  my $Out = shift (@_);
+  open (DEBUG, ">>$0.debug")
+    or die ("\nFatal: Cant open debug log $0.debug\n");
+  print (DEBUG "\n$Out");
+  close (DEBUG);
+}
+
+# Main
+# --------------------------------------------------------
+my $RawChat = `$Get "$YTChat"`;
+
+open (RAW, ">$0-raw.txt");	# DEBUG
+print (RAW $RawChat);
+close (RAW);
+
+# INSERT ERROR CHECKING HERE LIKE FOR UH REQUEST PI DUH
+
+my $decoded = decode_json $RawChat;
+ 
+# Simply iterate all items ignoring what we don't need
+# My goodness this is gross do something
+#
+$items = $$decoded{'items'};
+foreach $item (@$items) {
+  $snipdataref = $$item{'snippet'};
+
+  $itemid = $$item{'id'};
+  push (@IDs, $itemid);
+
+  $msgid = $itemid;
+  $msgtype = $$snipdataref{'type'};
+  $msgtext = $$snipdataref{'displayMessage'};
+  $msgtimestamp = $$snipdataref{'publishedAt'};
+  $msgauthorchannel = $$snipdataref{'authorChannelId'};
+
+  # Skip if already processed
+  if (grep (/$msgid/, @Processed)) {
+    next;
+  }
+
+  # Write to tracking file, will be handled on way or other
+  open (OUT, ">>$0.processed");
+  print (OUT "\n$msgid");
+  close (OUT);
+
+  # Skip all messages from self (Retired: ytSinglePost now tracks to processed)
+  # next if ($msgauthorchannel =~ /$YTChannelID/i);
+
+  # Check their subscriber status, append sub-only commands if so
+  if (-f "users/$msgauthorchannel\.sub") {
+    $Subscriber = 1;
+    push (@Commands, @SubCommands);     # Append sub-only commands
+    fnDebug ("Extended command set for subscriber: ".join (/ /, @Commands));
+    fnDebug ("...because users/$msgauthorchannel.sub exists.");
+  }
+
+  # As soon as name/image known, touch files for 
+  # external tools that use freshness for displays
+  `touch users/$msgauthorchannel.name`;
+  `touch users/$msgauthorchannel.jpg`;
+
+  # Find request syntax or skip to next msg
+  $_ = $msgtext;   # keep original
+  # Censor stupid things (or not, retired)
+  # s/ nothing | a | the | and | or | if | is | i | are | on | these | this / /ig;
+  s/\|//g;	# Rampant paranoia filters
+  s/\\//g;
+  # s/\///g;    # to allow urls
+  s/\(|\)//g;
+  # to allow urls # s/\://g;     # space more polite
+  s/\$|\;|\?|\`|\"|\%|\^|\&|\*|\!|\'|\<|\>//g;
+  $msgtext = $_;
+  fnDebug ("Debug: MsgText is $msgtext");
+
+  # New: Check for expletives, ban/drop before commands
+  if (grep($msgtext =~ /\b$_\b/i, @Expletives)) {
+    # Ban them!
+    $Result = `$BanCmd $msgauthorchannel`;
+    print ("[DroneBot] $msgauthorchannel temporarily banned for language.");
+    fnDebug ("$msgauthorchannel temporarily banned for language.");
+    exit;   # SHUNT
+  }
+
+  # Checks retired, all users run through ytUserInfo
+  # Which has own local cache handling
+  fnUserNew();   # Not necessarily 'new' see notes
+
+  # Handle "disappearing ink" (ex: "- this message disappears")
+  # If char 0 is "MuteCmd" we also delete their 
+  # message now,  we're done with it. All other processing continues
+  my $MuteCmd = "- ";             # Change if desired 
+  # if (($msgtext =~ s/^$MuteCmd//) && $Subscriber == 1) {
+  # 20161211 DEBUG: Open to all users!
+  $Invisible = 0;
+  if (($msgtext =~ s/^$MuteCmd//)) {
+    # Simply pass ID of message to delete to deleter
+    $Ignored = `$MessageDelete $msgid`;  
+    $Invisible = 1;
+  } 
+
+  # Log chat data for banbot, others whether keywords or not
+  $LogEntry = "\nytChat: msgtype=$msgtype "
+    . "msgid=$msgid "
+    . "msgauthorchannel=$msgauthorchannel " # Ch id
+    . "MsgAuthorName=$MsgAuthorName "
+    . "msgtext=$msgtext";
+
+  # Log unless it is 'disappearing ink'
+  unless ($Invisible)  {
+    open (LOG, ">> $0-chat.log")
+      or die ("\nCannot write log file $0-chat.log\n$0\n\n");
+    print (LOG $LogEntry);
+    close (LOG);
+  }
+
+  # General Purpose Command system
+  # Act as conduit if found in @Commands (shunts)
+  fnDebug ("All commands: ".join (" ", @Commands));
+  # Split into cmd/arg - update 20160909: Permit up to 2 args
+  ($Command, $Arg) = split (/\s+/, $msgtext, 3); # Split into cmd/arg
+  # For v3 commands, which accept entire string as argument
+  $AllArgs = $msgtext; 
+  $AllArgs =~ s/$Command//;  # Remove only 1st command word
+
+  if (grep (/^$Command$/i, @Commands)) {
+    # Commands accepted in any but all lc
+    $Command = lc($Command);
+    # Convenience cleanup on arg, tolerate people posting urls
+    # $Arg = lc ($Arg);  # 20160904 DISABLED breaks URL ARGS!
+    $Arg =~ s/http:\/\/.*\///g;
+    fnDebug ("Command $Command Arg $Arg \n ");
+
+    # NEW: These commands get you on the showcase display
+    if ($Command =~ /drone|mix|theme|shout|bg|sing|bling|mood|sub/) {
+      $ignored = `cp users/$msgauthorchannel\.jpg panels/requestor.jpg`;  # new path
+      $ignored = `cp users/$msgauthorchannel\.jpg requestor.jpg`;
+      $ignored = `cp users/$msgauthorchannel\.name panels/requestor.name`;  # new path
+      $ignored = `cp users/$msgauthorchannel\.name requestor.name`;
+      $ignored = `echo "$msgauthorchannel" > panels/requestor.id`;  # new path
+      $ignored = `echo "$msgauthorchannel" > requestor.id`;  # old path (retire)
+    } 
+
+    # If a NEW V2 command, script expects APPENDED msgauthorch
+    # Temporary till all commands accept or ignore 2nd arg
+    if ($Command =~ /theme|style|shout|sub|songs|bg/) {
+      $Arg .= " $msgauthorchannel";  # Simply appends arg
+      fnDebug ("New V2 command $Command , appending $msgauthorchannel");
+    }
+
+    # V3 Commands: Accept all args, appends msgauthorch
+    if ($Command =~ /title|note/) {
+      # Multi-word AllArgs should be quoted
+      $Arg = "\"" . $AllArgs . "\"";
+      $Arg .= " $msgauthorchannel";  # Simply appends arg
+      fnDebug ("New V3 command $Command , Args with msgauthor is $Arg");
+    }
+
+    fnDebug ("Executing $Command $Arg ...");
+
+    # Onboard command found - run it
+    $Output = `$CommandDir/$Command $Arg`; chomp ($Output);
+    # Crudely return output to chat
+    if ($Output) {
+      $Ignored = `perl ytSinglePost "$Output"`;  # DEBUG TRAILING CHAR
+    }
+    exit;			# SHUNT
+  }
+
+  # NEW Command: Sound ban, handle then brutally exit
+  # TO DO : Restrict to owner! ##
+  $keyword = ""; #lame
+  if (/Ban ([\w\d\-]+)/i) {
+    $keyword = $&;
+    $keyword =~ s/^ban //i;
+    # Inform, crudely exit
+    print ("\nDronebot: Banning $keyword");
+    print (`/usr/bin/perl ban $keyword`);
+    print ("\n");
+    # Kludge: update processed file (wont reach below)
+    # $ignored = `echo \"$msgid\" >> $0.processed`;   
+    # And toss in a verbal warning
+    # $ignored = `echo "Ban hammer!" | /usr/bin/festival --tts`;
+    exit;
+  }
+
+    # Drone commands: Only word after remains
+    $_ = $msgtext;   # keep original
+    $keyword = ""; #lame
+    if (/^drone ([\w\d\-]+)/i) {
+      $keyword = $&;
+      $keyword =~ s/^drone //i;
+      $Ignored = `perl ytSinglePost "[Dronebot] Thank you for your request! Let me see what I can find about $keyword on Freesound..."`;
+    }  else {
+      # Else nothing left for you go TO NEXT
+      # NOTE: May want to limit this to X max un-request processed per run
+      # exit;
+      next;
+    }
+
+  # If still here you have a keyword
+  # Output MUST equal 10 lines or more!
+  # print ("\n$msgtimestamp Request from $msgauthorchannel for $keyword\n");
+
+  # Also, append to request log
+  $Ignored = `echo DroneBot: $msgtimestamp request from $msgauthorchannel for $keyword >> $0.log`;
+
+  # Also, update data files used by Panel system
+  # $ignored = `echo \"Drone<br>$keyword\" > PanelServerNotice.txt`;   
+  $notice = "<div><br>$keyword</div>";
+  open (OUT, ">PanelServerNotice.html");
+  print (OUT $notice);
+  close (OUT);
+
+  # And the requestor's profile pic - and name
+  # TO DO: Stand-in if image not found
+  $ignored = `cp users/$msgauthorchannel\.jpg requestor.jpg`;
+  $ignored = `cp users/$msgauthorchannel\.name requestor.name`;
+
+
+  # For now, just tick-out to perl/sm - up to X runs
+  $runs = 1;  # Retired:  + int(rand(2));
+
+  # Actually play drone request
+  # Note: Passes magic 3rd arg, indicating a user request
+  # print ("\nCmd: perl sonicmonkeypi $runs =$keyword ");
+  fnPlay ("$Player $runs =$keyword Request >> log.txt ");
+
+  # NEW: Spawn GPIO flasher for this request
+  $Ignored = `/usr/bin/perl uiFlashRequestsOnce &`;
+
+  # Disabled: Fancy shoutout w/profile pic
+  # $UserChannelName = `./ytUserInfo $msgauthorchannel`;
+  # chomp ($UserChannelName);
+  # If username exists, pic should exist
+  # LAZY username fix
+  # $UserChannelName = `cat users/$msgauthorchannel.name`;
+  # open (SHOUT, ">$0-shoutout.ans");		# No err check
+  # print (SHOUT "SHOUT OUT to $UserChannelName for requesting $keyword\n");
+  # print (SHOUT `./ansiUser users/$msgauthorchannel.jpg | sed "s/^/ /"`);
+  # close (SHOUT);
+
+  # Disabled: Mandatory throttle
+  # print ("\nResting...");
+  # `sleep 0.5`;
+  
+}
+# Fin

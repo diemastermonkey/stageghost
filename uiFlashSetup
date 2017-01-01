@@ -1,0 +1,23 @@
+echo
+echo "* Run this as root!"
+
+echo "Echo GPIO number to exports..."
+echo "Input on GPIO 24 aka Pin 18..."
+echo "24" > /sys/class/gpio/export
+echo "in" > /sys/class/gpio/gpio24/direction
+
+echo "Output on GPIO 21 aka Pin 40..."
+echo "21" > /sys/class/gpio/export
+echo "out" > /sys/class/gpio/gpio21/direction
+sleep 1 
+
+echo "Output on GPIO 13 aka Pin 33..."
+echo "13" > /sys/class/gpio/export
+echo "out" > /sys/class/gpio/gpio13/direction
+sleep 1 
+
+# Example usage
+echo "0" > /sys/class/gpio/gpio21/value; 
+echo "1" > /sys/class/gpio/gpio21/value;
+sleep 4; 
+echo "0" > /sys/class/gpio/gpio21/value; 

@@ -1,0 +1,12 @@
+#!/usr/bin/perl
+# Pick a random file from path
+# New: Optional 2nd arg is a regex pre-applied to results
+# Usage: randomFile images/
+# Usage: randomFile images/ sky
+my $Path = shift (@ARGV); chomp ($Path);
+my @Files = `ls -b $Path`;
+if (@ARGV) {
+  my $Regex = shift (@ARGV); chomp ($Regex);
+  @Files = grep (/$Regex/i, @Files);
+}
+print ($Path.@Files[rand(@Files)]);

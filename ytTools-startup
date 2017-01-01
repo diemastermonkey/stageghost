@@ -1,0 +1,27 @@
+#!/bin/sh
+# Start only the YouTube tools for DronesoundTV
+# 2016 @garyd @diemastermonkey
+
+# Muy importante
+cd /pub/kits/sonicmonkeypi
+./ytSinglePost "[Dronebot] Starting YT Tools" 
+
+# Start YouTube OAuth Token Maintenance Loop
+cd /pub/kits/sonicmonkeypi
+killall ytRefreshLoop
+# Important! ytRefreshTokens BEFORE start RefreshLoop
+./ytSinglePost "[Dronebot] Oh crap, I am restarting..." 
+./ytRefreshTokens  
+sleep 3
+./ytSinglePost "[Dronebot] Already ready..." 
+./ytRefreshLoop &
+sleep 1
+cd /pub/kits/sonicmonkeypi
+./ytSinglePost "[Dronebot] Hi, its me I am back..." 
+
+# Start YouTube Chat Polling Loop
+cd /pub/kits/sonicmonkeypi
+killall ytCheckLoop ytcl .ytcl ytCheck
+killall commands/.ytcl
+sleep 6
+./ytCheckLoop

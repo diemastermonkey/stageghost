@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+# Select and spit-out one random file from ads
+$ads = `ls -1 station_ids/*.txt`;
+@all = split (/\n/, $ads);
+$r = int(rand(scalar(@all)));
+$ad = @all[$r];
+$e = `cat $ad | sed "s/^/ /g;"`;
+print $e;

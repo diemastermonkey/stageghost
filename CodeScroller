@@ -1,0 +1,72 @@
+#!/usr/bin/perl
+# DronesoundTV visual: Scroll a text file around
+# as if browsing it. Picks from hardwired list.
+# For DronesoundTV by @diemastermonkey @garyd
+
+# Hardwired list of files that are randomly scrolled
+my @Files = (
+  "CodeScroller", "ansiAnimation", "ansiScroll",
+  "DroneTV", "ytCheapBan", "PanelServerRefresh",
+  "adPlayer", "synthOnboard",
+  "keywords.txt",
+  "ytUserSubscribe", "ytCheapBan",
+  "commands/cool", "commands/sing", "commands/bling",
+  "commands/mix", "commands/media", "commands/shoutout",
+  "commands/commands", "commands/sub", "commands/mood", "commands/theme",
+  "commands/note", "commands/rspls",
+  "cgi-bin/setup",
+  "panels/3d-intro.js", "panels/3d-scene.js"
+);
+
+my $Height = 17;       # How many lines in screen
+my $FrameDelay = 0.10; # Base animation speed
+my $BounceDie = 24;     # How often to bounce
+my $Indent = " ";      # Or \t if you want
+
+# Pick random file from list
+my $File = @Files[int(rand(scalar(@Files)))];
+my @Data = `cat $File`;
+foreach (@Data) {
+  $Count++;
+  s/^/$Count /;
+  push (@Temp, $_);
+}
+@Data = @Temp;
+grep (s/^/$Indent/, @Data);
+my $Length = scalar(@Data);
+
+# Number of loops ie how long to play
+my $Loops = scalar(@Frames) * int(rand(60)) + 40;
+my $Dir = +1; # Scroll direction
+# Rand start position IF long file
+my $Pos = 0;
+my $Pos = int(rand($Length - $Height - 1)) if ($Length > $Height);
+my $Dash =  "~" x 48;
+
+while ($Loops--) {
+    # Get subslice of @Data
+    @Temp = @Data;
+    @Slice = splice (@Temp, $Pos, $Height, //);
+    # Display header, slice
+    print (`clear`."$Indent\CodeScroller");
+    print ("\n$Indent"."File: $File");
+    print ("\t\tLine $Pos of $Length");
+    print ("\n$Indent" . $Dash . "\n");
+    print (@Slice);
+    # Move pos, mb bounce
+    $Temp = $Pos + $Dir;
+    if ($Temp < 1 || $Temp > ($Length)) {
+      $Dir *= -1;
+      $Pos += $Dir;
+    } else {
+      $Pos = $Temp;
+    }
+    $Dir *= -1 if (0 == int(rand($BounceDie)));
+    # Rest up to X frame delay
+    $Temp = $FrameDelay + rand ($FrameDelay * 10);
+    `sleep $Temp`;
+}   # Fin
+
+
+
+

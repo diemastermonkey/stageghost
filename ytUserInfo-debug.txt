@@ -1,0 +1,41 @@
+
+Debug: ytusersub syntax: https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=UCZjH51kigOmihjiFqxnCm2w&forChannelId=UCBJjDo7AnKcpO5s9hNs1ngg&maxResults=1&access_token=ya29.CjHGA4ZyFQMVeLoqfrI6tpbWgpE-14x7Y6MDnk8c_Z1dVnE6FYCSgnj4AhMkpYfqs2r1
+Debug: Arg UserChannelID = UCZjH51kigOmihjiFqxnCm2w
+Debug: Raw search response is 
+{
+ "items": [
+  {
+   "snippet": {
+    "title": "Gamer4Dayz",
+    "description": "",
+    "publishedAt": "2015-03-16T20:54:45.000Z",
+    "thumbnails": {
+     "default": {
+      "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s88-c-k-no-mo-rj-c0xffffff/photo.jpg"
+     },
+     "medium": {
+      "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+     },
+     "high": {
+      "url": "https://yt3.ggpht.com/-Ss3c1NS4suE/AAAAAAAAAAI/AAAAAAAAAAA/2SbzdwUOc7U/s240-c-k-no-mo-rj-c0xffffff/photo.jpg"
+     }
+    },
+    "localized": {
+     "title": "Gamer4Dayz",
+     "description": ""
+    }
+   }
+  }
+ ]
+}
+
+Debug: Raw subscriber response is 
+{
+ "kind": "youtube#subscriptionListResponse",
+ "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/wlsF_p95--tSx1V_4NTa8l2_zQs\"",
+ "pageInfo": {
+  "totalResults": 0,
+  "resultsPerPage": 1
+ },
+ "items": []
+}

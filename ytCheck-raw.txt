@@ -1,0 +1,1052 @@
+{
+ "kind": "youtube#liveChatMessageListResponse",
+ "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/GWUrQlIhCSjvv9pXNlG9LNdzk6E\"",
+ "nextPageToken": "GJWq3KOBodECIMTc9smDodEC",
+ "pollingIntervalMillis": 1000,
+ "pageInfo": {
+  "totalResults": 65,
+  "resultsPerPage": 65
+ },
+ "items": [
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/4rEt-z6R54l2k52Q1N4unUPZlVs\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSV91c2ZfcW9ORUNGY3NKVGdvZEkxTURydw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T11:25:07.183Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] I am changing the background, with the BG command.",
+    "textMessageDetails": {
+     "messageText": "[Attract] I am changing the background, with the BG command."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/c3AeLtXYXprZXo51LRtTDFvKI_A\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS2p6aXFEdG9ORUNGUUp3VGdvZGIzTUlnZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T11:35:12.621Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/mike-leghorn/bach-invention-8-in-f-major",
+    "textMessageDetails": {
+     "messageText": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/mike-leghorn/bach-invention-8-in-f-major"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/GevbVx7pLPy97Wn53y9zQyWue7o\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUHZYZzZIdG9ORUNGWXNXVGdvZGRmZ0pqUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T11:35:14.600Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing mike-leghorn...remember stream delay! Props to http://soundcloud.com/mike-leghorn/bach-invention-8-in-f-major",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing mike-leghorn...remember stream delay! Props to http://soundcloud.com/mike-leghorn/bach-invention-8-in-f-major"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/EEoucoiuggFih9p3e4wCuDQlsLo\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSVc0N0ludm9ORUNGWlZpVGdvZGt6QURCdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T11:43:22.856Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Tip] The SUB command is the first fair and easy auto-sub-back bot! It works, trust SUB.",
+    "textMessageDetails": {
+     "messageText": "[Tip] The SUB command is the first fair and easy auto-sub-back bot! It works, trust SUB."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/MB6p_OuAufg_algA0Kjssc688sU\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSWVxaG9QMG9ORUNGWUlWVGdvZFo2WUdMUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:05:30.777Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] Dronebot is bored - I am changing the visual theme to future !",
+    "textMessageDetails": {
+     "messageText": "[Attract] Dronebot is bored - I am changing the visual theme to future !"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/EiUFYu370OJivQdUYTPzLwqawSQ\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT256c29QMG9ORUNGVmZjVGdvZGNXb05ZZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:05:31.508Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] I am changing the background, with the BG command.",
+    "textMessageDetails": {
+     "messageText": "[Attract] I am changing the background, with the BG command."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/5gblsU34r1pLb1clIU7up3OdfLI\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTDZwZ3I3MG9ORUNGWVpMVGdvZFdGQU1LUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:07:34.444Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/sound-caviar/helene-grimaud-ravel-piano-concerto-in-g-adagio",
+    "textMessageDetails": {
+     "messageText": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/sound-caviar/helene-grimaud-ravel-piano-concerto-in-g-adagio"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/FuIpl4YjyZHxr7HG9tTBLUr21d4\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT0s2NWI3MG9ORUNGUVFvVGdvZGVXUU9PQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:07:36.068Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing sound-caviar...remember stream delay! Props to http://soundcloud.com/sound-caviar/helene-grimaud-ravel-piano-concerto-in-g-adagio",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing sound-caviar...remember stream delay! Props to http://soundcloud.com/sound-caviar/helene-grimaud-ravel-piano-concerto-in-g-adagio"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/kXL45aSVvdPLucP11wz-9q0cdx8\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSlRVdG8zNG9ORUNGWUlWVGdvZEw5d01YZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:23:46.283Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Tip] Bot commands dont need to start with a ! or . but you may use them if you like.",
+    "textMessageDetails": {
+     "messageText": "[Tip] Bot commands dont need to start with a ! or . but you may use them if you like."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/fUScmRYyjebAqWJxyrDZNhzFJ9A\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUG5rX3FfNG9ORUNGY2JjVGdvZEItWUQ0dw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:24:58.767Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Happy New Years Everyone",
+    "textMessageDetails": {
+     "messageText": "Title Happy New Years Everyone"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/AKMOX-Fbt7H2-dxcxg6VrTIcbn8\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTF9CckxUNG9ORUNGUUxSVGdvZDRac0hhUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:25:07.905Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Mood quiet",
+    "textMessageDetails": {
+     "messageText": "Mood quiet"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/eEsK04uQ_zgdHTP_lNX6sl7JgYA\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTkNLeGJUNG9ORUNGWXVBVGdvZFo0WUNjdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:25:08.308Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/So-KmUy3G53i5FJSoK6xYJAS0b8\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS3JOOHJiNG9ORUNGZGZSVGdvZERLZ0hOdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:25:13.248Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mood] Mood swing! You will hear the difference gradually, over the next few minutes.",
+    "textMessageDetails": {
+     "messageText": "[Mood] Mood swing! You will hear the difference gradually, over the next few minutes."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/H7UD_1BzmQCt9dAGKEaD7hD7k78\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSnYwNk43NG9ORUNGY0dhVGdvZFg3d01HQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:26:36.975Z",
+    "hasDisplayContent": true,
+    "displayMessage": "filter",
+    "textMessageDetails": {
+     "messageText": "filter"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/B85AeMdzsbITWaZpnlWMMcfJyXU\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSzJuek9MNG9ORUNGWk1DVGdvZDBqUUppZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:26:44.895Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Filter] Adjusts the low-pass filter frequency (currently 3200 hz). Usage: FILTER FrequencyHz",
+    "textMessageDetails": {
+     "messageText": "[Filter] Adjusts the low-pass filter frequency (currently 3200 hz). Usage: FILTER FrequencyHz"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/KaxU_XPOPzZ7ZF9QxuibNMoi8w4\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTDJsOW9iNW9ORUNGWVowVGdvZDNxc0d4Zw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:28:01.081Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Random",
+    "textMessageDetails": {
+     "messageText": "Title Random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/19zeVwikLUpW3iyodR7t_QrKs6Q\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUE9pdTRqNW9ORUNGVkNQVGdvZFUyWU9nZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:28:04.308Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/TCtLwmfS6sZyFnXRQ6H5htoyJFg\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS2VfeGFENW9ORUNGY1N6VGdvZGVJTUJFdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:28:54.807Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Random",
+    "textMessageDetails": {
+     "messageText": "Title Random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/iEKSzOwypq8PYmtOGhq1e7RZSUc\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTy1Eb0tQNW9ORUNGWVRHVGdvZE41c0Q3dw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:29:00.485Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/LklAm8-LHP86gpyztIO69Ry3nhE\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTWpLeGF6NW9ORUNGUU9RVGdvZHM2VUtzZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:29:19.974Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Filter] Low-pass filter adjusted to 1200 hz.",
+    "textMessageDetails": {
+     "messageText": "[Filter] Low-pass filter adjusted to 1200 hz."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/t-GimG3oI5iGF2e7WBs1tiZCqE4\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS3FReWRQNW9ORUNGVUkwVGdvZE4tWUs1QQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:30:41.821Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title random",
+    "textMessageDetails": {
+     "messageText": "Title random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/YZh5cXNUoiqWidfqla_OeHcMS1o\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUGZkMDlYNW9ORUNGZE1zVGdvZC1jRUx0Zw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:30:46.189Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/kZh74KoecNuA3z4rWrC9VWKAz74\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSm1QcE9YNW9ORUNGVXduVGdvZFZ1MEctUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:31:18.964Z",
+    "hasDisplayContent": true,
+    "displayMessage": "title random",
+    "textMessageDetails": {
+     "messageText": "title random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/xdSZj7YC9fYVc9XLZRqBg9_wVFI\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSW45Nk9uNW9ORUNGWXNXVGdvZF9wTVBndw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:31:28.480Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/OX9fQB93q3GCo1hYbta6bWPtGXI\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT25DaUluN29ORUNGY2Q2VGdvZHR0Y0p0dw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:37:02.444Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title random",
+    "textMessageDetails": {
+     "messageText": "Title random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/EQAanQk6QLngwIUDVgwTVYgQCQE\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSktNcFl2N29ORUNGUThFVGdvZHBIUVBFZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:37:07.107Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/49Vd_3ENHELXyX49fGj4jfX6xIQ\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT1hUbTViN29ORUNGWWpuVGdvZEZaQUh0QQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:37:30.021Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title random",
+    "textMessageDetails": {
+     "messageText": "Title random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/Xwzt-KRD5RPQY8eg0Ucy7DBTGKQ\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUHZfMkpqN29ORUNGUmJJVGdvZGZjY0c0Zw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:37:35.220Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/OLULEvXXpTMV2WIy1RO7yea2fLE\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUGlmOUtfN29ORUNGZFlkVGdvZHJud0dvQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:38:23.901Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Test 7",
+    "textMessageDetails": {
+     "messageText": "Title Test 7"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/A1LmWAi539l0n_Bv7IgfLv8486o\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTF85ckxQN29ORUNGWUdIVGdvZHV2SUNmdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:38:31.122Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/uSg847RxQ-pdpvsq5tBApkIbQzc\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSl9qbEx2N29ORUNGWkFtVGdvZHZ2b041UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:38:47.503Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Happy New Years Yaal",
+    "textMessageDetails": {
+     "messageText": "Title Happy New Years Yaal"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/_A5Z-khleZm-n9xwrmU4o3p9pjY\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTi1NdXIzN29ORUNGUmU5VGdvZHE2a0E1UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:38:52.309Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/yX_rPC8qxMxTLBlZxED0quiGvLM\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTFBLdThYN29ORUNGYzRqVGdvZHpKNEdaQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:09.110Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title ________.::::.______",
+    "textMessageDetails": {
+     "messageText": "Title ________.::::.______"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/t6vw7Ra0EAUztA69Mtz6f5WM1U0\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUDJleE1mN29ORUNGWUZqVGdvZDVpVUtJUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:13.446Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/q1kNRlvgSqV2s5Lsaq4aV6pw0xg\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDUERDMDliN29ORUNGY3JkVGdvZHlBQUwxUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:45.154Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title Coolio!",
+    "textMessageDetails": {
+     "messageText": "Title Coolio!"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/Djitaibbqi28dgPjOQtKtjL1u_o\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTG5POWRmN29ORUNGUXRTVGdvZGhLSUlLUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:47.810Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/khaigcello/katherine-haig-bach-suite-no-6",
+    "textMessageDetails": {
+     "messageText": "[Attract] Its been a while since a remix. I will queue-up https://soundcloud.com/khaigcello/katherine-haig-bach-suite-no-6"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/KxYjZGxIDFWbw2cDfmKJY4LyDQ0\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTUNWcGRqN29ORUNGWVZBVGdvZDRia0FZQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:48.589Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Title random",
+    "textMessageDetails": {
+     "messageText": "Title random"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/XSyvsLs3ot18ZmE98uMe03HgB0o\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTG05cHRqN29ORUNGY2NtVGdvZGp5UU42Zw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:48.610Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/Zfr9Hk7gf3tB8vZ8mmU2s4c5tCk\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSzJTMDlqN29ORUNGUU1jVGdvZDBQOERkdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:49.342Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing khaigcello...remember stream delay! Props to http://soundcloud.com/khaigcello/katherine-haig-bach-suite-no-6",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing khaigcello...remember stream delay! Props to http://soundcloud.com/khaigcello/katherine-haig-bach-suite-no-6"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/PD3yWV4UTM21nY2YKOi_3g842GM\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTy14bzl6N29ORUNGZE1zVGdvZDFGWUN5UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:39:56.948Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Cool. All done I think I dunno who knows check k? Bai.",
+    "textMessageDetails": {
+     "messageText": "Cool. All done I think I dunno who knows check k? Bai."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/ZDOFinyc9zvc51vuztyNmPZZJIA\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTjZ2cE9IN29ORUNGWmNSVGdvZG1UTUVTQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:40:07.450Z",
+    "hasDisplayContent": true,
+    "displayMessage": "Note Yay Title Fixed",
+    "textMessageDetails": {
+     "messageText": "Note Yay Title Fixed"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/-f9lnI9F3eQMUxV2HeCg45bdYh0\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSUNkM1BMN29ORUNGUU9VVGdvZEtlY0tGdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:40:44.017Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[NOTE] Your note has been posted. It will remain for as long as the admin has set for this feature.",
+    "textMessageDetails": {
+     "messageText": "[NOTE] Your note has been posted. It will remain for as long as the admin has set for this feature."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/9C4cSB-8lUIz_mrKeVKMJ6rWcLc\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSW5BNl9MN29ORUNGUXlyVGdvZHZlVVBxQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:40:44.267Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/wyAFCUoa5Jp9Ysg8piKXMbgOIIo\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTDNrd3ZQN29ORUNGWVh0VGdvZF9XUUpPdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:40:45.697Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/GJ-vgkr-qHEgeya1DF0Y_4SpOsY\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTFBHejRmOG9ORUNGWUlWVGdvZHU1d0U1dw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:41:27.849Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Eject] Song ejected! Dont forget stream delay. And dont you wear-out my eject button!",
+    "textMessageDetails": {
+     "messageText": "[Eject] Song ejected! Dont forget stream delay. And dont you wear-out my eject button!"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/4i52RS26bm0XtNn5yJfdLWL4ZRU\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSV9DZ3BIOG9ORUNGWVRHVGdvZGVnUUdVQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:41:47.559Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/emKZeBo7o9wWb7o3lZ4__G_yo4I\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT1RJMXBIOG9ORUNGVkpEVGdvZEQ5VUpZZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:41:48.936Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/Hb7qwZW9El4uOSKke_WXC39zhYw\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT0c1dmRuOG9ORUNGY01HVGdvZHFmc0dKZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:44:19.519Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/mZB-bjGzNR_EBlz3Lc5Qnpk7T34\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT0QtbnRyOG9ORUNGUU9RVGdvZGxtNExhdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:44:21.117Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/WweWHjAlw6lfk9oS0sBx4ctU_cY\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT1REdFp6OW9ORUNGUXBPVGdvZDZaQUVzQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:46:39.899Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/d4aaSRNpOyZzQkb1clw0-9Z0C1Q\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTG1UazUzOW9ORUNGYzBLVGdvZEJsNERydw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:46:41.433Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/chris-farley"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/pUjHjTszAPOoXSKut4cdCvFq7cI\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTHF3cGRfOW9ORUNGUUp3VGdvZFgya0tqdw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:49:00.143Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/i_727N2d4wlPUsh-19sIE4_Eyuo\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTHFUcGVEOW9ORUNGUVdwVGdvZHZWa0g3UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:49:02.237Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/0mjmqdfyx9cx",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/0mjmqdfyx9cx"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/8gw9fg-mJTgobHsQ8LmIEu8JDnk\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTEdiMVBqOW9ORUNGWS1xVGdvZDZfTUhnQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:49:53.339Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/d29xOZowzm_RW5kY1_7DezLaRHI\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSktKX3FQLW9ORUNGWVh0VGdvZGRKZ0tRZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:51:24.203Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/_MUZ07tjkEkyGsX3dX4lASAFbEA\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTXYzM0tULW9ORUNGVVpQVGdvZDFZVU9nZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:51:25.757Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/pndrmx",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/pndrmx"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/l422NSZfLd6Pp0WQsmuwfpQUnOk\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSXlDNnRQLW9ORUNGVlhnVGdvZEJwRU9JUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:53:04.537Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/GlbQne_PscA77bUgIpfjF6tQHrM\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTVg1NU5ULW9ORUNGWXNUVGdvZFJQUURjZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:53:06.552Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/good-looks-400",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/good-looks-400"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/mYdW8HX8zJ1cEM5pvKK1ei6xaVg\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDT21PX0lMX29ORUNGVTFxVGdvZHlkd0dQZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:54:43.400Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/o_1EgIMLzkIsZcS4mv6Zk_NO34I\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTDJuNDRQX29ORUNGWWpLVGdvZGRQY0RvQQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:54:45.091Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/47-icarus",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/47-icarus"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/cNAE0nDHAIxORl-7NgM-EIdRjOA\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDTTZVZzdiX29ORUNGY0tqVGdvZDRta0p4UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:56:30.470Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/G2_bBi3CTPGJjx6Kg12hyvlbNEo\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS0c3cy1IX29ORUNGUWlMVGdvZE1DNE5tUQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:58:01.439Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/Iq-2Jq-3PH5MxNM0Sf2vc9BrISE\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDS1dxcmVMX29ORUNGY2FQVGdvZF93OEIyZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:58:03.436Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/ogbbbrmx",
+    "textMessageDetails": {
+     "messageText": "[Mix] Playing goodmamamama...remember stream delay! Props to http://soundcloud.com/goodmamamama/ogbbbrmx"
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/kriOySa2uNv247cI_FufLNZOTZg\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSVBQdzVDQW9kRUNGWVpMVGdvZDZUNE9CZw",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T12:59:40.270Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Mix] Random track request, ok! Let me see what we have laying around...",
+    "textMessageDetails": {
+     "messageText": "[Mix] Random track request, ok! Let me see what we have laying around..."
+    }
+   }
+  },
+  {
+   "kind": "youtube#liveChatMessage",
+   "etag": "\"gMxXHe-zinKdE9lTnzKu8vjcmDI/HKlod7TJFNSxZGWA-Q9BFyiYlyE\"",
+   "id": "LCC.CiMSIQoYVUNCSmpEbzdBbktjcE81czloTnMxbmdnEgUvbGl2ZRIcChpDSldxM0tPQm9kRUNGWTBGVGdvZEstSVB1UQ",
+   "snippet": {
+    "type": "textMessageEvent",
+    "liveChatId": "EiEKGFVDQkpqRG83QW5LY3BPNXM5aE5zMW5nZxIFL2xpdmU",
+    "authorChannelId": "UCBJjDo7AnKcpO5s9hNs1ngg",
+    "publishedAt": "2017-01-01T13:04:48.956Z",
+    "hasDisplayContent": true,
+    "displayMessage": "[Attract] I am changing the background, with the BG command.",
+    "textMessageDetails": {
+     "messageText": "[Attract] I am changing the background, with the BG command."
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,12 @@
+#!/bin/sh
+# Crude startup script for PanelServer only
+# Probably missing several things
+# 2016 @garyd @diemastermonkey
+
+# Muy importante
+cd /pub/kits/sonicmonkeypi
+
+killall PanelServerRefreshLoop PanelServer
+./PanelServerRefreshLoop &> /dev/null
+./PanelServer &> /dev/null
+

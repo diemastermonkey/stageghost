@@ -1,0 +1,102 @@
+#!/usr/bin/perl
+# Lo-fi animated-gif-to-console-ansi
+# Creates .ans files if needed
+# Picks randomly from $Dir/*.gif, or give in arg 1
+# Opt arg 2 (any) sets "forward once no titles"
+# Opt arg 3 replaces $Indent, prepended to lines
+# Example: ./ansiAnimation animations/bouncydog
+# For DronesoundTV by @diemastermonkey @garyd
+
+my $Width = 60;         # Applied ONLY at conversion
+my $Height = 20;
+my $FrameDelay = 0.14;	# Delay between frames
+my $CredsRate = 3;      # Framerate of creds anim
+
+# Optional "request" arg 1, specify which ansi
+my $Request = shift (@ARGV); chomp ($Request);
+# Optional arg 2: If present, forward-only play
+my $Forward = shift (@ARGV);
+# Optional arg 3: Indent added to print-out only
+my $Indent = shift (@ARGV);
+
+my @Ansi;  # Stores ansi frames
+my $Dir = "animations";  # Pick from this path
+my @Gifs = `ls -1 $Dir/*.gif`;
+my $Image = @Gifs[rand(@Gifs)];
+chomp ($Image);
+# Cleanup filename plus handle arg 1
+$Image =~ s/\.gif//g;
+$Image = "animations/$Request" if ($Request);
+my $Title = $Image;
+$Title =~ s/$Dir\///g;  # For screen
+
+# If ANSIs dont exist, create them
+unless (-r "$Image\-00.png.ans") {
+  print ("\nPreparing new animation $Title\...");
+  # Converts with ImageMagick to individual PNGs
+  # New: Niced to low priority
+  `nice -n 16 convert -coalesce $Image\.gif $Image\.png`;
+  foreach $Frame (`ls -1 $Image\*.png`) {
+    chomp ($Frame);
+    $Aname = $Frame; 
+    $Aname =~ s/\-(\d)\./-0$1\./g; # Cleanup
+    open (OUT, ">$Aname\.ans");
+    $Ans = `nice -n 16 img2txt --contrast=0.09 --width=$Width --height=$Height $Frame`;
+    print (OUT $Ans);
+    close (OUT);
+    $Ignored = `rm $Frame`;  # Remove temp
+    sleep (1);		# Mandatory sleep, its ALOT of work!
+  }
+}
+
+# NEW: Pre-load all frames
+@Frames = `ls -1 $Image\*.ans`;  # Yeesh
+$Framecount = scalar(@Frames);
+$Index = 0;
+foreach $File (@Frames) {
+  chomp ($File);
+  open (IN, $File); @IN = <IN>; close (IN);
+  # If given, prepend the indent
+  grep (s/^/$Indent/, @IN);
+  # Store entire frame as single scalar
+  @Ansi[$Index] = join ("", @IN);
+  $Index++;
+}
+
+# Start at rand frame unless $Forward set
+$Frame = int(rand($Framecount)) - 1 unless ($Forward);
+# Randomize how long to play
+$Loops = scalar(@Frames) * int(rand(5)) + scalar(@Frames);
+$Loops = $Framecount if ($Forward);  # Single play if 2 args
+$Dir = +1;
+$BounceDie = int($Framecount * 1.25); # Chance of bouncing
+# For fancy display (slightly sneaky)
+$Title = "                      makeagif/$Title ";
+
+# Play frames in order w/much dress-up, X times
+while ($Loops--) {
+    # Display frame ansi
+    $F = @Ansi[$Frame];     
+    grep (s/^/\t    /gm, $F); # Should use $Indent?
+    print (`clear`."\n\n$F"); # Bonus newline for DTV themes
+
+    # Fancy slide-away title line
+    $Title = substr ($Title, 1, length ($Title))
+      unless ($Loops % $CredsRate);
+    # Fancier # print ("\n\t\t$Title [$Frame]") if ($Title);
+    # print ("\t\t$Title") if ($Title && !$Forward); # disabled
+
+    # Move frame, possibly change direction
+    $Temp = $Frame + $Dir;
+    if (! $Forward && ($Temp < 0 || $Temp == $Framecount)) {
+      $Dir *= -1;
+      $Frame += $Dir;
+    } else {
+      $Frame = $Temp;
+    }
+    $Dir *= -1 if (!$Forward && 0 == int(rand($BounceDie)));
+
+    `sleep $FrameDelay`;   # Delay
+}
+# Fin
+
