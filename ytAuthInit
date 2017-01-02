@@ -5,7 +5,7 @@
 # https://developers.google.com/youtube/v3/live/guides/auth/server-side-web-apps
 
 # Example: 
-# https://accounts.google.com/o/oauth2/auth?client_id=605616310598-8brqgknl09nqog35h3rp5ehndfrare76.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline`
+# https://accounts.google.com/o/oauth2/auth?client_id=XXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline`
 
 # Simple, cheap, safe config file reader
 # Example use:
