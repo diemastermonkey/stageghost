@@ -1,0 +1,93 @@
+#!/usr/bin/perl
+# Allows users to set a DroneTV.media url
+# If no args, reports the current value
+# Other tools replace tokens in templates with the url
+# 2016 @garyd @diemastermonkey for DronesoundTV
+
+# Globals, options
+my $ResponseRaw = "";
+# For validation only
+my $Get = "curl --location --silent -o -";
+# Ware thee the hardwired paths
+my $MediaFile = "panels/DroneTV.media";
+my $MediaRandom = `./randomFile media/`; chomp ($MediaRandom);
+my $Current = `cat $MediaFile | tail -1`; # Ignore extra lines
+chomp ($Current);
+
+# Alternate smarter version of getfield
+# Get single-instance field from Freesound details
+# ------------------------------------------------------
+sub fnField {
+  my $field = shift (@_);
+  my $data = $ResponseRaw; 
+  $match = "none";
+  $match = $1 if (
+    $data =~ /\"$field\"\:\s*\"*([^\\\"]+)\"*(\,|\n|\})/
+  );
+  return ($match);
+}
+
+# Main
+# Give current value and help if no arg
+# -----------------------------------------------
+$Arg = shift (@ARGV); chomp ($Arg);
+unless ($Arg) {
+  print ("[Media] This sets the media url, a YouTube embed you have already verified. Use MEDIA RANDOM to randomize. Currently, it is https://youtube.com/watch?v=$Current");
+  exit();
+}
+
+# Disabled: Get 2nd arg, which may be search string for 'random'
+# $Search = shift (@ARGV);  # Or empty
+
+# Disabled: If special arg "random", pick from urls in path
+if ($Arg =~ /^rand|^random|^rnd/i) {   # variations supported
+  # Quick response to chat even before selection
+  `./ytSinglePost "[Media] Random media requested..." &`;
+ 
+  # Get contents of a random file
+  $k = $MediaRandom;
+
+   # Simply overwrite "Arg" and drop-through to normal handling
+   open (IN, "<$k");  # To do, check errs
+   $Arg = <IN>;
+  close (IN);
+  chomp ($Arg);
+}
+
+# Disabled: Exit if input not an approved prefix
+# To do: Reinstate "choose only approved" for non-subs
+# unless ($Arg =~ /soundcloud.com\/diemastermonkey/) {
+`echo "Args: $Arg" >> media.debug`;
+
+# Note: Accept only final part of permalink to avoid malfeasance. 
+# i.e. only "diemastermonkey/bwoom-bwoom-bwoom" remains...
+$Link = $Arg;
+$Link =~ s/^.*\///g;
+$Link =~ s/\/(.*)\/.*$/$1/g;
+# Append to bottom of queue (currently used only for replays)
+`echo "$Link" > $MediaFile`;
+
+# Check only to ensure it is accessible
+$RESPONSE = `$Get http://www.youtube.com/$Link`;
+chomp ($RESPONSE);
+
+# Ditch w/error to chat if empty response (kludge only if not replay)
+if (! length ($RESPONSE)) {
+  print "[Media] Ouch, sorry - I dont think that video can be embedded. Try checking https://www.youtube.com/embed/$Link";
+  exit();
+}
+
+# If still here it is valid and metadata exists
+# Respond to chat right away
+`./ytSinglePost "[Media] Ok, setting $Link as the media. Where it appears will depend on the theme." &`;
+
+# Write to creds and Panel notice right away
+# To do: Include requestor shout
+# `echo "REPONSE $RESPONSE" > $MediaFile`;
+
+# For good measure append second alternate attribution to creds
+`echo "Props to media https://www.youtube.com/embed/$Link" >> DroneTV.creds`;
+
+# To do: Get More video metadata files and displays
+# --------------------------------------------------------------------
+

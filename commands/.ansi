@@ -1,0 +1,42 @@
+#!/bin/sh
+# Import from makeagif to special 'ansi showcase'
+# To do - safetyfy everything
+# Accepts a makeagif ID, fetches only that image
+# Does no conversion, just let ansiAnimation handle
+# 2016 @garyd @diemastermonkey for DronesoundTV
+
+# Give no help and exit if no arg
+if test -z "$1" ; then
+  echo "[Ansi] ANSI-fy a MakeAGif ID and put it in the Showcase. Usage: ANSI MakeAGifIDHere";
+  exit
+fi
+
+# Relative path where gifs stored if found
+GIFDIR="animations"
+
+# TO DO : Make sure only one arg accepted
+OLDNAME=$1
+ID=`echo $1 | sed "s/ .*//g" | xargs`
+
+# Special import: Name hardwired to showcase
+# To do: Hardwire to userkey, then each user gets one
+NEWNAME="showcase";
+
+# Handle as a giphy ID (TY Giphy for being simple!)
+# Giphy version (worked)
+# RAW=`wget --quiet --directory-prefix=$GIFDIR "http://i.giphy.com/$OLDNAME.gif"`
+# Makeagif version
+RAW=`wget --quiet --directory-prefix=$GIFDIR "http://i.makeagif.com/save/$OLDNAME"`
+IGNORED=`mv $GIFDIR/$OLDNAME $GIFDIR/$NEWNAME.gif`
+# Check for exist or final abort
+EXIST=`find $GIFDIR/ -size 0 -name $NEWNAME.gif`
+if test -n "$EXIST" ; then
+  echo "[Ansi] That MakeAGif ID does not appear to be valid. Sorry?"
+  # Shunt
+  exit;
+fi
+
+# SIZE=`du -h $GIFDIR/$OLDNAME.gif | xargs`
+
+# If still here it was a successful command or gif install?
+echo "[Ansi] $NEWNAME is now in Showcase! It will appear in rotation. Good job!"

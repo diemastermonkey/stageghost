@@ -1,0 +1,8 @@
+#!/usr/bin/perl
+# StageGhost: Example simple random witty response
+# 2016 @diemastermonkey For DronesoundTV
+
+`./ytSinglePost "[Dev] Hopefully rebooting.."`;
+sleep (1);
+`sudo shutdown -r now`;
+

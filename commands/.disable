@@ -1,0 +1,16 @@
+#!/bin/sh
+# Disable a file in commands collection
+# Less dangerous than enable but still hey
+
+# Give help and exit if no arg
+if test -z "$1" ; then
+  echo "[Disable] Usage: Disable CommandToDisable";
+  exit
+fi
+
+# Accept only first arg
+ARG=`echo $1 | sed "s/ .*//g" | xargs`
+# Apply perms
+IGNORED=`chmod ugo-rx commands/$ARG`
+# Unverified response
+echo "[Disable] $ARG should be disabled now."

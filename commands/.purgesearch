@@ -1,0 +1,14 @@
+#!/bin/sh
+# Purge the X oldest cached Freesound search results
+# IMPORTANT: Run from DroneTV root. Potentially DANGEROUS
+cd /pub/kits/sonicmonkeypi
+
+# First remove "-data.cache" file occasional glitch
+rm /pub/kits/sonicmonkeypi/cache/-data.cache 2> /dev/null
+
+BEFORE=`df --output=avail -h / | tail -1`
+# WARNING dangerous!
+ls -art cache/*.cache | egrep -vi '\-data' | tail -40 | xargs rm
+
+AFTER=`df --output=avail -h / | tail -1`
+echo "[Purged] 40 oldest, least-used samples un-cached. Free space now $AFTER (was $BEFORE)."

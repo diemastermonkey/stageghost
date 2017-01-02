@@ -1,0 +1,20 @@
+#!/bin/sh
+# Simple "add word to bad word list" command
+# 2016 @garyd
+
+# Config file where bad words live
+WORDFILE="config/dronetv.expletives"
+
+# Give help and exit if no arg
+if test -z "$1" ; then
+  COUNT=`cat $WORDS | wc -l | xargs`
+  echo "[Curse] Add a word to the expletives list. Usage: CURSE WordToCurse"
+  exit
+fi
+
+# Else simply add it to list
+echo "$1" >> $WORDFILE
+
+# Respond with a censored version
+CLEAN=`echo $1 | sed "s/[aeiou]/_/g"`
+echo "[Curse] $CLEAN cursed."

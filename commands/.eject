@@ -1,0 +1,42 @@
+#!/usr/bin/perl
+# Stop all "mplayer" (music) instances, for when you cant wait
+# Accompanied by tape stop sfx or equivalent
+# cassette_all.wav
+# cassette_a.wav
+# cassette_eject.wav
+# cassette_ff.wav
+# cassette_insert_play.wav
+# cassette_rewind.wav
+
+# Simple, cheap, safe config file reader
+# Read a single value from a single thus-named file
+# Use a naming convention to support multi-user/session
+# Returns value or empty (q: what if value 'empty'?)
+# Example use:
+#   $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_)
+    or return;
+  open (IN, "<config/$argFieldName")
+    or return;
+  my $in = <IN>; chomp ($in);
+  close (IN);
+  return ($in);
+}
+
+my $StopSfx = "sfx/cassette_stop.wav";
+my $StartSfx = "sfx/cassette_start.wav";
+my $EjectSfx = "sfx/cassette_eject.wav";
+my $Player = fnConfigGet ("dronetv.musicplayer");
+$Player =~ s/ .*//g;  # Discard all args
+
+$Msg = "[Eject] Song ejected! Dont forget stream delay. And dont you wear-out my eject button!";
+# Send response asap
+`./ytSinglePost "$Msg" &`;
+
+`play -q -V0 --volume 1.2 $StopSfx &`;
+# Stop player asap (stream delay anyways)
+`killall $Player`;
+# Play tape stop sfx
+`play -q -V0 --volume 0.8 $EjectSfx`;

@@ -1,0 +1,4 @@
+#!/bin/sh
+# Simple fake activity for display tests
+echo "[Sim] (DEV) Simulated active chat users from recent visitors."
+ls -1rt users/*.jpg | tail -7 | xargs touch

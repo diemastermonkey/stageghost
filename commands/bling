@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+# StageGhost cmd: Bling
+# Toggle state of an LED attached
+# to GPIO pin $PIN. NO ARGS
+# @garyd @diemastermonkey 2016 for DronesoundTV
+my $PIN = "13";
+
+# Simply write inverted state of pin to pin
+$t = "Bling! Under-carriage lighting enabled."; # Default
+$v = `cat /sys/class/gpio/gpio$PIN/value`; chomp ($v);
+if ($v) { $v=0; $t="De-blinged."; } else { $v=1; }
+`echo $v > /sys/class/gpio/gpio$PIN/value`;
+print ("[Bling] $t");

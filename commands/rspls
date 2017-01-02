@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+
+# Default to help
+my $Arg = uc(shift (@ARGV)) or $Arg = "HELP";
+
+if ($Arg =~ /help/i) {
+  print (
+  "[Rspls:Help] Prepare to meet your doom mortal. Dronebot challenges you to Rock Scissors Paper Lizard Spock! You first. Enter RSPLS PAPER to choose paper like a foolish fleshbot. Or you could choose ROCK, SCISSORS, or LIZARD. How dare you even consider SPOCK!");
+  exit;
+}
+
+# Rspls-specific: Permit only one of choices
+@Choices = (ROCK, PAPER, SCISSORS, LIZARD, SPOCK);
+$Arg = @Choices[rand(5)] unless (grep (/$Arg/i, @Choices));
+
+# Valid if still here
+$AI = (ROCK, PAPER, SCISSORS, LIZARD, SPOCK)[rand(5)];
+print "[Rspls] Bam! My $AI humiliates your silly $Arg - Err, wait - who won?";
+

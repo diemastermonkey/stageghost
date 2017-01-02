@@ -1,0 +1,41 @@
+#!/bin/sh
+# Set a random background (later, allow selection)
+# @garyd @diemastermonkey 2016
+
+# Theme ie relative path for output
+THEME=`cat PanelServer.theme | xargs`
+
+# New: User Channel ID 2nd arg, for "BG me" to set their pic as bg
+USERCH=$2
+
+# Change randomly and exit if no second arg (ie they typed just BG alone)
+if test -z "$2" ; then
+
+  # Pick one randomly from ./backgrounds
+  SELECTED=`./randomFile backgrounds/ | xargs`
+  echo "$SELECTED" > themes/$THEME/PanelServer.bg
+
+  # Respond to chat.
+  echo "[Bg] Ok, I just set a random background. Remember the stream delay. Use COLOR if you want a color instead. Also, try BG me"
+
+  # Actually update the panel file
+  # Retired: Is dangerous?
+  # ./PanelServerRefresh > index.html
+
+ exit
+
+fi
+
+# New: Handle "BG ME", setting bg to user's own profile pic
+if test $1 = "me"; then
+  echo "users/$USERCH.jpg" > themes/$THEME/PanelServer.bg
+  echo "[Bg] Background image set to...you."
+  exit
+fi
+
+# Hand NONE arg: clear image
+if test $1 = "none"; then
+  echo " " > themes/$THEME/PanelServer.bg
+  echo "[Bg] Background image cleared! Just type BG to randomize it again, k?"
+fi
+

@@ -1,0 +1,32 @@
+#!/bin/sh
+# Change active keywords set ('mood') 
+# by identifying a file in ./moods 
+# Mostly dupe of 'theme' command
+# @garyd @diemastermonkey 2016
+
+# Current 
+# Note that file lives in app root, tho
+CURRENT=`cat DroneTV.mood | xargs`
+MOODS=`ls -1 moods/ | egrep -v $CURRENT | xargs | sed "s/ /, /g;"`
+
+# Give help and exit if no arg
+if test -z "$1" ; then
+  echo "[Mood] Change the sound mood, which changes the key words. Choices include $MOODS, and $CURRENT (which it is currently). Usage: MOOD MoodName"
+  exit
+fi
+
+# Ensure it exists or shunt with error to chat
+# Beware hardwired path
+if ! test -r "moods/$1" ; then
+  echo "[Mood] Sorry, I dont find that mood. Was there a typo? Your choices include $MOODS, and $CURRENT. Usage: Mood MoodName"
+  exit
+fi
+
+# Update the mood file first
+echo "$1" > DroneTV.mood
+
+# Respond with a censored version
+echo "[Mood] Mood swing! You will hear the difference gradually, over the next few minutes."
+
+# Replace prod keywords.txt with selected file
+cp moods/$1 keywords.txt

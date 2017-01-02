@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+# StageGhost: Pass-through to "sub-back" ytUserSubscribe script
+# See also ytUserSubscribe and config/dronetv.subcheck (if 0, no pre-sub check)
+# 2016 @diemastermonkey For DronesoundTV
+
+# PROGRAMMER ERROR
+die ("Error: Programmer error in $0") unless (@ARGV);
+
+# Discard first arg if any
+my $UserCh = shift (@ARGV);
+$UserCh = shift (@ARGV) if (@ARGV);
+
+# Insert any extra handling here
+
+# Remember any output goes directly back to chat - send them 
+# a response now, as ytUserSubscribe has its own responses
+`./ytSinglePost "[Sub] Okay, I am subscribing to you now! Please sub back? The admin might limit this to subscribers, later."`;
+
+# Simply pass through
+`./ytUserSubscribe $UserCh`;
+
+# Fin
+
+

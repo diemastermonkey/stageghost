@@ -1,0 +1,13 @@
+#!/usr/bin/perl
+# StageGhost cmd: Zap
+# Toggle state of an LED attached
+# to GPIO pin $PIN. NO ARGS
+# @garyd @diemastermonkey 2016 for DronesoundTV
+my $PIN = "21";
+
+# Simply write inverted state of pin to pin
+$t = "Zap! Zapper enabled."; # Default
+$v = `cat /sys/class/gpio/gpio$PIN/value`; chomp ($v);
+if ($v) { $v=0; $t="Unzappy...fied."; } else { $v=1; }
+`echo $v > /sys/class/gpio/gpio$PIN/value`;
+print ("[Zap] $t");

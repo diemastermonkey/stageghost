@@ -1,0 +1,3 @@
+#!/usr/bin/perl
+print (
+"[Help] This bot does almost everything. Type DRONE to add sound effects, MIX to add music, and SUB to learn how to get a sub-back. Type COMMANDS for many more things to do.");

@@ -1,0 +1,75 @@
+#!/usr/bin/perl
+# Sample 'door game' for StageGhost/DTV 12xx2016 @garyd
+# Caller: Append user channelid to args, it is popped off first
+# Reset the game:  redbox reset 
+# Tease/attract user if eligible to open box
+#                  redbox tease UserChannelID
+# Open the box:    redbox open UserChannelID
+# Reseal w/spider: redbox spider UserChannelID
+# Reseal w/candy:  redbox candy UserChannelID
+# Reseal w/easter egg "dead spider and an empty wrapper wtf"
+#                  redbox joke UserChannelID
+
+# Mostly hardwired datafiles
+my $Game = "door_redbox";                # relative path
+my $Players = `cat $Game/players.txt`;   # recent player ids
+my $Contents = `cat $Game/contents.txt`; # contents of box
+my $Attacker = `cat $Game/attacker.txt`; # who last closed box
+my $Log      = "$Game/log.txt";          # for writing
+
+# To do: use only if X minutes fresh
+# else consider box closed by default
+my $Victim = `cat $Game/victim.txt`;     # active opener, if recent
+
+# Main
+# -----------------------
+# Die unless 2 args (command, user ch id)
+my $Cmd = shift (@ARGV);
+my $UserCh = shift (@ARGV);
+unless ($Cmd && $UserCh) {
+  die ("\n$0 usage: ".`head -11 $0`."\n");  # Spit out header, shunt
+}
+
+# Get the player's name for text messages
+my $UserName = `./ytUserInfo $UserCh`;
+
+# Tease: If player eligible, offer them the box (or end)
+fnTease() if ($Cmd eq "tease");
+
+#
+# Insert code for other commands
+#
+
+# Fin
+
+# Handle teasing
+# -----------------------
+sub fnTease {
+  if ($Players =~ /$UserCh/gsio) {
+    # Ineligible, shunt w/log
+    fnLog ("$0: Player $UserCh ineligible because in $Game/players.txt");
+    exit(0);
+  }
+
+  if ($Victim =~ $UserCh) {
+    # Somehow we're about to tease current victim - don't
+    fnLog ("$0: Not teasing current victim cause thats dumb.");
+    exit(0);
+  }
+
+  # All good to tease
+  fnLog ("$0: Teasing $UserCh because tease command");
+
+  # Output attract msg directly to stdio, bot sends it to chat
+  print ("Psst! Hey $UserName, there is an unopened box here. Want to open it? Type BOX for instructions.");
+
+}
+
+# Simple logger
+# -----------------------
+sub fnLog {
+  my $argMsg = shift (@_);
+  open (LOG, ">$Log") or die ("\n$0 fatality: Cant write to $Log");
+  print (LOG $argMsg);
+  close (LOG);
+}

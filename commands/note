@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+# Stageghost: Chat user onscreen note command
+# 20161216 @garyd @diemastermonkey for DronesoundTV
+# Accept user message, write it into users/username.note
+# Note: Requires user channel as 2nd arg, as in commands/shoutout
+# Usage:
+#   note MESSAGE HERE       (posts a note)
+#   note erase              (erases note)
+# To do: 
+#   alternate syntax "note left:13%;right:5%;" sets users/username.coords
+#   alternate "note #ff0000;#0000ff;" sets users/username.colors
+#
+# BACKEND/Script/Cron USE: Create users/system.name, then:
+#   commands/note "Message Here" system 
+# ...this creates a note under local-only 'system' user.
+
+my $CmdName = "NOTE";
+
+# Discard LAST arg, it should be user ch via ytCheck
+my $UserCh = pop (@ARGV) if (@ARGV); chomp ($UserCh);
+my $Sub = 1 if (-f "users/$UserCh.sub"); # Get subscriber status 
+
+# Give help and exit if no (remaining) args
+# ------------------------------------------------------
+$Arg = shift (@ARGV); chomp ($Arg); lc($Arg);
+unless ($Arg) {
+  print ("[$CmdName] (beta) Post/erase/adjust your onscreen note. $CmdName YourMessageHere or $CmdName erase to erase. RTFM for advanced use!");
+  exit();
+}
+
+# Join args with all remaining args, they're the message
+$msg = $Arg . substr(join (@ARGV, " "), 0, 20);  # Doesnt matter css wont show anyways
+chomp ($msg);   # ?
+
+# Handle erase command
+if ($msg =~ /erase/i) {
+  print ("[$CmdName] Okay, note erased! Remember video stream delays.");
+  `rm users/$UserCh.note`;
+  exit();
+}
+
+`echo "$msg" > users/$UserCh.note`;
+print ("[$CmdName] Your note has been posted. It will remain for as long as the admin has set for this feature.");
+

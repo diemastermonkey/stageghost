@@ -1,0 +1,7 @@
+#!/bin/sh
+UT=`uptime | sed 's/  . users\,//g' | xargs`
+OUT=`./status_report | head -3 | xargs`
+FILT=`cat DroneTV.filter | xargs`
+CACHE=`ls cache/*.ogg | wc -l | xargs`
+# echo "[Status] $UT. Onboard Cache $CACHE samples, Filter $FILT, $OUT"
+echo "[Status] Filter: $FILT, $OUT Cache: $CACHE samples, $UT"

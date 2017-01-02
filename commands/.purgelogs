@@ -1,0 +1,59 @@
+#!/bin/sh
+# Rollover DTV log files
+# IMPORTANT: Run from DroneTV root. Potentially DANGEROUS
+
+# For size change report
+BEFORE=`df --output=avail -h / | tail -1`
+DIR="/pub/kits/sonicmonkeypi"
+
+# Muy importante!
+cd $DIR
+
+# Roll DroneTV log
+LOG="log.txt"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll DTV Debug log
+LOG="DroneTV.debug"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll DTV Creds log
+LOG="DroneTV.creds"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll ytCheck log
+LOG="ytCheck-chat.log"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll ytCheck debug log 
+LOG="ytCheck.debug"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll ytCheck (chat) processed chat msg id file
+LOG="ytCheck.processed"
+tail -800 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll remix queue
+LOG="remix.queue"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll remix log
+LOG="remix.debug"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Roll PanelServer log
+LOG="PanelServerRefresh.debug"
+tail -300 $DIR/$LOG > logtemp.txt
+cp logtemp.txt $DIR/$LOG
+
+# Report saved space
+AFTER=`df --output=avail -h / | tail -1`
+echo "[Purgelogs] Logs rolled-over. Free space now $AFTER (was $BEFORE)."

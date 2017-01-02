@@ -1,0 +1,127 @@
+#!/usr/bin/perl
+# StageGhost: Example simple random witty response
+# Emulates popular and stupid "shoutout" of traditional bots
+# Note: Does NOT accept shoutout requests, only shouts-out
+# user who used the command
+# 2016 @diemastermonkey For DronesoundTV
+
+# Remove dangerous/annoying characters that can
+# trip-up the speech engine. Arg name, returns clean version
+sub fnSanitize {
+  $arg = shift (@_);
+  $arg =~ s/![\w\s]//g;
+  return ($arg);
+}
+
+# Setup: If sShoutTheme specified, will store
+# current theme, switch to ShoutTheme for X time, 
+# then switch back
+my $sShoutTheme = ".shoutout";
+my $sShoutTime = 90; # in seconds
+my $sThemeCmd = "commands/theme";
+my $sOGTheme = `cat PanelServer.theme`; 
+chomp ($sOGTheme);
+
+# Discard first arg if any
+my $UserCh = shift (@ARGV);
+$UserCh = shift (@ARGV) if (@ARGV);
+
+# Get user name from userinfo or default to whole channel
+my $Username = fnSanitize (`./ytUserInfo $UserCh`);
+$Username = "the whole channel!" unless ($Username);
+$u = $Username; # Easier to type below
+
+# Get subscriber status or leave 0
+my $Sub = 1 if (-f "users/$UserCh.sub");
+
+# Retired: If subscriber, set their image as 
+# requestor/notice image onscreen!
+# if ($Sub == 1) {
+  $notice = "<div><h2>$Username!<h2></div>";
+  open (OUT, ">PanelServerNotice.html");  # Old way
+  print (OUT $notice); close (OUT);
+  open (OUT, ">panels/PanelServerNotice.html");  # New way
+  print (OUT $notice); close (OUT);
+  # And the requestor's profile pic
+  `cp users/$UserCh\.jpg requestor.jpg`;
+  `cp users/$UserCh\.jpg panels/requestor.jpg`; # New way
+# }
+
+# Random responses, one per line. use $u for username
+@Answers = split (/\n/, 
+"Shout out to $u. I copied that shoutout from another bot.
+Shout out to $u! Yaaay! Unless you are somewhere quiet. Be civil, $u.
+Shout in to $u! Wait, thats not it usually goes, is it?
+Shout $u out! Oh crud I screwed that one up, huh.
+Shouts out to $u!
+Shout out to ^]...ERROR 65536. Uh oh. $u, what...have you done??
+Weeeeeuuuuuoooooooo weeeeeeuuaaaooooeeee. I did a siren for you, $u.
+Woop woop, thats the sound of the $u. Woop woop...wait, thats not how they sound.
+Shout out to beeeeeeeeeeeeeeeeeeeeeeeep - oh great, $u, see what you did?
+Pfft, $u. Think your so great. You and your...names and stuff.
+Shoutout to you? Oh, really. And exactly what have you done for ME, $u?
+Insert shout out here. Oh hi there, $u.
+What? Wadda you want? Im busy Im trying to work! Oh hi, $u.
+Im busy Im trying to work! Twenty bucks! Twenty bucks! Oh hi, $u.
+Sorry $u, you are BANNED - for being way too cool! Bwaha, I had you huh?
+I am on break, try me again later, $u.
+Oh man, I am on a break you guys. Always with the shoutouts.
+$u, this bot salutes you. Wow. That is...not typical.
+Wait, wait - Jeopardy is on! After Jeopardy, ok $u?
+Yes, yes, shout out $u isnt everyone grand. May I go now?
+My eyes are tired. Is...not a shout out. Sorry, $u, try again...
+Sheesh $u you totally nagged me into this shout out!
+Why yes, I would love a shout out, thank you $u. You are always so considerate.
+Shout out to Dronebot! Yay! Hooray for Dronebot! Everyone! Oh, uh hi there $u.
+Shout out to Dronebot! Hooray for meeeeee! Oh right, sorry. Shout out $u.
+Happy birthdaaaaaay dear Drooooonebot. Happy birthday. To me. Hey $u, blow out the candles ok, I dont have lungs.
+Happy birthdaaaay dear $u, happy - wait, it is NOT your birthday?? NO SHOUT OUTS for you!
+Well. I mean, I could shout out to $u. But in the larger scheme of things, what does it really achieve?
+Shout out to $u! Coooooooooooooooool.
+O - M - G, is $u here?? The actual $u?? Arent they the...um...who are they, again?
+Coooooooooooool, its $u. Wait, who is $u? Oh thats you! Well hi there, $u!
+Minimalist shout out: $u
+My fingers are so tired from shout out to $u - why doesnt anyone shout ME out, huh? 
+Shout out to $u. Cold! Wait, not that. I mean, cool! Right?
+Shout out to $u! We all like you! Right guys? Right? Well I do, anyway.
+Shout out to $u! We like em! Right, guys? Well, they dont like you but I do. Its just you and me, $u.
+Shout out to $u! I like you! Of course, I am just a bot, but I can have friends too right?
+Shout out to $u! Its not true what they say about you. Except the good parts, those are true.
+Shout out to $u! Yaaaaaaaaaa. Thats you, there.
+Insert witty comment here. Sorry $u. I kinda drew a blank on this one.
+Shout out to $u! I said shout, and you are not shouting, people.
+Shout out to $u! Shout! Shout at the channel!
+A monkey - where?! Where? Hey $u, help us look for this monkey, they said theres a monkey!
+Shout out to $u! Shout! Shout at the monkey! Wait, a monkey - where?!
+Hey, and a shout out to too, $u! Thats so cool of you.
+What is the past tense of shout out? Were you already shouted out, $u? Or were you...shout outed?
+Look, I am only doing this shout out because I am so confident $u will subscribe. You will, right? Click, click, click, click...
+Shout out to $u, cause you totally promise to use that little share thing on this, right?
+Shout out to $u, cause you totally are gonna trending the channel. Thats a thing, right?
+Shout out to $u! I said SHOUT, worms! Hah just kidding I always wanted to play a dom bot.");
+
+# Random answer
+$Answer = @Answers[rand(scalar(@Answers))];
+chomp ($Answer);
+
+# New! Mb append random emojii thing 
+@m = split (/ /, "😀 ☺ 😇 😶 😎 👀");
+$Answer .= " " . @m[rand(scalar(@m))] if (int(rand(2)) == 0); 
+
+# Output to chat and voice
+# Tip: Do long work speech first, text will lead stream anyways!
+# New: Only speak half the time
+# Removed
+#  $Ignore = `echo "$Answer" | /usr/bin/festival --tts &`;
+`./ytSinglePost "[Dronebot] $Answer" &`;
+
+
+# If sShoutTheme given, temporarily switch to it, then back
+unless ($sShoutTheme eq "") {
+  `$sThemeCmd $sShoutTheme automated`;
+  sleep ($sShoutTime);
+  `$sThemeCmd $sOGTheme automated`;
+}
+
+# Fin
+

@@ -1,0 +1,29 @@
+#!/bin/sh
+# Accept 6-char RGB for panel background color
+# @garyd @diemastermonkey 2016
+
+# Theme ie relative path for output
+THEME=`cat PanelServer.theme | xargs`
+
+# Give help and exit if no arg
+if test -z "$1" ; then
+  CURRENT=`cat themes/$THEME/PanelServer.rgb | xargs`
+  echo "[Color] Set the background to an RGB color value, replacing wallpaper. Make one at http://colorpicker.com ! Right now it is $CURRENT. Usage: COLOR RgbValue"
+  exit
+fi
+
+# Respond with a censored version
+echo "[Color] Ooh, new colors - thanks! Remember there is a stream delay, k?"
+
+# Else simply sanify it and put it in rgb
+# CLEAN=`echo "$1" |  sed 's/#//g'`
+CLEAN=`echo "$1" | perl -ne 's/#//g; print;' | xargs`
+echo "$CLEAN" > themes/$THEME/PanelServer.rgb
+
+
+# Also clear the background
+commands/bg none 1> /dev/null
+
+# Optional: Actually update file
+# Disused in favor of PanelServerRefresh loop
+# ./PanelServerRefresh > index.html;

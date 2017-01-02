@@ -1,0 +1,57 @@
+#!/bin/sh
+# Change active theme by arg
+# New: Arg 2 speaker channel ID
+# @garyd @diemastermonkey 2016
+
+# Args
+THEME=$1
+USERCH=$2
+if test -z "$USERCH" ; then
+  THEME=""           # Steer no-args into help reply
+fi
+
+# Current theme ie relative path for output
+# Theme file lives in app root, tho
+CURRENT=`cat PanelServer.theme | xargs`
+THEMES=`ls -1 themes/ | egrep -v $CURRENT | xargs | sed "s/ /, /g;"`
+TEMPLATE="themes/.template"
+
+# Give help and exit if no arg
+if test -z "$THEME" ; then
+  echo "[Theme] Change the display theme. Choices include $THEMES, and $CURRENT (which it is currently). Example: THEME default"
+  exit
+fi
+
+# Special handling for "THEME mine", which is a real theme but
+# named with the speaker's channel ID
+if test $THEME = "mine"; then
+  # Set up personal theme template if no exist
+  if ! test -r "themes/.$USERCH" ; then
+    ./ytSinglePost "[Theme] Initializing your personal theme..."
+    mkdir themes/.$USERCH
+    cp -r -p $TEMPLATE/* themes/.$USERCH
+    #
+    exit
+  fi
+  # If here, personal theme ready and set
+  THEME=.$USERCH
+fi
+
+# Ensure it exists or shunt with error to chat
+# Beware hardwired path
+if ! test -r "themes/$THEME" ; then
+  echo "[Theme] Sorry, I dont find that theme. Double-check? Choices include $THEMES, and $CURRENT. Usage: THEME ThemeName"
+  exit
+fi
+
+# Update the panel theme file (in app root)
+echo "$THEME" > PanelServer.theme
+
+# Broken? Joke response if theme set to current
+# if test $THEME = "$CURRENT" ; then
+#  echo "[Theme] Well, it was $CURRENT already, but okay, boss. Attention! Attention! By royal decree, $CURRENT is hereby declared the theme! Your will is law, my lord. (cough)"
+#  exit
+# fi
+
+# Respond with a censored version
+echo "[Theme] Ok, I have changed the theme! Remember, there is a stream delay, k?"

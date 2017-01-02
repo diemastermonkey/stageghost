@@ -1,0 +1,16 @@
+#!/bin/sh
+# Enable a file in commands collection
+# Potentially very dangerous
+
+# Give help and exit if no arg
+if test -z "$1" ; then
+  echo "[Enable] Usage: Enable CommandToEnable";
+  exit
+fi
+
+# Accept only first arg
+ARG=`echo $1 | sed "s/ .*//g" | xargs`
+# Apply perms
+IGNORED=`chmod ugo+rx commands/$ARG`
+# Unverified response
+echo "[Enable] $ARG should be enabled now."

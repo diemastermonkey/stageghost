@@ -1,0 +1,7 @@
+#!/bin/sh
+# Lists ONLY hidden special commands
+# LIST=`ls --almost-all commands/ | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g'`
+# LIST=`ls --almost-all commands/ | egrep "\." | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g'`
+# New: Hide certain system commands
+LIST=`ls --almost-all commands/ | egrep "\." | egrep -vi "curse|purge|port|able" | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g'`
+echo "[Commands] Available commands include: $LIST"

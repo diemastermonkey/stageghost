@@ -1,0 +1,12 @@
+#!/bin/sh
+# IMPORTANT: Run from DroneTV root. Potentially DANGEROUS
+# Purge the X oldest cached OGG files, and their metadata
+cd /pub/kits/sonicmonkeypi
+
+BEFORE=`df --output=avail -h / | tail -1`
+ls -art /pub/kits/sonicmonkeypi/cache/*.ogg | head -40 | xargs echo rm | sh 2> /dev/null
+# Also remove "-data.cache" files and occasional glitch
+rm /pub/kits/sonicmonkeypi/cache/-data.cache 2> /dev/null
+ls -art /pub/kits/sonicmonkeypi/cache/*-data.cache | head -40 | xargs echo rm | sh 2> /dev/null
+AFTER=`df --output=avail -h / | tail -1`
+echo "[Purged] 40 oldest, least-used samples un-cached. Free space now $AFTER (was $BEFORE)."

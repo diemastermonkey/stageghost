@@ -1,0 +1,52 @@
+#!/bin/sh
+# Crude and very unsafe import from pastebin
+# Currently supports ONLY import of CSS to user's 
+# personal theme
+# To do - safetyfy everything
+# Accepts a pastebin ID, fetches only that raw via hardcoded URL
+# 2016 @garyd @diemastermonkey for DronesoundTV
+
+# Temporarily disabled
+# echo "[Dronebot] Sorry, this command is temporarily disabled."
+# exit
+
+# Args
+ID=`echo "$1" | perl -ne 's/http|\:|\/|pastebin.com|www//g; print;'`
+USERCH=$2 # User YT ID
+
+# Give no help and exit if incomplete args
+if test -z "$ID" ; then
+  echo "[Style] Incomplete arguments.";
+  exit
+fi
+if test -z "$USERCH" ; then
+  echo "[Style] Import a personal style sheet (CSS). Type STYLE followed by the PasteBin URL - for example STYLE http://pastebin.com/ZVA5vJyq - see that sample and the User Guide for more info.";
+  exit
+fi
+
+# Args are at least real, set up initial personal theme
+# if non exist
+if test ! -r "themes/.$USERCH/" ; then
+  commands/theme mine $USERCH
+fi
+
+# Relative path where style to be written
+OUTPATH="themes/.$USERCH/PanelServer_Template.css"
+
+# Fetch it with curl and sed-out 
+# the ^M carriage returns. NO ERROR CHECKING! :(
+# Output ignored for now. PS I no like the redirect.
+# Tremendously dangerous in untrusted hands
+RAW=`curl --silent "http://pastebin.com/raw/$ID"`;
+OUT=`echo "$RAW" | perl -ne 's/\r\n/\n/g; print;' > $OUTPATH`
+CHECK=`egrep "body" $OUTPATH`   # So cheese
+
+# Primitive exist check 
+if test -z "$CHECK" ; then
+  echo "[Theme] Sorry, I did not find that on PasteBin?"
+  exit
+fi
+
+# If still here it was a successful install?
+echo "[Style] Style installed!"
+

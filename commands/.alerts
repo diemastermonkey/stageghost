@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+# Example "Door game" for Stageghost / DronesoundTV
+# 2016 @garyd @diemastermonkey
+
+# Immediately respond with vauge confirmation
+print ("[Alerts] Checking for security alerts...");
+
+$Dir = "/pub/kits/sonicmonkeypi/door_securitycam";	# Where door game lives
+$Out = "/pub/kits/sonicmonkeypi/door_active.txt";      # Output "door active" file
+
+# To do: Make this a function
+@Places = `cat $Dir/places.txt`;
+$Place = @Places[rand(@Places)];
+chomp ($Place);
+@Events = `cat $Dir/events.txt`;
+$Event = @Events[rand(@Events)];
+chomp ($Event);
+@Pics = `ls -1 $Dir/before_*.png`;
+$Before = @Pics[rand(@Pics)];
+chomp ($Before);
+
+# Generate the panel display
+$Display = `/pub/kits/sonicmonkeypi/doorDisplay $Before $Dir/securitycam.panel`;
+
+# Replace tokens
+$Display =~ s/_LOCATION_/$Place/g;
+$Display =~ s/_EVENT_/$Event/g;
+
+# Write to door display file
+open (OUT, ">$Out") or die ("\nCant open $Out\n$!\n");
+print (OUT "\n$Display");
+close (OUT);
+

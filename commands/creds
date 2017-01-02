@@ -1,0 +1,3 @@
+#!/bin/sh
+# Note this is actually two entries atm
+tail -1 DroneTV.creds | xargs echo "[Creds]"

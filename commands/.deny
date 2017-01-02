@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+# Example "Door game" for Stageghost / DronesoundTV
+# DENY: Rolls success, handles rewards and notices
+# Almost same as approval, normalize
+# 2016 @garyd @diemastermonkey
+
+$Dir = "door_securitycam";	# Where door game lives
+$Out = "door_active.txt";      # Output "door active" file
+
+# To do: Fancier winning formula w/player skills etc
+$Won = 1 if (int(rand(2)) == 0);
+
+# Pick an appropriate pic
+if ($Won) {
+  @Pics = `ls -1 $Dir/win_*.png`;  # Random win pic
+} else {
+  @Pics = `ls -1 $Dir/lose_*.png`;  # Random win pic
+}
+$Pic = @Pics[rand(@Pics)];
+chomp ($Pic);
+
+# Generate the panel display
+if ($Won) {
+  $Display = `./doorDisplay $Pic $Dir/deny-win.panel`;
+} else {
+  $Display = `./doorDisplay $Pic $Dir/deny-lose.panel`;
+}
+
+# Replace tokens
+# $Display =~ s/_LOCATION_/$Place/g;
+# $Display =~ s/_EVENT_/$Event/g;
+
+# Write to door display file
+open (OUT, ">$Out") or die ("\nCant open $Out\n$!\n");
+print (OUT $Display);
+close (OUT);
+

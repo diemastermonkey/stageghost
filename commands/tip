@@ -1,0 +1,69 @@
+#!/usr/bin/perl
+# StageGhost: Example simple random tips from a list
+# 2016 @diemastermonkey For DronesoundTV
+
+# Name the command
+my $Cmd="Tip";
+my $Rtfm=`commands/rtfm`;  # Bonus tip
+chomp ($Rtfm);
+
+# Random responses
+@Answers = split (/\n/, 
+"This is a useful command. There seem to be over 100 tips in here.
+$Rtfm
+Check out this talkity crash course vid: https://www.youtube.com/watch?v=9B2XYCAZbxo
+Psst! There is a secret BG command! Type BG me 
+Anyone who thumbs downs DTV will go to Monkey Hell, which isnt hell for monkeys but rather hell FULL OF monkeys, all throwing poo.
+The Chat Lobby is usually at the screen bottom. To appear there, just be active in chat!
+The Chat Lobby may appear differently in different themes - or not at all.
+Pictures fade from Chat Lobby in about 5 minutes. Except Dronebot and Dizzymouse.
+DronesoundTV uses APIs from Freesound.org, YouTube, and SoundCloud, among others.
+DroneBot has access to *over a million* audio samples via the massive library at http://freesound.org
+How many sounds does DroneBot have? All of the million plus samples collected at http://freesound.org
+You get 1 point every time you run TIPS. No one knows what they are for, yet.
+There are over 200 background images for the BG command, and elite members can add their own.
+There are over 100 lo-fi ANSI animations, and elite members can add their own.
+The DronesoundTV lo-fi ANSI text animations were created because the project had no graphic capabilities.
+The lo-fi ANSI text animations are sort of a signature of DronesoundTV. We are very fond of them.
+There are over 100 tracks in the MIX random onboard playlist.
+The onboard playlist is mostly lo-fi beats genre, but also classical, jazz, folk, and experimental.
+MIX random is the easiest way to add some music. Type MIX random.
+Advanced users can play any download enabled track on SoundCloud. Type MIX.
+Free pizza to 1,000th subscriber. It could be you! Well no probably not, but someone.
+Commands do not have to be typed in UPPERCASE. It just makes them easier to see.
+The HELP command simply introduces DRONE and COMMANDS to total newbs.
+The COMMANDS command lists the latest available commands. It is always up-to-date.
+This bot allows easy user add-ons, so the COMMANDS list may change often.
+The best commands are reserved for subscribers. You just gotta SUB, man!
+There are even secret commands...you just gotta ask around.
+With the DRONE and MIX commands, you are basically in total control of the sound here.
+With the THEME, BG, and COLOR commands, you control the entire display.
+Themes are easily made, and advanced users will soon make their own.
+To use our Disappearing Ink feature, just put hyphen - in front any text you want to disappear.
+The Disappearing Ink feature works with anything you type. Just put a dash - in front.
+Our signature Disappearing Ink feature is a SUB-only benefit. Just SUB already!
+Bot commands dont need to start with a ! or . but you may use them if you like.
+The SUB command is 100 pct reliable. Make sure your settings arent private at https://youtube.com/account_privacy
+The SUB command an exclusive of the secretive StageGhost bot, coming out soon!
+The SUB command is the first fair and easy auto-sub-back bot! It works, trust SUB.
+The SUB command cant work if your subscriptions are private. You can check them at https://youtube.com/account_privacy
+Hey, this is a cool website! http://paprcraft.com/
+Hey, this is a cool channel! http://youtube.com/diemastermonkey
+The author of DronesoundTV is http://twitter.com/garyd
+You should learn JavaScript. And later, C.
+You better know how to read HTML, at least. That's literacy these days.
+Read more.
+Go outside! Take DTV with you though, on your phone, k.
+Experiment! Type COMMANDS and just play with them. You are asposed to!
+Run this command over and over for many different tips. Also, smile more!");
+
+# Pick a response
+$Answer = @Answers[rand(scalar(@Answers))];
+chomp ($Answer);
+
+# Output to chat and voice
+print ("[$Cmd] $Answer");
+
+# Fin
+
+

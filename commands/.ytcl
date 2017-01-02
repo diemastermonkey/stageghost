@@ -1,0 +1,14 @@
+#!/bin/sh
+# StageGhost: Brutal developer restart helper
+# 2016 @diemastermonkey For DronesoundTV
+
+# Kludge:
+cd /pub/kits/sonicmonkeypi
+
+echo "[Dev] Hopefully restarting ytcl..."
+killall ytCheckLoop
+killall ytCheck
+./ytCheckLoop &
+killall .ytcl
+exit
+

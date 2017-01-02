@@ -1,0 +1,77 @@
+#!/bin/sh
+# Crude and very unsafe import from pastebin or giphy
+# To do - safetyfy everything
+# Accepts a pastebin ID, fetches only that raw via hardcoded URL
+# Pre-pends a dot . to indicate hidden/privileged
+# 2016 @garyd @diemastermonkey for DronesoundTV
+
+# Give no help and exit if no arg
+# DOES NOT TELL USER about PasteBin or SoundCloud syntax!
+if test -z "$1" ; then
+  echo "[Import] Import from MakeAGif to console displays! Choose or create a gif at http://makeagif.com, then IMPORT it by ID. For example: IMPORT 3BRb4i";
+  exit
+fi
+
+# New, smarter handling for "SoundCloud URL Append to Collection"
+# PasteBin and makeagif still handled the same below
+# If arg 1 matches soundcloud song url format, append to links collection
+# Ex: https://soundcloud.com/jasonweinberger/mozart-clarinet-concerto
+# NOTE: Requiring URI effectively limits to mods, as only they can post links
+# as per YT chat rules. FILE is the cleaned-up file name in links dir
+if test ! -z `echo $1 | egrep https://soundcloud.com/`; then
+  FILE=`echo "$1" | sed "s/https...soundcloud.com.//g" | sed "s/\//_/g"`
+  echo "$1" > links/$FILE
+  TRACKS=`ls -1 links/* | wc -l | xargs`; # crude count
+  echo "[Import] Track added to jukebox ($TRACKS total).";
+  ./ytSinglePost "[Import] Track added to jukebox ($TRACKS total).";
+  exit;
+fi 
+
+# Relative path where gifs stored if found
+GIFDIR="animations"
+
+# TO DO : Make sure only one arg accepted
+OLDNAME=$1
+ID=`echo $1 | sed "s/ .*//g" | xargs`
+# Lowercase version of name
+NEWNAME=`echo $ID | perl -ne 'print lc \$_;'`
+
+# Fetch it with curl and sed-out 
+# the ^M carriage returns. NO ERROR CHECKING! :(
+# Output ignored for now. PS I no like the redirect.
+# Tremendously dangerous in untrusted hands
+
+# Pastebin import not tested for much time
+RAW=`curl --silent "http://pastebin.com/raw/$ID"`;
+OUT=`echo $RAW | perl -ne 's/^\s*$//g; s/\r/\n/g; print;' > commands/.$NEWNAME`
+SIZE=`du -h commands/.$NEWNAME | xargs` 
+EXIST=`find commands/ -size 0 -name .$NEWNAME`
+
+# If EXIST is -n onzero, assume failure and try a GIF instead
+if test -n "$EXIST" ; then
+  echo "[Import] Must be a gif? $OLDNAME og.";
+  rm commands/.$NEWNAME;   # Cleanup
+
+  # Handle as a giphy ID (TY Giphy for being simple!)
+  # Giphy version (worked)
+  # RAW=`wget --quiet --directory-prefix=$GIFDIR "http://i.giphy.com/$OLDNAME.gif"`
+  # Makeagif version
+  SYNTAX="wget --quiet --directory-prefix=$GIFDIR http://i.makeagif.com/save/$OLDNAME"
+  RESPONSE=`wget --quiet --directory-prefix=$GIFDIR "http://i.makeagif.com/save/$OLDNAME"`
+  EXIST=`find $GIFDIR/ -name $OLDNAME`
+
+  # Check for exist or final abort
+  if test ! -s "$EXIST" ; then
+    echo "[Import] Sorry, I did not find that MakeAGif ID, or they were down or something. Double-check?"
+    # Shunt
+    exit;
+  fi
+
+  # SIZE=`du -h $GIFDIR/$OLDNAME.gif | xargs`
+  SIZE="Deployed."
+
+`mv $GIFDIR/$OLDNAME $GIFDIR/$OLDNAME.gif &> /dev/null`
+fi
+
+# If still here it was a successful command or gif install?
+echo "[Import] Success! $NEWNAME consumed. $SIZE"

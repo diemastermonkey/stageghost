@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+# Simple title command, conduit to ytModifyBroadcast 
+# Usage:
+#         title  "Up to 100 char" userchannelid
+# 20161229 @garyd
+
+# Settable
+my $MaxTitleLength = 100;
+
+# Main
+# -----------------------
+my $Disallowed = "[\'\"\@\%\$\!\|\\|\/|\*|\&|\^|\`|\<|\>\[\]]";
+my $ArgTitle = shift (@ARGV);
+my $UserCh = shift (@ARGV);
+
+# Handle no ch/title args - could be programmer error, but
+# more likely to be user asking for syntax, so send back that and shunt
+unless ($UserCh && $ArgTitle) {
+  print ("[Title] Set livestream title, up to $MaxTitleLength characters. Some special characters are not allowed. Also, try TITLE random.");
+  exit(0);
+}
+
+# Do not continue unless elite
+unless (-r "users/$UserCh.elite") {
+  print ("Sorry, pleeb, this command is limited to elites.");
+  exit(0);
+}
+
+# Minimal validation on proposed title
+if (length($UserCh) > $MaxTitleLength) {
+  print ("Oops, titles limited to $MaxTitleLength characters, boss.");
+  exit(0);
+}
+
+# Drop out if matches any disallowed characters
+if ($ArgTitle =~ /$Disallowed/) {
+  print ("Aieyaa, totally disallowed some of those characters, no go.");
+  exit(0);
+}
+
+# Handle the 'random' version, get a random title from dronetv.titles
+# Get timestamp for "_TIME_" tokens in dronetv.titles
+# cat config/dronetv.titles | sort --random-sort | head -1
+#
+if ($ArgTitle =~ /random/i) {
+  my $TIME = `date '+%A %l:%M %p'`;
+  $ArgTitle = `cat config/dronetv.titles | sort --random-sort | head -1`;
+  $ArgTitle =~ s/_TIME_/$TIME/gmo;
+  # Just drop-through to regular processing, with the new argtitle
+}
+
+# Kludge: Run ytGetStreamIDs first before ModifyBroadcast
+my $Result = `./ytGetStreamIDs`;
+my $Result = `./ytModifyBroadcast \"$ArgTitle\"`;
+
+print ("Cool. All done I think I dunno who knows check k? Bai.");
+
+
