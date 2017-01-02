@@ -1,0 +1,112 @@
+body  {
+  /* Theme-controlled background in this theme */
+  /* background-image: url("_BG_IMAGE_"); */
+  /* background-image: url("themes/.future/MM_Overlay_1999_1.png"); */
+  /* background-color: #_BRGB_; */
+  background-color: #000000;
+
+  opacity 1.0;  /* For transitions to other */
+}
+
+/* Overlaid notice actually under overlay in this theme */
+.notice {
+  position: absolute;
+  z-index: 7;
+  transition: opacity 15s, left 8s;
+  opacity: 1.0;
+  left: 56%;   /* Start pos */
+  top: 46%;
+  border: 0px;
+  font-size: 35px;
+  font-color: FF0000;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Requestor image disabled cause we're pulling wrong image fix first */
+.requestor {
+  display: none;
+  z-index: -7;
+}
+
+/* User-supplied notes
+   usernotes: div in which they all sit
+   usernote: each note
+*/
+/* Optional:  Constrain notes to area of screen
+   by setting margins/width/padding/left/top etc here
+*/
+.usernotes {
+  z-index: 0;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.usernote {
+  /* position: relative; */
+  position: absolute;
+  height: 23%;
+  width: 38%;
+  font-size: 2em;
+  color: #FFFFFF;
+  background-color: #_BRGB_;
+  opacity: 0.80;
+  border-style: double;
+  padding: 0.3px !important;
+  padding-left:3px; padding-right:3px;
+  overflow: hidden;
+}
+
+.bgimage { transition: opacity 15s; }
+.fgimage { transition: opacity 15s; }
+
+/* Special foreground image in front of bg and masks */
+.foreground {
+  position: absolute;
+  transition: opacity 15s;
+  left: 0px;
+  top: 0px;
+  width: 138%;
+  height: 100%;
+}
+
+/* Both masks hidden in this theme */
+.toprightmask {
+  display: none;
+}
+
+.main_left_mask {
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #00FF00;
+}
+
+/* Hacked up waveform moved around resized etc */
+.midright {
+  position: absolute;
+  top: 72%;
+  left: 4.55em;
+  opacity: 1.00;
+  width: 239px;
+  height: 48px;
+}
+
+/* BROKEN: An upper right info panel
+   Translucent in this theme because Art */
+.upperrightbox {
+  position: absolute;
+  z-index: 9;
+  overflow: hidden;
+  top: 6%;
+  right: 2%;
+  width: 92%;
+  padding: 0.40em;
+  /* OG background-color: #004488; */
+  background-color: #_BRGB_;
+  background-opacity: 1.0;
+  opacity: 0.8; 
+  vertical-align: text-bottom;
+}

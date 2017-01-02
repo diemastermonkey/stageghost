@@ -1,0 +1,28 @@
+#!/usr/bin/perl
+# Simple oauthcallback handler (see ytAuthInit)
+# Just write out data rec'd to config dir
+# @garyd 122016
+
+my $Outfile = "/pub/kits/sonicmonkeypi/config/dronetv.youtubeoauthtoken-DEV"; # DEV FILENAME
+my $Query = $ENV{'QUERY_STRING'};
+
+# Mandatory http header
+print ("Content-type: text/html\n\n");
+print ("<!DOCTYPE html>\n");
+print ("<head>\n");  # Insert script if desired
+print ("</head>\n");
+print ("<body>\n");
+
+unless ($Query) {
+  print ("No data received, sorry.");
+  print ("</body>\n"); print ("</html>");
+  die;
+}
+
+$Query =~ s/code=//gi;         # Cleanup
+
+print ("Thank you, access configured.");
+print ("</body>\n"); print ("</html>");
+
+open (OUT, ">$Outfile") or die; print (OUT $Query); close (OUT);
+open (OUT, ">$0.debug") or die; print (OUT $Query); close (OUT);

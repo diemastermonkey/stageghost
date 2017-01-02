@@ -1,0 +1,83 @@
+body  {
+  background-image: url("_BG_IMAGE_");
+  background-repeat: no-repeat;
+  background-size: 100%;
+  background-color: #_BRGB_;
+/*  color: #FFFFFF; */
+/*  font-size: 1.25em; */
+}
+
+/* Greenscreen 'underlay' cuts-out area 
+   for DronesoundTV system console, etc
+*/
+.main_left_mask {
+  display:none;
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #00FF00;
+}
+
+/* Right 'on top' of the underlay is
+   the on-page dynamic main left panel */
+.main_left_content {
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #000000;
+}
+
+.midright {
+  position: absolute;
+  top: 39%;
+  right: 1.4em;
+  padding: 0.4em;
+  width: 242px;  /* legacy - fix this */
+  height: 139px;
+}
+
+.bottom {
+  overflow: hidden;
+  margin-top: 42%;
+  margin-left: 0.4em;
+  margin-bottom: 0.96em;
+  padding: 0.40em;
+  background-color: #000000;
+  opacity: 0.9; 
+  vertical-align: text-bottom;
+}
+
+/* User-supplied notes
+   usernotes: div in which they all sit
+   usernote: each note
+*/
+/* Optional:  Constrain notes to area of screen
+   by setting margins/width/padding/left/top etc here
+*/
+
+.usernotes {
+  z-index: 0;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.usernote {
+  /* position: relative; */
+  position: absolute;
+  width: 38%;
+  font-size: 2em;
+  color: #FFFFFF;
+  background-color: #_BRGB_;
+  background-opacity: 0.85 !important;
+  opacity: 0.85;
+  border-style: double;
+  padding: 0.5px !important;
+  padding-left:3px; padding-right:3px;
+  overflow: hidden;
+}
+

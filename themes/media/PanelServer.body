@@ -1,0 +1,112 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="global.css">
+  <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+  <link rel="stylesheet" type="text/css" href="panels/ChatLobby.css">
+  <link rel="stylesheet" type="text/css" href="panels/usernote.css">
+<script>
+<!--
+/*
+Auto Refresh Page with Time script
+By JavaScript Kit (javascriptkit.com)
+Modified 2016 @diemastermonkey
+*/
+
+// Refresh time as minutes:seconds, 0 to inifinity
+
+var limit="1:60"
+
+var doctitle = document.title
+var parselimit=limit.split(":")
+parselimit=parselimit[0]*60+parselimit[1]*1
+
+function beginrefresh(){
+  if (parselimit==1) {
+    window.location.reload()
+  } else { 
+    parselimit-=1
+    curmin=Math.floor(parselimit/60)
+    cursec=parselimit%60
+    if (curmin!=0) {
+      curtime=curmin+" "+cursec+" "
+    } else {
+      curtime = cursec + " "
+    }
+
+  // document.title = doctitle + ' (' + curtime +')'
+  setTimeout("beginrefresh()",1000)
+  }
+}
+
+if (window.addEventListener) {
+  window.addEventListener("load", beginrefresh, false) 
+} else if (window.attachEvent) {
+  window.attachEvent("load", beginrefresh)
+}
+
+//-->
+</script>
+</head>
+<body>
+
+<!-- Top left (main) panel content -->
+<!-- sources
+gHBwSn5yq8g
+ETfMyvdp_cs
+-->
+<div id="main_left_content" class="main_left_content">
+  <iframe 
+    src="https://www.youtube.com/embed/_C_RANDOMVIDEO_?autoplay=1&loop=1" 
+    width="508" height="315" 
+    autoplay="1"
+    autohide="1"
+    controls="0"
+    enablejsapi="1"
+    start="8"
+    end="8"
+    fs="0"
+    iv_load_policy="3"
+    loop="1"
+    rel="0"
+    showinfo="1"
+    frameborder="0">
+  </iframe>
+</div>
+
+<!-- Top left (main) panel green screen cover  
+     Note used in this theme, set off in CSS
+-->
+<div id="main_left_mask" class="main_left_mask">
+DronesoundTV System Console
+</div>
+
+<!-- Top right panel green screen cover
+     When visible, content beneath is unmasked
+ -->
+<div id="toprightmask" class="toprightmask">
+Pi Cam
+</div>
+
+<!-- Middle Right Panel aka Data -->
+<div id="midright" class="midright">
+<i>Chat Log</i>
+<hr>
+_C_CHATLOG_
+</div>
+
+<!-- Bottom Panel -->
+<div id="bottom" class="bottom">
+_FORTUNE_
+</div>
+
+<!-- Chat lobby panel above media embed -->
+<div id="chatlobby_float"
+  style="position:absolute; bottom: 30%; left: 6%;">
+_LOBBY_
+</div>
+<!-- User on-screen notes via commands/note -->
+<div id="usernotes" class="usernotes">
+  _USERNOTES_
+</div>
+</body>
+</html>

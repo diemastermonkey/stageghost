@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=utf-8>
+		<title>Three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+	  <!-- Include Three.js and other tools -->
+		<script type="text/javascript" src="three.js"></script>
+		<script type="text/javascript" src="Tween.js"></script>		
+		<script>
+      // Render function called on frame update
+		  function render() {
+        // Update all tweens (library call, not obj)
+        // TWEEN.update();
+		  
+		    requestAnimationFrame (render);  // Req frame update
+		    // Wandering camera
+        fnCameraAnim();
+        // cube.rotation.x += fRotRateX;    // Move stuff
+        // cube.rotation.y += fRotRateY;
+		    renderer.render (scene, camera); // Update
+		  }
+		  
+		  // Setup
+		  function fnInit() {
+        // Event listener resizes renderer with browser
+        window.addEventListener ('resize', function() {
+          var WIDTH = window.innerWidth,
+              HEIGHT = window.innerHeight;
+          renderer.setSize(WIDTH, HEIGHT);
+          // renderer.setClearColor(0x3399ff); // BG if desired 
+          camera.aspect = WIDTH / HEIGHT;
+          camera.updateProjectionMatrix();
+        });  // End listener		  
+      }      // End function
+
+      // DISUSED: Model loader
+      // Load Blender-exported ThreeJS file
+      function fnLoadModel() {
+        // Load in the mesh and add it to the scene.
+        var loader = new THREE.JSONLoader();
+        loader.load( "models/BLENDEREXPORTMODEL.js", 
+          function (geometry) {
+            var material = 
+              new THREE.MeshLambertMaterial({color: 0x55B663});
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+          }
+        );  // End loader
+      }     // End function
+ 
+      // Camera: Update camera tween,
+      // or start a random tween if inactive
+      function fnCameraAnim() {
+        // Update tween if cam not at cam go
+        if (camera.position != oCamGo) {
+          TWEEN.update();
+          return;         // Done here, shunt
+        }
+      }
+      
+      function fnCameraRand() { 
+       // No cam tween active, set new target
+        // if (Math.random() * 2 < 1) {
+          oCamGo.x = Math.random() * fCamRange - fCamRange / 2;
+          oCamGo.y = Math.random() * fCamRange / 8; // Limit altitude
+          oCamGo.z = 1.25 + Math.random() * fCamRange / 3; // Limit Z
+
+          oCamPos = camera.position;
+          // Do NOT reinstantiate Tween:
+          oTween = new TWEEN.Tween(oCamPos).to(oCamGo, fCamTime); 
+          // Hook tween callback to position update
+          oTween.onUpdate(function(){
+            camera.position.x = oCamPos.x;
+            camera.position.y = oCamPos.y;
+            camera.position.z = oCamPos.z;
+            camera.lookAt (oLookAt);  // Stick look at
+          });
+          oTween.onComplete(function(){
+            fnCameraRand();            // On tween finished
+          });
+          
+          oTween.start();  // Need this?
+        // } 
+      }   // End function
+ 
+      // Globals
+      // -----------------------------------------
+      // Old-style cam pos
+      var fCamX = 0; var fCamY = 0; var fCamZ = 3;
+      var fCamGoX = 0.5; var fCamGoY = 1; var fCamGoZ = 2;
+      var fCamRange = 7.0;
+      // New-style cam pos
+      var oCamPos = { x : 0, y : 0, z : 1.5 };
+      var oCamGo = { x : -0.5, y : 1.2, z: 3.0 };
+      var fRotRateX = 0.008; var fRotRateY = 0.013;
+      var oLookAt = new THREE.Vector3(0,0,0);
+      var scene, boxGeom, flatGeom;
+      var fCamTime = 15000;   // Tween time ms
+            
+      // Mainline
+      // -----------------------------------------      
+      fnInit();     // Move setup below to this
+      
+		  // Set up 3d scene - note cam parm 0 is focal len
+		  var scene = new THREE.Scene();
+		  var camera = 
+        new THREE.PerspectiveCamera (
+          55, window.innerWidth/window.innerHeight, 0.1, 1000
+        );
+        
+      // Set up render/page, add the scene to dom
+		  var renderer = new THREE.WebGLRenderer();
+		  renderer.setSize (window.innerWidth, window.innerHeight);
+		  document.body.appendChild (renderer.domElement);
+
+      // Set up object geometry
+		  boxGeom = new THREE.BoxGeometry (1, 1, 1);
+		  flatGeom = new THREE.BoxGeometry (2.5, 1.5, 0.001);
+
+		  // Simple material example
+		  // var material = new THREE.MeshNormalMaterial ({color: 0x00ff00});
+		  // Image materials from file
+      var boxTex = THREE.ImageUtils.loadTexture("assets/boxtexture.jpg");
+      var boxMat = new THREE.MeshBasicMaterial({map: boxTex});
+      var fgTex0 = THREE.ImageUtils.loadTexture (
+        "assets/fg-foliage-001-white.png");
+      // OG // var fgMat0 = new THREE.MeshBasicMaterial({map: fgTex0});
+      // W/transparency      
+      var fgMat0 = new THREE.MeshBasicMaterial({
+        map: fgTex0, 
+        transparent: true, 
+        opacity: 1.0,    // lt 1 also cool 
+        color: 0x005100  // q: how set no color?         
+      });
+      
+      // Add object to scene
+		  // var cube = new THREE.Mesh (geometry, material);
+		  var cube = new THREE.Mesh (boxGeom, boxMat);
+		  var fg0 = new THREE.Mesh (flatGeom, fgMat0);
+		  var fg1 = new THREE.Mesh (flatGeom, fgMat0);
+		  // Setup ground
+		  var oGroundMat = new THREE.MeshBasicMaterial ({color: 0x301a00});
+		  var oGround = 
+        new THREE.Mesh (new THREE.PlaneGeometry (32, 32), oGroundMat);
+		  // var oGround = new THREE.Mesh (oGroundGeom, oGroundMat);
+		  oGround.doubleSided = false;
+		  oGround.rotation.x =  - Math.PI / 2;
+      oGround.position.y = -0.5;
+      scene.add (oGround);
+		  // Position folliage
+		  fg0.position.z = 0.75; fg0.position.y = 0.25;
+      fg1.position.z = 1.53; fg1.position.y = 0.25; 
+      fg1.position.x = -0.8;
+      // cube.position.z = -2.5;
+		  scene.add (cube); scene.add (fg0); scene.add (fg1);
+		  // Initial camera position
+		  camera.position = oCamPos; 
+		  
+      // TWeen setups
+      var oTween = new TWEEN.Tween(oCamPos).to(oCamGo, fCamTime);
+      var oTween;
+      fnCameraRand();  // Should start random tween
+      
+      // Other settings
+      // oTween.delay (1000);  // Pre-tween delay
+      /* Moved to fnCameraAnim
+      // Hook tween callback to position update
+      oTween.onUpdate(function(){
+        camera.position.x = oCamPos.x;
+        camera.position.y = oCamPos.y;
+        camera.position.z = oCamPos.z;
+        camera.lookAt (oLookAt);  // Stick look at
+      });
+      oTween.onComplete(function(){
+        // On tween finished
+        fnCameraRand();
+      });
+		  */
+		  
+      // Start renderer
+		  render();              // Repeats on clock
+
+		  // Start tween
+		  // oTween.start();
+		  
+		</script>
+	</body>
+</html>

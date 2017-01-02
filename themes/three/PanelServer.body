@@ -1,0 +1,113 @@
+<html>
+<!-- Panel Server Template
+     Tokens throughout replaced at render time
+     @diemastermonkey @garyd 2016 for DronesoundTV  
+-->
+<head>
+  <link rel="stylesheet" type="text/css" href="global.css">
+  <link rel="stylesheet" type="text/css" href="panels/ChatLobby.css">
+  <link rel="stylesheet" type="text/css" href="panels/usernote.css">
+  <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+
+  <!-- DTV General-purpose animation tools -->
+  <script type="text/javascript" src="panels/animation.js"></script>
+
+  <!-- New simple refresher -->
+  <script type="text/javascript">
+  <!--
+    var timer = null;
+    function auto_reload() {
+      // Would rather just...
+      // document.getElementById('notice').src = 
+      //  "PanelServerNotice.html";
+
+      // Instead, full refresh...
+      window.location.reload(false);
+    }
+  //-->
+  </script>
+
+</head>
+
+<!-- Body onload starts both animator and page refresh -->
+<body 
+  onLoad="fnAnimate(); timer = setTimeout('auto_reload()', 26000);">
+<!-- Top left (main) panel green screen cover -->
+<div id="main_left_mask" class="main_left_mask">
+  <!-- Future Home Console -->
+</div>
+
+
+<!-- Shoutout contains requestor images, more
+     Might be anywhere
+-->
+<div id="shoutout" class="shoutout">
+  <img width="192" height="144"
+    src="_REQUESTORIMAGE_" class="requestorimage" 
+    onerror="this.src='emptypixel.png';" />
+  <br />
+</div>
+
+<!-- Middle Right Panel aka Data (Disused)
+<div id="midright" class="midright">
+  <img class="waveform" id="waveform" src="_C_MIDRIGHT_" 
+   width="257" height="153">
+</div>
+-->
+
+<!-- Foreground image for overlay in front of mask 
+     Place after green screen unless you want to play with z-orders
+-->
+<div id="foreground" class="foreground">
+  <img id="fgimage" src="themes/three//fsmsm3.png">
+</div>
+
+<!-- Not actually bottom panel with messages -->
+<div id="upperrightbox" class="upperrightbox">
+_C_BOTTOM_
+</div>
+
+<!-- Chat Lobby -->
+<div id="lobby" align="left" 
+  style="position:absolute; top:70%; left:1.76em; align:left; outline-style:none; width:95%; color:#ffffff; padding:0; z-index:10; text-align:left; border-width:0;">
+_LOBBY_
+</div>
+
+<!-- Top right panel green screen cover
+     When visible, content beneath is unmasked
+ -->
+<div id="toprightmask" class="toprightmask">
+Pi Cam
+</div>
+
+<!-- Final, usually-invisble full size overlay for things
+     like graffiti tagging, chat user avatars, 
+     and batman-style pow zing effects.
+-->
+<div id="top" class="top">
+  <!-- Notice overlay usually empty fades out via css -->
+  <div id="notice" class="notice">
+    <iframe src="PanelServerNotice.html" scrolling="no" 
+     frameBorder="0" seamless="seamless">
+    </iframe>
+  </div>
+
+   <!-- Signage in topmost layer -->
+   <div id="signage" class="signage">
+     <img src="emptypixel.png" width="40" />
+     <img src="panels/raspberrypi.png" width="32" height="32" />
+     <img src="emptypixel.png" width="40" />
+     <img src="panels/freesound.png" width="104" height="32" />
+     <img src="emptypixel.png" width="20" />
+     <img src="panels/soundcloud.png" />
+     <img src="emptypixel.png" width="20" />
+     <img src="emptypixel.png" width="20" />
+     <b>Type HELP</b> for instructions.
+   </div>
+</div>
+<!-- User on-screen notes via commands/note -->
+<div id="usernotes" class="usernotes">
+  _USERNOTES_
+</div>
+</body>
+</html>

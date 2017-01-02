@@ -1,0 +1,151 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="global.css">
+  <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+
+<script>
+<!--
+/*
+Auto Refresh Page with Time script
+By JavaScript Kit (javascriptkit.com)
+Modified 2016 @diemastermonkey
+This is a TEMPLATE - tokens throughout
+in form _TOKEN_ get replaced at render
+by an external script. Modify this and 
+PanelServer*Template*.css to change layout.
+*/
+
+// Refresh time as minutes:seconds, 0 to inifinity
+var limit="0:67";
+var RefreshLimit = 3;
+
+// var doctitle = document.title
+var parselimit = limit.split (":");
+parselimit = parselimit[0] * 60 + parselimit[1] * 1;
+
+// For animation
+var iForeground = 0;  // If 1 animating fg else bg
+
+// Thx w3c
+function randInt (min, max) {
+  return Math.floor (Math.random() * (max - min)) + min;
+}
+
+// Animation page swap
+function fnPageSwap () {
+
+}
+
+/* Runs each (timer) */
+function beginrefresh () {
+  // New: Possibly change overlay frame
+  if (randInt(0, 2) == 0) {
+    var iFrame = randInt(1, 6); /* frames 1-5 */
+    var sSrc = 
+      "themes/tech"
+      + "/dc0"
+      + iFrame + ".png";
+
+    // Draw on inactive frame and swap opacity w/active frame
+    if (iForeground == 1) {	// fg is active frame
+      iForeground = 0;
+      document.getElementById('bgimage').src = sSrc;
+      document.getElementById('bgimage').style = "opacity:1.0;";
+      document.getElementById('fgimage').style = "opacity:0.0; transition: opacity 1.5s;";
+    } else {
+      iForeground = 1;
+      document.getElementById('fgimage').src = sSrc;
+      document.getElementById('fgimage').style = "opacity:1.0 transition: opacity 1.5s;";
+      // document.getElementById('bgimage').style = "opacity:0.0; transition: opacity 1.5s;";
+    }  
+
+    // document.getElementById('foreground').style.background 
+  }
+
+  // Though wasteful, zero opacity for css transition
+  // old way // document.getElementById('notice').style = "opacity:0.0;";
+  // Also start animation of notice by changing position
+  // old way // document.getElementById('notice').style = "left:75%;";
+  // document.getElementById('notice').style = "top:28%;";
+  // New way
+  // Broken // document.getElementById("notice").className += " transition";
+  document.getElementById('notice').style = "opacity:0.0; left:30%;";
+
+  if (parselimit == 1) {
+    // Force reload // window.location.reload()
+    window.location.reload(false);  // Use cache?
+  } else { 
+    parselimit -= 1
+    // X-second timer 
+    setTimeout ("beginrefresh()", 2300)
+  }
+}
+
+if (window.addEventListener) {
+  window.addEventListener("load", beginrefresh, false) 
+} else if (window.attachEvent) {
+  window.attachEvent("load", beginrefresh)
+}
+
+//-->
+</script>
+</head>
+<body bgimage="themes/tech/dc0.png">
+
+<!-- Top left (main) panel green screen cover -->
+<div id="main_left_mask" class="main_left_mask">
+<!-- Future Home Console -->
+</div>
+
+<!-- Notice overlay usually empty fades out via css
+     Image disabled till we're getting right image
+-->
+<div id="notice" class="notice">
+  <!--
+  <img src="_REQUESTORIMAGE_" class="requestor" onerror="this.src='emptypixel.png';" /> <br />
+  -->
+  <iframe src="PanelServerNotice.html" class="notice" style="font-size:30px;"></iframe>
+</div>
+
+<!-- Middle Right Panel aka Data (Disused)
+<div id="midright" class="midright">
+  <img class="waveform" id="waveform" src="_C_MIDRIGHT_" 
+   width="257" height="153">
+</div>
+-->
+
+<!-- Foreground image for overlay in front of mask 
+     Place after green screen unless you want to play with z-orders
+-->
+<div id="foreground" class="foreground">
+  <img id="fgimage" src="themes/tech/dc01.png">
+</div>
+
+<!-- Behind image for overlay ie next frame of animation
+     note div class same but image class differs
+-->
+<div id="foreground" class="foreground">
+  <img id="bgimage" src="themes/tech/dc02.png">
+</div>
+
+
+<!-- Not actually bottom panel with messages -->
+<div id="upperrightbox" class="upperrightbox">
+_C_BOTTOM_
+</div>
+
+
+<!-- Top right panel green screen cover
+     When visible, content beneath is unmasked
+ -->
+<div id="toprightmask" class="toprightmask">
+Pi Cam
+</div>
+
+<!-- User on-screen notes via commands/note -->
+<div id="usernotes" class="usernotes">
+_USERNOTES_
+</div>
+
+</body>
+</html>

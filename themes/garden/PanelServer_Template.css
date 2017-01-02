@@ -1,0 +1,242 @@
+/* DronesoundTV User Styling Template
+   For detailed instructions see
+   Advanced Power User's Guide Video
+   https://youtube.com/watch?v=VzuDnbjIhbg
+
+   @garyd @diemastermonkey @okbopdesign 2016  
+
+   Tokens are replaced on render at server.
+   Use anywhere/often as desired.
+
+   _BRGB_         Value set by the COLOR command
+   _BG_IMAGE_     Image selected by BG command
+   _C_MIDRIGHT_   Waveform image of latest sample played
+   _C_BOTTOM_     Rotates among creds, alerts, shoutouts
+   _REQUESTORIMAGE_
+      Profile image of user who droned <= 5m ago
+
+   NOTE: Anyone figuring-out how to poke the
+   local filesystem or browser instance will be
+   perma-banned! Unless maybe they file a bug w/me 
+   first k. ;)
+*/
+
+/* Set a user theme body class=dtv-themed to use these */
+.dtv-themed {
+  background-image: url("_BG_IMAGE_");   
+  background-color: #_BRGB_;
+}
+
+/* User-controlled background - you may use a *safe tasteful* url */
+body  {
+  /* background-image: url("backgrounds/sunset1.gif");    */
+  /* background-color: #_BRGB_; */
+  background-color: #000000;
+  opacity 1.0;                   /* For transitions */
+  background-repeat: no-repeat;
+  background-size: 100%;
+  overflow: hidden;
+}
+
+/* The DronesoundTV Logo Must Be Visible At All Tymes and Humors
+   Of course we're kidding sheesh could you imagine?! :)
+*/
+.logo {
+  background-image: url("panels/dtvlogo_white_black_outer.png"); 
+  /* Alternate:  panels/dtvlogo_greenscreen.png */
+  /* background-color: #_BRGB_; */
+  position: absolute;
+  top: 7%;
+  right: 2%;
+  border-style: none;
+  z-index: 10;
+}
+
+/* Top layer atop everything, for graffiti tags
+   and temporary popups, etc
+*/
+.top {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  opacity: 1.0;
+  border: none;
+}
+
+/* Signage area of top layer. Actually this should be
+   shown occasionally to credit Freesound SoundCloud RPI */
+.signage {
+  display: block;
+  position: absolute;  /* wrong wrong wrong */
+  opacity: 0;          /* Start invisible script fades in/out */
+  background-color: #000000;
+  background-opacity: 1.0;
+  bottom: 2.5%;
+  left: 2.5%;
+  right: 2.5%;
+  width: 95%;
+  height: 10%;
+  padding: 0.40em;
+  vertical-align: middle;
+}
+
+/* Overlaid notice actually under overlay in this theme */
+.notice {
+  display: none;   /* Disabled till home found */
+  width: 600px;
+  overflow: auto;
+  position: absolute;
+  z-index: 0;
+  transition: opacity 5s left 7s;
+  opacity: 1.0;
+  top: 54%;
+  left: 60%;
+  border: 0px;
+  font-size: 0.10em;
+  font-color: #000000;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Shoutout in this theme contains only profile image 
+   It should show through cutout so it's z index 0
+*/
+.shoutout {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%; height: 100%;
+  z-index: 10;
+}
+
+/* Requestor img in body, in shoutout div */
+.requestorimage {
+  /* parent shoutout */
+  position: absolute;
+  top: 50%;
+  left: 74%;
+  width: 0px;  /* Starts flea size so zoom in */
+  height: 0px;
+  z-index: 10;
+}
+
+/* Animated foreground image in front of bg and masks 
+   Not actually used in this theme, see theme "three" 
+   for an example. Disabled in the html, actually.
+   It will be opened-up soon.
+*/
+.foreground {
+  background-image: url("backgrounds/abstractalpha01.png");
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+/* The RL Cutout Masks! Oh this is so clever...
+   The toprightmask and main_left_mask objects
+   are positioned above the Real Life "Pi Cam" 
+   and terminal capture screens, respectively.
+   When visible and green, they "show through"
+   the panel. This allows you to "turn those 
+   video sources on and off" from layout!
+
+   Much other fun can be had by green-screened
+   overlays, partial cutouts, etc. Experiment.
+*/
+
+/* The "Pi Cam" is hidden in this theme, not even green */
+.toprightmask {
+  display: none;
+}
+
+/* This one is shown but underneath the "overlay", so
+   it ends-up peeking-through alpha channel pixels in
+   the overlay's background image.
+*/
+.main_left_mask {
+  display: none;	/* no green screen in this theme */
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #00FF00;
+}
+
+/* Waveform traditional position
+   Disabled in html in this theme
+*/
+.midright {
+  position: absolute;
+  top: 72%;
+  left: 4.55em;
+  opacity: 1.00;
+  width: 239px;
+  height: 48px;
+}
+
+/* Messages and notices
+   Though it says upper right, it's actually in the bottom
+   in this theme. 
+*/
+.upperrightbox {
+  position: absolute;
+  z-index: 9;
+  overflow: hidden;
+  bottom: 2.5%;
+  left: 2.5%;
+  right: 2.5%;
+  width: 95%;
+  height: 10%;
+  padding: 0.40em;
+  /* OG background-color: #004488; */
+  background-color: #_BRGB_;
+  background-opacity: 0.5;
+  opacity: 1.0; 
+  vertical-align: text-bottom;
+}
+
+/* Overrides for User-supplied notes (see also panels/usernote.css)
+   usernotes: div in which they all sit
+   usernote: each note
+*/
+/* Optional:  Constrain notes to area of screen
+   by setting margins/width/padding/left/top etc here
+*/
+
+.usernotes {
+  z-index: 0;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.usernote {
+  position: absolute;
+  font-size: 2em;
+  color: #aaaaaa;
+  background-color: #000000;
+  background-opacity: 0.2;
+  opacity: 0.80;
+  border-style: double;
+  overflow: hidden;
+}
+
+/* New: Overriding w3*.css for lazy restyling their templates */
+.w3-navbar {
+  background-color: #_BRGB_;
+}
+.w3-indigo {
+  background-color: #_BRGB_;
+}
+.dtv-rgb {
+  background-color: #_BRGB_;
+  color: #000000;
+}

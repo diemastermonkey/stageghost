@@ -1,0 +1,26 @@
+body  {
+  background-image: url("backgrounds/f77eb819a9add28e2d887ccb656d3e45.jpg");
+  background-color: #555555;
+/*  color: #FFFFFF; */
+/*  font-size: 1.25em; */
+}
+
+.midright {
+  position: absolute;
+  top: 39%;
+  right: 1.4em;
+}
+
+.bottom {
+  overflow: hidden;
+  margin-top: 42%;
+  margin-left: 0.4em;
+  margin-right: 0.8em;
+  margin-bottom: 0.96em;
+  min-height: 2.9em;
+  max-height: 2.9em;
+  padding: 0.40em;
+  background-color: #000000;
+  opacity: 0.9; 
+  vertical-align: text-bottom;
+}

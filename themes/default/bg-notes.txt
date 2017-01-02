@@ -1,0 +1,2 @@
+backgrounds/spaceface1.gif
+backgrounds/anim_nervouscomputer.gif

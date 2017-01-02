@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset=utf-8>
+		<title>Three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+	</head>
+	<body>
+		<script src="three.js"></script>
+		<script>
+      // Render function called on frame update
+		  function render() {
+		    requestAnimationFrame (render);  // Req frame update
+        cube.rotation.x += fRotRateX;    // Move stuff
+        cube.rotation.y += fRotRateY;
+		    renderer.render (scene, camera); // Update
+		  }
+		  
+		  // Setup
+		  function fnInit() {
+        // Event listener resizes renderer with browser
+        window.addEventListener ('resize', function() {
+          var WIDTH = window.innerWidth,
+              HEIGHT = window.innerHeight;
+          renderer.setSize(WIDTH, HEIGHT);
+          // renderer.setClearColor(0x3399ff); // BG if desired 
+          camera.aspect = WIDTH / HEIGHT;
+          camera.updateProjectionMatrix();
+        });  // End listener		  
+      }      // End function
+
+      // DISUSED: Model loader
+      // Load Blender-exported ThreeJS file
+      function fnLoadModel() {
+        // Load in the mesh and add it to the scene.
+        var loader = new THREE.JSONLoader();
+        loader.load( "models/BLENDEREXPORTMODEL.js", 
+          function (geometry) {
+            var material = 
+              new THREE.MeshLambertMaterial({color: 0x55B663});
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+          }
+        );  // End loader
+      }     // End function
+            
+      // Globals
+      var fRotRateX = 0.008; var fRotRateY = 0.013;
+      var scene, geometry;
+      
+      // == Mainline ==
+      fnInit();     // Move setup below to this
+      
+		  // Set up 3d scene
+		  var scene = new THREE.Scene();
+      // Note cam parm 0, focal len
+		  var camera = 
+        new THREE.PerspectiveCamera (
+          55, window.innerWidth/window.innerHeight, 0.1, 1000
+        );
+        
+      // Set up render/page, add the scene to dom
+		  var renderer = new THREE.WebGLRenderer();
+		  renderer.setSize (window.innerWidth, window.innerHeight);
+		  document.body.appendChild (renderer.domElement);
+
+      // Set up objects
+		  geometry = new THREE.BoxGeometry (1, 1, 1);
+
+		  // Simple materials
+		  // var material = new THREE.MeshBasicMaterial ({color: 0x00ff00});
+		  // var material = new THREE.MeshNormalMaterial ({color: 0x00ff00});
+
+		  // Image material from file
+      var texture = THREE.ImageUtils.loadTexture("assets/boxtexture.jpg");
+      var boxMaterial = new THREE.MeshBasicMaterial({map: texture});
+
+      // Add object to scene
+		  // var cube = new THREE.Mesh (geometry, material);
+		  var cube = new THREE.Mesh (geometry, boxMaterial);
+		  scene.add (cube);
+
+      // Set camera, start renderer
+		  camera.position.z = 3; // Should match focal len
+		  render();              // Repeats on clock
+
+		</script>
+	</body>
+</html>

@@ -1,0 +1,138 @@
+body  {
+  /* Theme-controlled background in this theme */
+  /* background-image: url("_BG_IMAGE_"); */
+  /* background-image: url("themes/.future/MM_Overlay_1999_1.png"); */
+  /* background-color: #_BRGB_; */
+  background-color: #000000;
+  opacity 1.0;  /* For transitions to other */
+}
+
+/* toplayer atop everything for graffiti tags
+   and temporary popups
+*/
+.top {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  opacity: 1.0;
+  border: none;
+  /*
+    overflow-y: auto;
+    overflow-x: hidden;
+  */
+}
+
+/* Signage area of toplayer */
+.signage {
+  display: block;
+  position: absolute;  /* wrong wrong wrong fix */
+  opacity: 0;  /* Starts invisible script fades in/out */
+  background-color: #000000;
+  background-opacity: 0.25;
+  bottom: 2.45%;
+  left: 2.25%;
+  padding: 0.1em;
+  height: 10%;
+  width: 95%;
+  vertical-align: middle;
+}
+
+/* Overlaid notice actually under overlay in this theme */
+.notice {
+  width: 400px;
+  overflow: auto;
+  position: absolute;
+  z-index: 0;
+  transition: opacity 5s;
+  opacity: 1.0;
+  top: 38%;
+  left: 27%;
+  border: 0px;
+  font-size: 6px;
+  font-color: FF0000;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* mix-author 
+   Populated by (at least) commands/mix
+   Currently just text but may have img later
+*/
+.mix-author {
+  font-size: 18px;
+}
+
+
+/* Shoutout in this theme contains only profile image 
+   It should show through cutout so it's z index 0
+*/
+.shoutout {
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%; height: 100%;
+  z-index: 0;
+}
+
+.requestorimage {
+  /* pos relative to parent, shoutout */
+  position: relative;
+  top: 34.5%;
+  left: 25%;
+  z-index: 0;
+}
+
+/* Special foreground image in front of bg and masks */
+.foreground {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 138%;
+  height: 102%;  /* Kludge height to avoid scroll on scroll */
+}
+
+/* Both masks hidden in this theme */
+.toprightmask {
+  display: none;
+}
+
+.main_left_mask {
+  position: absolute;
+  top: 3%;
+  left: 0.85em;
+  width: 62.5%;
+  height: 70%;
+  background-color: #00FF00;
+}
+
+/* Hacked up waveform moved around resized etc */
+.midright {
+  position: absolute;
+  top: 72%;
+  left: 4.55em;
+  opacity: 1.00;
+  width: 239px;
+  height: 48px;
+}
+
+/* BROKEN: An upper right info panel
+   Translucent in this theme because Art */
+.upperrightbox {
+  position: absolute;
+  z-index: 9;
+  overflow: hidden;
+  top: 6%;
+  right: 2%;
+  width: 92%;
+  padding: 0.40em;
+  /* OG background-color: #004488; */
+  background-color: #_BRGB_;
+  background-opacity: 1.0;
+  opacity: 0.8; 
+  vertical-align: text-bottom;
+}
+
+

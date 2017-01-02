@@ -1,0 +1,163 @@
+#!/usr/bin/perl
+# Primitive setup UI for DronesoundTV/Stageghost
+# 20161121 @garyd @diemastermonkey
+# Reminder: %ENV contains other handy info
+
+# Globals
+my $sQuery = $ENV{'QUERY_STRING'};
+my @CGI = split (/\&/, $sQuery);
+my %Config;
+my $Empty;		   # Empty config fields
+my $sURL = "/cgi-bin/setup"; # Path to cgi
+my $ConfigPath = "config"; # Subdir for settings files
+my $Dash = "-" x 64;
+
+# Mandatory http header
+print ("Content-type: text/html\n\n");
+print ("<!DOCTYPE html>\n");
+print ("<head>\n");
+fnWebScript();		# Script must go in header
+print ("</head>\n");
+print ("<body>\n");
+
+# UI
+fnWebPrintln ("Using $0 <br>");
+fnWebPrintln ("$Dash <br>");
+fnWebForm();     # Display form
+
+# CGI: update fields if exist (supports multiple, only one used)
+foreach $Line (@CGI) {              # Parse CGI to Data hash
+  ($Field, $Value) = split (/\=/, $Line);
+  fnConfigWrite ($Field, $Value);   # Update only if exists
+}
+
+# Get/display saved config
+fnConfigRead();
+
+# Edit field for display only, not submitted
+print ("
+  <input type=\"text\" 
+    onChange=\"fnEditValue();\"
+    id=\"uiTextOut\" size=\"48\">
+  <br><br>"
+);
+
+# Start the select list
+fnWebPrintln (
+  "<select id='fieldSelect' "
+  . "autofocus='autofocus' "
+  . "onChange='fnUpdateValueDisplay();'"
+  . "> "
+);  
+
+# Make list option for each key (field name)
+foreach $Line (keys(%Config)) {
+  fnWebPrintln ("<option>"
+    . $Prefix . $Line         # Just name of field
+    . "</option>"
+  );
+}
+# Extra (invalid) default
+fnWebPrintln ("<option selected value=''>Select...</option>");
+fnWebPrintln ("</select>");   # End select list
+
+# Also, hidden fields with the values, named with field name
+foreach $Line (keys(%Config)) {
+  fnWebPrintln (
+    "<input type=\"hidden\" id=$Line value=\""
+    . substr($Config{$Line}, 0, 96) 
+    . "\">"
+  );
+}
+
+# Bottom: Note empty config fields, if any
+if ($Empty) {
+  fnWebPrintln (
+    "<div id='uiNotice' class='uiNotice'>"
+    . "<br>Note: The following settings are empty:<br>"
+    . $Empty . "<br>"
+    . "</div>"
+  );
+}
+
+# Close the HTML!
+print ("\n</body></html>");
+
+# Functions
+# ----------------------
+
+# Print one line webishly
+sub fnWebPrintln {
+  print ("\n".shift(@_));
+}
+
+# Spit out webform
+sub fnWebForm {
+  # Print until END
+  print 
+<<END
+  <form action="$sURL">
+    Configuration 
+    <input type="submit" id="submit" value="Submit"> <br>
+    $Dash
+    <!-- Store single field/value update till submit   -->
+    <input type="hidden" id="update" name="" value="">
+  </form>
+  <br>
+END
+}  # End function
+
+# Print javascript into the html header
+sub fnWebScript {
+  # Print until END
+  print 
+<<END
+  <script type="text/javascript">
+
+    function fnUpdateValueDisplay () {
+      var sField = document.getElementById('fieldSelect').value;
+      var sValue = document.getElementById(sField).value;
+      document.getElementById('uiTextOut').value = sValue; // Display 
+    }
+
+    // When displayed value edited, update hidden update field
+    function fnEditValue () {
+      var sField = document.getElementById('fieldSelect').value;
+      var sValue = document.getElementById('uiTextOut').value;
+      // Update visually
+      document.getElementById('uiTextOut').value = sValue;
+      // Set hidden field name/value to update data
+      document.getElementById('update').name = sField;
+      document.getElementById('update').value = sValue;
+    }
+  </script>
+END
+}
+
+# Get existing config data, brutally
+sub fnConfigRead {
+  foreach $setting (`find $ConfigPath/ -type f`) {
+    $value = `cat $setting`; chomp ($value);
+    $setting =~ s/$ConfigPath\///g;  # Remove path
+    chomp ($setting);
+    $Config{$setting} = $value;
+    # Add to (global!) 'empty' list for reporting only
+    $Empty .= "$setting " unless (length($value));
+  }
+}
+
+# Update an existing config data file (MUST pre-exist)
+sub fnConfigWrite {
+  my $f = shift (@_);  # field/value
+  my $v = shift (@_);
+
+  if (-w -f "$ConfigPath/$f") {
+    open (OUT, ">$ConfigPath/$f") 
+      or return();	# No err reporting!  
+    print (OUT $v);
+    close (OUT);
+  }
+}    
+
+# Fin
+

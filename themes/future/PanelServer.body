@@ -1,0 +1,117 @@
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="global.css">
+  <link rel="stylesheet" href="panels/w3.css">
+  <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+  <link rel="stylesheet" type="text/css" href="panels/ChatLobby.css">
+  <link rel="stylesheet" type="text/css" href="panels/usernote.css">
+
+<script>
+<!--
+/*
+Auto Refresh Page with Time script
+By JavaScript Kit (javascriptkit.com)
+Modified 2016 @diemastermonkey
+*/
+
+// Refresh time as minutes:seconds, 0 to inifinity
+var limit="0:52";
+var RefreshLimit = 3;
+
+// var doctitle = document.title
+var parselimit = limit.split (":");
+parselimit = parselimit[0] * 60 + parselimit[1] * 1;
+
+// Thx w3c
+function randInt (min, max) {
+  return Math.floor (Math.random() * (max - min)) + min;
+}
+
+/* Runs each (timer) */
+function beginrefresh () {
+  // New: Possibly change overlay frame
+  if (randInt(0, 2) == 0) {
+    var iFrame = randInt(1, 4);
+    var sSrc = "themes/future/MM_Overlay_1999_"
+      + iFrame + ".png";
+
+    // document.getElementById('foreground').style.background 
+    document.getElementById('fgimage').source = sSrc;
+    document.getElementById('fgimage').src = sSrc;
+  }
+
+  if (parselimit == 1) {
+    // Force reload // window.location.reload()
+    window.location.reload(false);  // Use cache?
+  } else { 
+    parselimit -= 1
+    // Two-second timer 
+    setTimeout ("beginrefresh()", 1300)
+  }
+}
+
+if (window.addEventListener) {
+  window.addEventListener("load", beginrefresh, false) 
+} else if (window.attachEvent) {
+  window.attachEvent("load", beginrefresh)
+}
+
+//-->
+</script>
+</head>
+<body>
+
+<!-- Top left (main) panel green screen cover -->
+<div id="main_left_mask" class="main_left_mask">
+Future Home Console
+</div>
+
+<!-- Notice overlay usually empty fades out via css
+-->
+<div id="notice" class="notice">
+Notice Here
+</div>
+
+<!-- Middle Right Panel aka Data -->
+<div id="midright" class="midright">
+  <img class="waveform" id="waveform" src="_C_MIDRIGHT_" 
+   width="257" height="153">
+</div>
+
+<!-- Foreground image for overlay in front of mask 
+     Place after green screen unless you want to play with z-orders
+-->
+<div id="foreground" class="foreground">
+  <img id="fgimage" src="themes/future/MM_Overlay_1999_3.png">
+</div>
+
+<!-- Not actually bottom panel with messages -->
+<div id="upperrightbox" class="upperrightbox">
+_C_BOTTOM_
+</div>
+
+<!-- Top right panel green screen cover
+     When visible, content beneath is unmasked
+ -->
+<div id="toprightmask" class="toprightmask">
+Pi Cam
+</div>
+
+<!-- Chat lobby, populated by PanelServerRefresh
+-->
+<div style="position:absolute; bottom: 10px;">
+  <ul class="w3-navbar w3-theme">
+    <li><a class="w3-black w3-padding-16" 
+      href="javascript:void(0)"><b>DronesoundTV</b></a>
+    </li>
+    <li class="w3-right"><a class="w3-padding-4">_LOBBY_</a><li>
+  </ul>
+</div>
+
+<!-- User on-screen notes via commands/note -->
+<div id="usernotes" class="usernotes">
+  _USERNOTES_
+</div>
+
+</body>
+</html>
