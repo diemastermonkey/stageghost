@@ -1,0 +1,49 @@
+# Programs comprising 'Stage Ghost', and 'DronesoundTV'
+# 
+
+# Stage Ghost
+# Chat/YouTube API interface, conduit to onboard commands
+ytTools-Startup     To launch yt* from crontab @reboot
+ytRefreshTokens     Keeps OAuth refresh tokens up to date
+ytRefreshTokensLoop Loops
+ytCheck             Checks dronetv.channelid for messages
+ytCheckLoop         Loops re-check
+ytSinglePost        Posts single string to dronetv.channelid
+ytMessageDelete     Deletes (arg) msgid from channel ('disappearing ink')
+ytUserInfo          Gets user profile pic etc for displays, sub status
+ytUserSubscribe     Subscribe to (arg) channelid ('sub' command)
+ytCheapBan          Ban (arg) user (by ch id) for 3 min? Curse-hammer.
+ytPermaBan          Rarely used variant ;)
+ytUserDossier       RETIRED: ascii-based shoutout
+ytAuthInit          INCOMPLETE: First-time setup
+ytGetStreamIDs      INCOMPLETE: First-time setup
+# PanelServer
+PanelServer         Optional: Python HTTP serving loop
+PanelServerRefresh  Old school caveman dynamic
+PanelServer-startup To launch from crontab @reboot
+# Config
+PanelServer.theme   Theme in use
+themes/*
+config/dronetv.*
+youtube-api-channelid.txt  DISUSED? Verify asap! --v
+youtube-api-key[s].txt
+ytAccessToken-*
+ytAPIKey.txt               ?
+ytChannelID.txt
+ytLiveChatID.txt
+ytLiveVideoStreamID.txt
+ytOAuthToken.json, ytOAuthToken.txt
+token.txt            ???
+
+# DronesoundTV-Specific
+DroneTV
+AttractMode
+ansiAnimation
+CodeScroller
+DronesoundTV         Classic console-based DTV displays
+randomFile
+uiFlashSetup, uiFlashRequests*
+keywords.txt
+commands/*
+commands/mix
+commands/filter
