@@ -1,0 +1,34 @@
+/* Global Base Styling for commands/note feature
+   20161216 @garyd @diemastermonkey for DronesoundTV
+*/
+
+.usernotes {
+  z-index: 0;
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+}
+
+.usernote {
+  /* position: relative; */
+  position: absolute;
+  height: auto;
+  max-height: 22%;
+  width: auto;
+  max-width: 39%;
+  margin-top: 0px;
+  margin-bottom: 6px;
+  top: 0px;
+  left: 0px;
+  font-size: 1.4em;
+  color: #FFFFFF;
+  background-color: #8800ff;
+  background-opacity: 0.66 !important;
+  opacity: 0.85;
+  border-style: double;
+  border-radius: 9px;
+  padding: 4px !important;
+  padding-left:4px; padding-right:4px;
+  padding-top: 0px;
+  overflow: hidden;
+}

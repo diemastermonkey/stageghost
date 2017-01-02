@@ -1,0 +1,57 @@
+/* DronesoundTV: Styling for 'chat lobby' example layout
+   @garyd @diemastermonkey @okbopdesign 2016  
+
+   Only styles Chat Lobby, should be included with global, etc
+*/
+
+/* speechbubble aka tooltip container we activate from code
+*/
+.chatbubble {
+  /* position: relative; */
+  position: absolute;
+  display: inline-block;
+  max-height: 40px;
+  z-index: 10;
+  opacity: 1.0;
+}
+
+/* Chatbubble text */
+.chatbubble .chatbubble-text {
+  /* visibility: hidden;  for JS triggering */
+  /* width: 100px; */
+  width: auto;
+  background-color: #eeeeee;  /* To do: Use user-provided BGRGB */
+  color: #000000;  /* text color */
+  text-align: center;
+  padding: 4px;
+  border-radius: 8px;  /* i.e. roundness */
+ 
+  /* Position the text */
+  position: absolute;
+  top: -55px;
+  left: -50%;  /* (invalid) shift left half of width?*/
+  z-index: 10;
+}
+
+/* This 'after' for the chatbubble-text adds a 
+ * little arrow below the bubble, ie 'chat bubble' style
+ * basically it's a bordered skinny text with taper. Style
+ * it here 
+ */
+.chatbubble .chatbubble-text::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  /* The trick: Border colored on bottom only. To do: use BRGB */
+  border-color: #eeeeee transparent transparent transparent;
+}
+
+
+/* Show the bubble aka tooltip when hover activated */
+.chatbubble:hover .chatbubble-text {
+    visibility: visible;
+}
