@@ -1,0 +1,14 @@
+# NOT READY YET # StageGhost Hacker's Kit
+# 01-2016 @garyd @diemastermonkey
+Minimal details:
+  See notes/dtv-install.txt
+  See notes/manifest.txt
+  Observe configuration files in config/dronetv.*
+  ...particularly *key* or *auth* or *api*
+  Note *-startup scripts, to start selected parts only
+
+PanelServer aka a Python Loop
+  Start with its -startup, then http://yourpi:8000/cgi-bin/setup
+  for headstart via log info/config browser 
+  DO NOT EDIT FIELDS WITH SPACES
+  
