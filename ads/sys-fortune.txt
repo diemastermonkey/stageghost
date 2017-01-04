@@ -1,0 +1,9 @@
+>
+^C
+<>monkey@dronesound:~ $ <
+>monkey@dronesound:~ $ <fortu>me<>
+-bash: fortume: command not found
+>monkey@dronesound:~ $ <<<w<h<ich<< fortune
+>/usr/games/fortune
+>monkey@dronesound:~ $ <<fo<r>tu<n<e<; uptime>
+>

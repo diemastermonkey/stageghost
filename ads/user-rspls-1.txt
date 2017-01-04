@@ -1,0 +1,6 @@
+>
+^C
+<>monkey@dronesound:~ $ <
+>monkey@dronesound:~ $ <<<<
+>monkey@dronesound:~ $ <perl -e '<p>rint< ((ROCK, PAPER, <SC>ISSORS,< LIZAR<D>, SP<OCK<)[rand(5)]."\n");'
+>

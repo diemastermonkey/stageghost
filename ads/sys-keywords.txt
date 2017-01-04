@@ -1,0 +1,4 @@
+>
+^C
+<>monkey@dronesound:~ $ <cat keywords.txt | sed <"s/ /\n/g;"< | sort -u | xargs<>
+

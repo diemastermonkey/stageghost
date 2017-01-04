@@ -1,0 +1,72 @@
+>
+^C<
+>monkey@dronesound:~ $ <
+>monkey@dronesound:~ $ <./mrRelay
+>
+-= DronesoundTV Relay Controller 0.02b =-
+(C) 2016 Monkey Robotics International
+
+>Initializing...
+>Powering tranciever.<.>.
+>Establishing network link............established.
+>[Base_Station] Command:<
+>[Base_Station] Command: <help<
+>
+  Available commands
+  --------------------------------------------
+  Info       Remote node status
+  Channels   Display relay channels
+  Relay      Control live relay connections
+  Remote     Establish remote control connection
+  Exit       
+
+>[Base_Station] Command: <<<
+>[Base_Station] Command: <Chammels<
+>Error: Command "Chammels" not found
+<
+>[Base_Station] Command: <Cha<n<n<els
+>
+  Relay channel        Status
+  --------------------------------------------
+  San_Francisco        Idle
+  Paris                5 viewers
+  London               Idle
+  Tokyo                Idle
+  Moc.Nibetsap         Error: Invalid channel
+  Beijing              Disconnected
+
+>[Base_Station] Command: <<
+>[Base_Station] Command: <<Rel<ay
+>
+ Usage: Relay CHANNEL_NAME
+        or
+        Relay ALL
+
+>[Base_Station] Command: <
+>[Base_Station] Command: <Rel<ay< A<L<L<
+>
+  Relaying signal to all remote channels...
+
+  Relay channel        Status
+  --------------------------------------------
+  San_Francisco        1 viewers
+  Paris                5 viewers
+  London               Idle
+  Tokyo                29 viewers
+  Moc.Nibetsap         Error: "jbDCt2rV"
+  Beijing              Disconnected
+
+>[Base_Station] Command: <<
+>[Base_Station] Command: <<Exit<>
+
+ Setting transciever for background operation...<>...**>
+ * SYSTEM NOTICE *
+ Priority message from relay "Moc.Nibetsap"...
+ System exit in progress: Storing message as "jbDCt2rV".....<>....
+> 
+ Background operation enabled.
+ Exiting.
+
+>monkey@dronesound:~ $ <<
+>monkey@dronesound:~ $ <./DronesoundTV<
+

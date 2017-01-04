@@ -1,0 +1,5 @@
+< >
+^C
+<>monkey@dronesound:~ $ <
+>monkey@dronesound:~ $ <<<<
+>monkey@dronesound:~ $ <perl -e '$S="..."; @I=split(//, "\\/|"); while ($S) {$_=@I[rand(3)]; $S.="." if (/\\/); chop($S) if (/\//); print "\n".$S.$_; `sleep 0.25`;}'

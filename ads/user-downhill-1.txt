@@ -1,0 +1,5 @@
+< >
+^C
+<>monkey@dronesound:~ $ <
+>monkey@dronesound:~ $ <<<<
+>monkey@dronesound:~ $ <perl -e< <'<until ($c++ == 18) <{ $l=rand(3); print <"\t<|\t<".<(" " x $l<."V").<(" " x (3<-$l))."\t|"."\n<"; <sleep 1;}'<<<<>
