@@ -1,6 +1,7 @@
-# NOT READY YET # StageGhost Hacker's Kit
+# StageGhost Hacker's Kit - Not Yet Ready Release
 # 01-2016 @garyd @diemastermonkey
 Minimal details:
+  See https://github.com/diemastermonkey/stageghost/wiki
   See notes/dtv-install.txt
   See notes/manifest.txt
   Observe configuration files in config/dronetv.*
@@ -10,5 +11,8 @@ Minimal details:
 PanelServer aka a Python Loop
   Start with its -startup, then http://yourpi:8000/cgi-bin/setup
   for headstart via log info/config browser 
-  DO NOT EDIT FIELDS WITH SPACES
-  
+  DO NOT Use Setup to Edit Fields with Spaces!
+
+Auth, Keys, Etc
+  Please see https://github.com/diemastermonkey/stageghost/wiki
+
