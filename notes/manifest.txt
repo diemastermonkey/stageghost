@@ -23,38 +23,44 @@ PanelServer         Optional Python HTTP serving loop
 PanelServerRefresh  Old school caveman dynamic html maker
 PanelServer-startup To launch from crontab @reboot
 AttractMode         Periodically changes themes, queues music, spams chat
-## Config
-PanelServer.theme   Theme currently in use
 themes/*            Live collection of screen layouts
+backgrounds/*       Images randomly selected by commands/bg
+## Configuration files
+PanelServer.theme   Theme currently in use
 config/dronetv.*    Live configuration files
 users/*             All user files: Sub/elite status, other settings
 ## The General Command System
 commands/*          User and system commands, dispatched via ytCheck
 
-## Retired or disused files (need verification)
-youtube-api-channelid.txt
-youtube-api-key[s].txt
-ytAccessToken-*
-ytAPIKey.txt               ?
-ytChannelID.txt
-ytLiveChatID.txt
-ytLiveVideoStreamID.txt
-ytOAuthToken.json
-ytOAuthToken.txt
-token.txt 
-
 # DronesoundTV-Specific
 DroneTV              The Freesound-crawling ambient noise machine
 DronesoundTV         Rotates through classic console-based DTV displays
 ansiAnimation        Infamous DTV 'lo-fi animations'
+ansiPhoto            Ansi-fies an image from images/* for...
+ansiScroll           Scrolls ansi images via ansiPhoto
 CodeScroller         Simulates code browsing w/live onboard code
 adPlayer             Simulates someone typing and running commands, scripts
 randomFile           Because I forgot about sort --random
 uiFlash*             Retired: Setup/interface for "flash an led" on RPI
 keywords.txt         The current keyword set, generally via a 'mood' file
 moods/*              Themed sets of keywords, ie 'moods', selected via 'mood'
+animations/*         The gif, png and .ans files generated/used by ansiAnimation
+images/*             Images selected randomly by ansiScroll/ansiPhoto
 ads/*                Actually, 'pseudoscripts' for the adPlayer text display
+station_ids/*        Pre-generated ascii station ids, before I got figlet
 commands/mix         Downloads and plays from SoundCloud
 commands/filter      Adjusts filter setting for sample play
 config/dronetv.musicplayer Syntax for playing downloaded music
+
+# Retired or disused files (need verification)
+youtube-api-channelid.txt
+youtube-api-key[s].txt
+ytAccessToken-*
+ytAPIKey.txt               
+ytChannelID.txt
+ytLiveChatID.txt
+ytLiveVideoStreamID.txt
+ytOAuthToken.json
+ytOAuthToken.txt
+token.txt 
 
