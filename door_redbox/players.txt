@@ -1,0 +1,4 @@
+rolling list of past X player channel ids
+if player matches list, cant play again till list rolls over
+or cleared by cron job or built-in after Z time
+

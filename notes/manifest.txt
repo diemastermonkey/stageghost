@@ -13,7 +13,6 @@ ytUserInfo          Gets user profile pic, other info for displays, sub status
 ytUserSubscribe     Subscribes bot to (arg) channelid ('sub' command)
 ytCheapBan          Ban (arg) user by channel id for 3 min? Curse-hammer.
 ytPermaBan          A rarely used variant of ytCheapBan ;)
-ytUserDossier       RETIRED: ascii-based shoutout
 ytAuthInit          INCOMPLETE: First-time setup
 ytGetStreamIDs      INCOMPLETE: First-time setup
 ## PanelServer
@@ -40,7 +39,9 @@ ansiPhoto            Ansi-fies an image from images/* for...
 ansiScroll           Scrolls ansi images via ansiPhoto
 CodeScroller         Simulates code browsing w/live onboard code
 adPlayer             Simulates someone typing and running commands, scripts
+sfxKeystroke         Makes a clickity typing sound for adPlayer! :)
 randomFile           Because I forgot about sort --random
+ytUserDossier        RETIRED: ascii-based shoutout
 uiFlash*             Retired: Setup/interface for "flash an led" on RPI
 keywords.txt         The current keyword set, generally via a 'mood' file
 moods/*              Themed sets of keywords, ie 'moods', selected via 'mood'
@@ -48,7 +49,10 @@ animations/*         The gif, png and .ans files generated/used by ansiAnimation
 images/*             Images selected randomly by ansiScroll/ansiPhoto
 ads/*                Actually, 'pseudoscripts' for the adPlayer text display
 station_ids/*        Pre-generated ascii station ids, before I got figlet
-commands/mix         Downloads and plays from SoundCloud
+links/*              Pre-approved SoundCloud URLs for 'mix random' command
+media/*              Files with YouTube video IDs used for 'media' theme, others
+commands/.import     Imports MakeAGif gifs for use by ansiAnimation. Also imports new SoundCloud URLs to links/*, and pastebin scripts into commands! Read source.
+commands/mix         Downloads and plays from SoundCloud or from links/*
 commands/filter      Adjusts filter setting for sample play
 config/dronetv.musicplayer Syntax for playing downloaded music
 
