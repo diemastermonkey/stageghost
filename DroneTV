@@ -45,7 +45,8 @@ sub fnConfigGet {
 my $DefaultKeywords = "140295 148446";
 
 # Global low pass filter
-my $Filter = `cat DroneTV.filter`; chomp ($Filter);
+# my $Filter = `cat DroneTV.filter`; chomp ($Filter);
+my $Filter = fnConfigGet("dronetv.filter");
 
 # New Civilized Settings structure (To do: update old stuff below)
 my (%Config);
@@ -93,11 +94,11 @@ my $Player = "/usr/bin/play -V0 -q "
   # ." --buffer 256 "    # Increase process buffer, default 8192
   . "\"cache/_SOUNDID_.ogg\" "             # Filename
   # . " fade _FIN_ _RIDE_ _FOUT_ "  # Docs say here but I prefer at end!
-  . " rate -l"            # -m or -h or -l quality
+  . " rate -m"            # -m or -h or -l quality
   # Heavy load?
   . " _OOPS_ "          # out-of-phase aka Karaoke, present or not 
   . " _CHORUS_ "        # Basically a super short delay phase shifted
-  . " contrast 0.9 "     # Compare to gain
+  . " contrast 1.1 "     # Compare to gain
   # . " silence 1 1 1 "  # Broken? trim front/back silence
   # Reverse disabled till load decreased
   . " _REVERSE_ "         # either present or not (INSANE)
@@ -106,7 +107,7 @@ my $Player = "/usr/bin/play -V0 -q "
   . " _ECHOES_ "          # The actual echo effect not delay
   . " _REVERB_ "          # Either on or off
   . " _PHASER_ "          # Phaser either on or off
-  # . " _TREMOLO_ "         # LFO filter
+  . " _TREMOLO_ "         # LFO filter
   . " repeat _REPEATS_ "  # Range 0 (one play) to N
   . " lowpass _FILTER_ "	 # Low-pass filter default 2-pole, hz
   . " fade _FIN_ _RIDE_ _FOUT_ "  # Was here but per dox moved up
@@ -341,11 +342,11 @@ while ($RunCount < 0 or $RunCount > 0) {
   # Kludge: If exceed data type it will wrap to negate and stop!
   $RunCount = -1 if ($RunCount < -32700);   # Safety margin
 
-  # If time to refresh settings
+  # If time to refresh settings (to do: Refresh all)
   if ($CycleCount % $ConfigRefresh == 0) {
     $Banlist = `cat banlist.txt`; chomp ($Banlist); # Refresh brutally
     fnKeywords();         # Currently discards cmd-line additions
-    $Filter = `cat DroneTV.filter`; chomp ($Filter);
+    $Filter = fnConfigGet ("dronetv.filter");
     $Filter = 60 if ($Filter < 60);  # Sanity check filter
   }
 
@@ -531,10 +532,10 @@ while ($RunCount < 0 or $RunCount > 0) {
 
   # Set up fade in/out
   # NEW: If longer than max, limit 'run' to max
-  $FadeIn = $SoundLength * 0.15;
-  $FadeOut = $SoundLength * 0.30;
-  $FadeIn = 10 if ($FadeIn > 10);
-  $FadeOut = 20 if ($FadeOut > 20);
+  $FadeIn = $SoundLength * 0.40;
+  $FadeOut = $SoundLength * 0.35;
+  $FadeIn = 30 if ($FadeIn > 30);
+  $FadeOut = 30 if ($FadeOut > 30);
   $FadeRide = 0; # Makes ride all remaining len
   if ($SoundLength > $MaxLen * 1.25) {
     fnDebug ("Limiting fade run length to something like $MaxLen per settings.");
@@ -545,7 +546,7 @@ while ($RunCount < 0 or $RunCount > 0) {
   # To do: link to detected bpm
   $EchoParms = " ";			# dumb
   if (int(rand(6)) == 0) {    
-    $EchoTime = 0.10 + rand(3.3);
+    $EchoTime = 0.10 + rand(5.5);
     $EchoParms = " delay $EchoTime ";   # 2nd ch delayed
   }
 
@@ -582,27 +583,27 @@ while ($RunCount < 0 or $RunCount > 0) {
 
   # Rarely, enable reverse play - kinda cpu expensive too
   $Reverse = "";   # dumb
-  if (int(rand(16)) == 0) {
+  if (int(rand(11)) == 0) {
     $Reverse = "reverse";
   }
 
   # FX: Echos, actual echo/echos not half delay for cavern effect
   # Sox syntax: echo gain-in gain-out <delay decay>
   $Echoes = "";   # dumb
-  if (int(rand(7)) == 0) {
+  if (int(rand(5)) == 0) {
     $la = 0.05 + rand(0.15); $ra = 0.05 + rand(0.15);
     $Echoes = " echos "
-      . " " . rand(0.5) + 0.1      # Gain in/out
-      . " " . rand(0.5) + 0.1
-      . " " . 20 + rand(300)      # Delay
-      . " " . 20 + rand(300);     # Decay
+      . " " . rand(0.3) + 0.7      # Gain in/out
+      . " " . rand(0.5) + 0.5
+      . " " . 10 + rand(50)      # Delay
+      . " " . 10 + rand(50);     # Decay
     # DEBUG: OVERWRITE WITH OG SYNTAX
-    $Echoes = " echos 0.8 0.7 $EchoTime $la $EchoAsym $ra";
+    # $Echoes = " echos 0.8 0.7 $EchoTime $la $EchoAsym $ra";
   }
 
   # FX: Reverb is common
   $Reverb = "";  
-  if (int(rand(3)) == 0) {
+  if (int(rand(2)) == 0) {
     $reverb = " reverb ";  # Default, no parms
   }
 
@@ -611,7 +612,7 @@ while ($RunCount < 0 or $RunCount > 0) {
   # Sox syntax: 
   #  chorus gain-in gain-out <delay decay speed depth -s|-t>
   $Chorus = "";   # dumb
-  if (int(rand(1)) == 1337) {   # DEBUG: DISABLED
+  if (int(rand(5)) == 0) {   # DEBUG: DISABLED
     $Chorus = " chorus "
       . " " . rand(0.90) + 0.2  # Gain in/out
       . " " . rand(0.90) + 0.2
@@ -620,6 +621,9 @@ while ($RunCount < 0 or $RunCount > 0) {
       . " " . rand(0.70) + 0.2  # Speed
       . " " . rand(0.50) + 0.1  # Depth
       . " -t ";                 # Triangular
+
+    # DEBUG: Overwrite with safe parms
+    $Chorus = " chorus 0.7 0.9 55 0.4 0.25 2 -t ";
   }
 
   # FX: Out-of-Phase aka Karaoke
@@ -630,13 +634,13 @@ while ($RunCount < 0 or $RunCount > 0) {
   # Sox Syntax: phaser gain-in gain-out delay decay speed -t
   # OG parms: . "0.89 0.85 3 0.24 2"
   $Phaser = "";   # dumb
-  if (int(rand(1)) == 1337) {       # DEBUG: DISABLED
+  if (int(rand(5)) == 0) { 
     $Phaser = " phaser " 
       . " " . rand(0.90) + 0.1   # Gain in/out
-      . " " . rand(0.90) + 0.1
-      . " " . rand (5)           # Delay time
-      . " " . rand(0.4)          # Decay
-      . " " . rand(3)            # Speed
+      . " " . rand(0.3) + 0.2
+      . " " . rand (3) + 0.2     # Delay time
+      . " " . rand(0.4)+ 0.2     # Decay
+      . " " . rand(3) + 0.5      # Speed
       . " -t ";                  # Triangular (end)
   }
 
@@ -644,8 +648,8 @@ while ($RunCount < 0 or $RunCount > 0) {
   $Tremolo = "";   # dumb
   if (int(rand(16)) == 0) {
     $Tremolo = " tremolo "
-       . " " . rand(4) + 3        # Rate
-       . " " . rand(30) + 1;      # Depth
+       . " " . rand(4) + 1        # Rate
+       . " " . rand(20) + 0.5;      # Depth
   }
 
   # Most common, speed effect (slow only, never w/bends) 
@@ -655,8 +659,8 @@ while ($RunCount < 0 or $RunCount > 0) {
     $s = rand(0.70) + 0.50;  # Range 
     $Speed = " speed $s ";
     # Even more rare, a fixed super slow rate
-    if (int(rand(5)) == 0) {
-      $Speed = "speed 0.40 ";
+    if (int(rand(7)) == 0) {
+      $Speed = "speed 0.25 ";
     }
   }
 

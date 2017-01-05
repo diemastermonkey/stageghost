@@ -10,6 +10,6 @@ if test -z "$1" ; then
   exit
 fi
 
-echo "$1" > DroneTV.filter
+echo "$1" > config/dronentv.filter
 CLEAN=`echo $1 | sed "s/[abcdefghijklmnopqrstuvwxyz_]//g"`
 echo "[Filter] Low-pass filter adjusted to $CLEAN hz."
