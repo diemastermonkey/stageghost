@@ -44,10 +44,14 @@ push (@AllCommands, `find -H $CommandDir/ -executable -type l`);
 grep (s/$CommandDir//g, @AllCommands);   # Cleanup
 grep (s/\///g, @AllCommands);   # Cleanup
 
-# Regular user cmds start w/alpha, sub-only cmds w/dots
+# All "regular user" cmds start w/two alpha characters
 my @Commands = grep (/^\w/, @AllCommands);
-# Append SubCommands only if user is a sub!
-my @SubCommands = grep (/^\./, @AllCommands);
+# Append Sub-only commands only if user is a sub
+# Sub-only commands start with a dot (though could be links) and two alpha
+my @SubCommands = grep (/^\.[a-z]{2}[a-z]*$/, @AllCommands);
+
+# Append ELITE commands, which start with ".e." and anything
+my @EliteCommands = grep (/^\.e\./, @AllCommands);
 
 my $Get = "/usr/bin/curl --silent -o -";
 # Alternate # my $Get = "/usr/bin/GET"; 
@@ -55,8 +59,12 @@ my $Get = "/usr/bin/curl --silent -o -";
 # Get latest keys, ids, etc
 my $YTChannelID = fnConfigGet ("dronetv.channelid");
 my $YTChatID = fnConfigGet ("dronetv.livechatid");
-# New? Alt via user Oauth token in access_token= instead
 my $YTOAuthToken = fnConfigGet ("dronetv.youtubeoauthtoken");
+# New: Abort if unconfigured or impossibly small
+if (length($YTChannelID . $YTChatID . $YTOauthToken) < 9) { 
+  fnDebug ("Fatal: dronetv.channelid, livechatid and/or youtuboauthtoken are foobar.");
+  die ("\nFatal: dronetv.channelid, livechatid and/or youtuboauthtoken are foobar.\n");
+}
 
 # About message in process
 my $msgid, $msgtype, $msgtext, $msgtimestamp;
@@ -93,18 +101,15 @@ sub fnPlay {
 # Handle new user (should be in UserNewSetup or something)
 # --------------------------------------------------------
 sub fnUserNew {
-  # Crudely add to new users list
+  # Crudely add to new users list (retire?)
   $ignored = `echo \"$msgauthorchannel\" >> $0.users`;
 
   # NEW: Set welcome theme - and maybe a job to reinstate other theme after?
   # `echo ".welcome" > PanelServer.theme`; 
 
-  # TO DO: Spawn job to get their properties ie mod sub etc
-  #
-  # print "\nDEBUG: $UserInfoCmd $msgauthorchannel \n"; 
+  # User ytUserInfo to get their properties ie mod sub etc, set MsgAuthorName
   # $MsgAuthorName = `$UserInfoCmd $msgauthorchannel`; chomp ($MsgAuthorName);
   $MsgAuthorName = `./ytUserInfo $msgauthorchannel`; chomp ($MsgAuthorName);
-  # $MsgAuthorName = "Unknown" if (length($MsgAuthorName) < 5);
 }
 
 # Simple logger
@@ -155,9 +160,6 @@ foreach $item (@$items) {
   print (OUT "\n$msgid");
   close (OUT);
 
-  # Skip all messages from self (Retired: ytSinglePost now tracks to processed)
-  # next if ($msgauthorchannel =~ /$YTChannelID/i);
-
   # Check their subscriber status, append sub-only commands if so
   if (-f "users/$msgauthorchannel\.sub") {
     $Subscriber = 1;
@@ -165,6 +167,8 @@ foreach $item (@$items) {
     fnDebug ("Extended command set for subscriber: ".join (/ /, @Commands));
     fnDebug ("...because users/$msgauthorchannel.sub exists.");
   }
+
+  # New: Elite commands
 
   # As soon as name/image known, touch files for 
   # external tools that use freshness for displays
@@ -180,7 +184,7 @@ foreach $item (@$items) {
   # s/\///g;    # to allow urls
   s/\(|\)//g;
   # to allow urls # s/\://g;     # space more polite
-  s/\$|\;|\?|\`|\"|\%|\^|\&|\*|\!|\'|\<|\>//g;
+  s/\$|\?|\`|\"|\^|\&|\*|\'|\<|\>//g;      # New: Permit % ; !
   $msgtext = $_;
   fnDebug ("Debug: MsgText is $msgtext");
 
@@ -242,8 +246,8 @@ foreach $item (@$items) {
     $Arg =~ s/http:\/\/.*\///g;
     fnDebug ("Command $Command Arg $Arg \n ");
 
-    # NEW: These commands get you on the showcase display
-    if ($Command =~ /drone|mix|theme|shout|bg|sing|bling|mood|sub/) {
+    # These commands get you on the showcase display
+    if ($Command =~ /drone|mix|shout|sing|bling|mood|sub/) {
       $ignored = `cp users/$msgauthorchannel\.jpg panels/requestor.jpg`;  # new path
       $ignored = `cp users/$msgauthorchannel\.jpg requestor.jpg`;
       $ignored = `cp users/$msgauthorchannel\.name panels/requestor.name`;  # new path
@@ -254,12 +258,12 @@ foreach $item (@$items) {
 
     # If a NEW V2 command, script expects APPENDED msgauthorch
     # Temporary till all commands accept or ignore 2nd arg
-    if ($Command =~ /theme|style|shout|sub|songs|bg/) {
+    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip/) {
       $Arg .= " $msgauthorchannel";  # Simply appends arg
       fnDebug ("New V2 command $Command , appending $msgauthorchannel");
     }
 
-    # V3 Commands: Accept all args, appends msgauthorch
+    # V3 Commands: Accept multi-word user args, and appends msgauthorch
     if ($Command =~ /title|note/) {
       # Multi-word AllArgs should be quoted
       $Arg = "\"" . $AllArgs . "\"";
