@@ -1,49 +1,60 @@
-# Programs comprising 'Stage Ghost', and 'DronesoundTV'
-# 
+# Components of 'StageGhost', and 'DronesoundTV'
 
-# Stage Ghost
-# Chat/YouTube API interface, conduit to onboard commands
+# StageGhost
+## Chat/YouTube API interface, conduit to onboard commands
 ytTools-Startup     To launch yt* from crontab @reboot
 ytRefreshTokens     Keeps OAuth refresh tokens up to date
-ytRefreshTokensLoop Loops
-ytCheck             Checks dronetv.channelid for messages
-ytCheckLoop         Loops re-check
+ytRefreshTokensLoop Simply loops ytRefreshTokens
+ytCheck             Checks dronetv.channelid for messages/commands
+ytCheckLoop         Loops ytCheck a tiny bit faster than spec
 ytSinglePost        Posts single string to dronetv.channelid
 ytMessageDelete     Deletes (arg) msgid from channel ('disappearing ink')
-ytUserInfo          Gets user profile pic etc for displays, sub status
-ytUserSubscribe     Subscribe to (arg) channelid ('sub' command)
-ytCheapBan          Ban (arg) user (by ch id) for 3 min? Curse-hammer.
-ytPermaBan          Rarely used variant ;)
+ytUserInfo          Gets user profile pic, other info for displays, sub status
+ytUserSubscribe     Subscribes bot to (arg) channelid ('sub' command)
+ytCheapBan          Ban (arg) user by channel id for 3 min? Curse-hammer.
+ytPermaBan          A rarely used variant of ytCheapBan ;)
 ytUserDossier       RETIRED: ascii-based shoutout
 ytAuthInit          INCOMPLETE: First-time setup
 ytGetStreamIDs      INCOMPLETE: First-time setup
-# PanelServer
-PanelServer         Optional: Python HTTP serving loop
-PanelServerRefresh  Old school caveman dynamic
+## PanelServer
+cgi-bin/setup       Really awful setup helper
+cgi-bin/oauth2callback Rarely helpful callback handler
+PanelServer         Optional Python HTTP serving loop
+PanelServerRefresh  Old school caveman dynamic html maker
 PanelServer-startup To launch from crontab @reboot
-# Config
-PanelServer.theme   Theme in use
-themes/*
-config/dronetv.*
-youtube-api-channelid.txt  DISUSED? Verify asap! --v
+AttractMode         Periodically changes themes, queues music, spams chat
+## Config
+PanelServer.theme   Theme currently in use
+themes/*            Live collection of screen layouts
+config/dronetv.*    Live configuration files
+users/*             All user files: Sub/elite status, other settings
+## The General Command System
+commands/*          User and system commands, dispatched via ytCheck
+
+## Retired or disused files (need verification)
+youtube-api-channelid.txt
 youtube-api-key[s].txt
 ytAccessToken-*
 ytAPIKey.txt               ?
 ytChannelID.txt
 ytLiveChatID.txt
 ytLiveVideoStreamID.txt
-ytOAuthToken.json, ytOAuthToken.txt
-token.txt            ???
+ytOAuthToken.json
+ytOAuthToken.txt
+token.txt 
 
 # DronesoundTV-Specific
-DroneTV
-AttractMode
-ansiAnimation
-CodeScroller
-DronesoundTV         Classic console-based DTV displays
-randomFile
-uiFlashSetup, uiFlashRequests*
-keywords.txt
-commands/*
-commands/mix
-commands/filter
+DroneTV              The Freesound-crawling ambient noise machine
+DronesoundTV         Rotates through classic console-based DTV displays
+ansiAnimation        Infamous DTV 'lo-fi animations'
+CodeScroller         Simulates code browsing w/live onboard code
+adPlayer             Simulates someone typing and running commands, scripts
+randomFile           Because I forgot about sort --random
+uiFlash*             Retired: Setup/interface for "flash an led" on RPI
+keywords.txt         The current keyword set, generally via a 'mood' file
+moods/*              Themed sets of keywords, ie 'moods', selected via 'mood'
+ads/*                Actually, 'pseudoscripts' for the adPlayer text display
+commands/mix         Downloads and plays from SoundCloud
+commands/filter      Adjusts filter setting for sample play
+config/dronetv.musicplayer Syntax for playing downloaded music
+
