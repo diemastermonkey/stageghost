@@ -43,7 +43,9 @@ sfxKeystroke         Makes a clickity typing sound for adPlayer! :)
 randomFile           Because I forgot about sort --random
 ytUserDossier        RETIRED: ascii-based shoutout
 uiFlash*             Retired: Setup/interface for "flash an led" on RPI
+ban                  Bans a Freesound Sound ID or keyword from DroneTV forever
 keywords.txt         The current keyword set, generally via a 'mood' file
+banlist.txt          List of keywords and Freesound IDs NEVER to be played
 moods/*              Themed sets of keywords, ie 'moods', selected via 'mood'
 animations/*         The gif, png and .ans files generated/used by ansiAnimation
 images/*             Images selected randomly by ansiScroll/ansiPhoto

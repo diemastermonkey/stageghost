@@ -61,9 +61,9 @@ my $YTChannelID = fnConfigGet ("dronetv.channelid");
 my $YTChatID = fnConfigGet ("dronetv.livechatid");
 my $YTOAuthToken = fnConfigGet ("dronetv.youtubeoauthtoken");
 # New: Abort if unconfigured or impossibly small
-if (length($YTChannelID . $YTChatID . $YTOauthToken) < 9) { 
+if (length($YTChannelID . $YTChatID . $YTOauthToken) < 49) { 
   fnDebug ("Fatal: dronetv.channelid, livechatid and/or youtuboauthtoken are foobar.");
-  die ("\nFatal: dronetv.channelid, livechatid and/or youtuboauthtoken are foobar.\n");
+  die ("\n$0 Fatal: config/dronetv.channelid, livechatid and/or youtuboauthtoken are empty or something?\n");
 }
 
 # About message in process
@@ -258,7 +258,7 @@ foreach $item (@$items) {
 
     # If a NEW V2 command, script expects APPENDED msgauthorch
     # Temporary till all commands accept or ignore 2nd arg
-    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip/) {
+    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip|hi/) {
       $Arg .= " $msgauthorchannel";  # Simply appends arg
       fnDebug ("New V2 command $Command , appending $msgauthorchannel");
     }

@@ -1,5 +1,7 @@
 #!/usr/bin/perl
-#  TO DO: GET REFRESH TOKEN FROM UPSTREAM! ITS HARDWIRED 
+# Update config/dronetv.youtubeoauthtoken, using the 
+# dronetv.youtuberefreshtoken, client id and client secret
+# Note dronetv.youtuberefreshtoken created by cgi-bin/oauth2callback !
 # Note: Should be called about 3600 second intervals actual time
 # is given in json response but so far that's what I usually see -dmm
 
@@ -12,20 +14,27 @@ sub fnConfigGet {
   my @in = <IN>;        # Slurp all
   close (IN);
   $out = join ("\n", @in);
-  # Remove comments, blanks, limit to single line of data
   $out =~ s/^#.*\n*$//gmo;
   $out =~ s/^\s*$//gmo;
   $out =~ s/\n|\r//gmo;
   return ($out);
 }
 
-# Where refreshed tokens will go, and config
-my $TokenFile = "config/dronetv.youtubeoauthtoken";
-my $JSONFile = "config/dronetv.youtubeoauthtoken.json"; # Disused as yet
+# These tokens read from config, used in refresh request
+# Note dronetv.youtuberefreshtoken created by cgi-bin/oauth2callback !
 my $ClientID = fnConfigGet ("dronetv.youtubeclientid");
 my $ClientSecret = fnConfigGet ("dronetv.youtubeclientsecret");
 my $RefreshToken = fnConfigGet ("dronetv.youtuberefreshtoken");
+# The refreshed user oauth tokens go here:
+my $TokenFile = "config/dronetv.youtubeoauthtoken";
+my $JSONFile = "config/dronetv.youtubeoauthtoken.json"; # Disused as yet
 
+# New: Abort if unconfigured or impossibly small
+if (length($ClientID . $ClientSecret . $RefreshToken) < 49) {
+  die ("\n$0 Fatal: config/dronetv.youtubeclientid, youtuberefreshtoken and/or clientsecret are foobar\n");
+}
+
+# Weird note: My call is using a nonsense redirect_uri (which we ignore)
 $Raw = `/usr/bin/curl --silent -X POST -d "refresh_token=$RefreshToken" --data-urlencode "client_id=$ClientID" --data-urlencode "client_secret=$ClientSecret" --data-urlencode "redirect_uri=http://localhost/oauth2callback" --data-urlencode "grant_type=refresh_token" https://accounts.google.com/o/oauth2/token`;
 
 # Complete response for later tools
@@ -41,16 +50,7 @@ $Raw =~ s/\"//g;
 $Raw =~ s/\s+//g;
 $Raw =~ s/^.*access_token\://;
 $Raw =~ s/\,.*//g;
-# 
-# ATTN 20161227 Nothing is using this file! 
-# Do not write to config/dronetv.youtubeoauthtoken, that comes via ytAuthInit!
-# If this is the refresh token, it should probably go in dronetv.refreshtoken
-# 
-# Backwareds compatibility RETIRED 20161227
-# open (OUT, "> ytOAuthToken.txt") or die ("\n$0 : $! \n"); 
-# print (OUT $Raw);
-# close (OUT);
-
+ 
 # Update production youtubeoauthtoken!
 open (OUT, "> $TokenFile") or die ("\n$0 : $! \n");
 print (OUT $Raw);
