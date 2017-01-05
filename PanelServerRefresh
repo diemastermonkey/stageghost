@@ -70,28 +70,27 @@
   @temp = split (/\n/, $c_videos);
   $c_random_video = @temp[int(rand(@temp))];
 
-  # Image and other info about latest request
-  # YTCheck makes image 'requestor.jpg', we just ignore
-  # it if its old and use static empty pixel
+  # Image and other info about latest request (also: latest shoutout)
+  # YTCheck makes image 'requestor.jpg'
+  # Note: No longer 'times-out'
   $c_requestorimage = "emptypixel.png";
   # OG # $k = `find ./requestor.jpg -mmin -3 | xargs`;
-  $k = `find panels/requestor.id -mmin -3 | xargs`;  # To do: use .id file
-  if ($k =~ /\w/) {                        # If recent results found
+  # $k = `find panels/requestor.id -mmin -3 | xargs`;  # To do: use .id file
     $c_requestorimage = "requestor.jpg";   # Beware hardwired fnames 
     $c_requestorname = `cat requestor.name`; chomp ($c_requestorname);
     $c_requestorid = `cat panels/requestor.id`; chomp ($c_requestorid);
 
-    # Checking a radio button: Set c_membertoken to the token
-    # which sits where 'checked' would in the HTML template
-    # it gets replaced below
-    $c_membertoken = "_CHECK_GUEST_";		   # Assume guest
-    if (-r "$Config{'USERPATH'}/$c_requestorid.sub") {
+    # Check the radio button matching the user. 
+    # Sets c_membertoken to the token which sits 
+    # where 'checked' should be, in the HTML template
+    # it gets replaced interpolated later
+    $c_membertoken = "_CHECK_GUEST_";	                  # Assume guest
+    if (-r "$Config{'USERPATH'}/$c_requestorid.sub") {    # If .sub file exist
       $c_membertoken = "_CHECK_MEMBER_" ;
     }
-    if (-r "$Config{'USERPATH'}/$c_requestorid.elite") {
+    if (-r "$Config{'USERPATH'}/$c_requestorid.elite") {  # If .elite file
       $c_membertoken = "_CHECK_ELITE_";
     }
-  }
 
   # $Config{CREDS_LENGTH} latest credits from panels/credits.html replaces _CREDITS_HTML_
   # They are table rows, insert inside a table
@@ -195,6 +194,10 @@
     $u = $note; $u =~ s/\.note/.name/g;
     $user = substr (`cat $u`, 0, $Config{'MAXNAMELEN'});
     chomp ($user);
+
+    # Get the userpic filename for preface
+    $p = $note; $p =~ s/\.note/.jpg/g;
+    chomp ($p);
  
     # Get the user's .coords setting or generate random coords
     # as a percent of screen, to be inserted as style
@@ -210,8 +213,11 @@
       "\n<!-- Note for $user -->"
       . "\n  <div id='usernote' class='usernote' "
       . " style='$coords'"       # Inside tag
-      . ">\n"                    # End div tag inner!
-      . " <span style=\"font-size:18px\">$user</span><br/>"
+      . ">"                    # End div tag inner!
+      . "<span style=\"font-size:18px\">"
+      . "<img src=\"$p\" height=\"20\" width=\"20\"> "
+      . $user
+      . "</span><br/>"
       . "$note_content" 
       . "\n</div>";
   }                                       # End foreach

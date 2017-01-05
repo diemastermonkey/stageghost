@@ -7,6 +7,12 @@ my $Cmd="Tip";
 my $Rtfm=`commands/rtfm`;  # Bonus tip
 chomp ($Rtfm);
 
+# New: Get user ch as arg, and give them one point for running this
+# Pop-off LAST arg as UserChannelID, via ytCheck - or set it to system
+my $UserCh = pop (@ARGV) if (@ARGV); chomp ($UserCh);
+$UserCh = "system" unless (length($UserCh));
+$Ignored = `commands/score +1 $UserCh`;  # Should be silent
+
 # Random responses
 @Answers = split (/\n/, 
 "This is a useful command. There seem to be over 100 tips in here.
@@ -46,15 +52,16 @@ Bot commands dont need to start with a ! or . but you may use them if you like.
 The SUB command is 100 pct reliable. Make sure your settings arent private at https://youtube.com/account_privacy
 The SUB command an exclusive of the secretive StageGhost bot, coming out soon!
 The SUB command is the first fair and easy auto-sub-back bot! It works, trust SUB.
-The SUB command cant work if your subscriptions are private. You can check them at https://youtube.com/account_privacy
+The SUB command wont work if your subscriptions are private. Check them at https://youtube.com/account_privacy
 Hey, this is a cool website! http://paprcraft.com/
 Hey, this is a cool channel! http://youtube.com/diemastermonkey
 The author of DronesoundTV is http://twitter.com/garyd
 You should learn JavaScript. And later, C.
-You better know how to read HTML, at least. That's literacy these days.
+You better know how to read HTML, at least. That is just literacy.
 Read more.
-Go outside! Take DTV with you though, on your phone, k.
+Go outside! But take DronsoundTV with you, on your phone, k.
 Experiment! Type COMMANDS and just play with them. You are asposed to!
+Psst! Brave? Pre-beta code at https://github.com/diemastermonkey/stageghost
 Run this command over and over for many different tips. Also, smile more!");
 
 # Pick a response
