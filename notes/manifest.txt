@@ -33,6 +33,7 @@ commands/*          User and system commands, dispatched via ytCheck
 
 # DronesoundTV-Specific
 DroneTV              The Freesound-crawling ambient noise machine
+DroneTV-kludgeloop   Keeps looping DroneTV cause sh*t happens, man
 DronesoundTV         Rotates through classic console-based DTV displays
 ansiAnimation        Infamous DTV 'lo-fi animations'
 ansiPhoto            Ansi-fies an image from images/* for...
