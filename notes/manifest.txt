@@ -36,6 +36,7 @@ DroneTV              The Freesound-crawling ambient noise machine
 DroneTV-kludgeloop   Keeps looping DroneTV cause sh*t happens, man
 DronesoundTV         Rotates through classic console-based DTV displays
 ansiAnimation        Infamous DTV 'lo-fi animations'
+ansiRandom           Selects an ansiPhoto to pipe through ansiScroll
 ansiPhoto            Ansi-fies an image from images/* for...
 ansiScroll           Scrolls ansi images via ansiPhoto
 CodeScroller         Simulates code browsing w/live onboard code
