@@ -1,1 +1,0 @@
-channelid of currently opening/reclosing user here

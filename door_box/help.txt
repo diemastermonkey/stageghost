@@ -1,1 +1,1 @@
-Use BOX OPEN to open. Spiders take away a point, candy gives one. Use BOX SPIDER or BOX CANDY to seal it again. Use RTFM for more.
+Use BOX OPEN to open. If there is candy inside, you gain a point! But if it is a spider, you lose one. Use BOX SPIDER or BOX CANDY to seal it again for the next person. See RTFM for more info.

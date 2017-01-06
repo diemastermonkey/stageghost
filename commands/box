@@ -41,16 +41,24 @@ unless ($Cmd && $UserCh) {
 # Get the player's name for text messages
 my $UserName = `./ytUserInfo $UserCh`;
 
+# Handle help first (beware fuzzy match)
+if ($Cmd =~ /^h/) {
+  print ("[Box] $Help");      # Simply respond with help file to chat  
+  exit(0);
+}
+
+# Shunt now if player ineligable cause on recent players list
+if ($Players =~ /$UserCh/gsio) {
+  # Ineligible, shunt w/log
+  print ("[Box] Sorry, $UserName, you have opened the box too recently. Try again later.");
+  fnLog ("$0: Player $UserCh ineligible because in $Game/players.txt");
+  exit(0);
+}
+
 # Tease: If player eligible, offer them the box (or end)
 if ($Cmd eq "tease") {
   fnTease();
   exit(0);  # done here
-}
-
-# Handle help (beware fuzzy match)
-if ($Cmd =~ /^h/) {
-  print ("[Box] $Help");      # Simply respond with help file to chat  
-  exit(0);
 }
 
 # Open the box (again fuzzy match)
@@ -61,8 +69,16 @@ if ($Cmd =~ /^o/) {
   $Reward = "+1";  # string syntax
   $Reward = "-1" if ($Contents =~ /spider/i);
   $Ignored = `$ScoreCmd $Reward $UserCh`;  
-  print ("[Box] Ouch! $UserName has been bitten by a $Contents. Dang you, $AttackerName!");
-  exit(0);
+  $VictimScore = `cat users/$UserCh.score`;     # Crudely get latest score
+  chomp ($VictimScore);
+
+  # Response depending on outcome
+  if ($Contents =~ /spider/i) { 
+    print ("[Box] Ouch, $UserName - you have been bitten by a $Contents! Dang you, $AttackerName! Your score is now $VictimScore.");
+  } else {
+    print ("[Box] Lucky you, $UserName - the box contains $Contents! Your score is now $VictimScore. You can thank $AttackerName!");
+  }
+  exit(0);   # done here
 }
 
 # Close the box (again fuzzy match) with spider, candy or (secret!) prank!
@@ -74,10 +90,12 @@ if ($Cmd =~ /^s|^c|^p/) {
   }
 
   # Set content string (to do: from list of random variations)
-  $Contents = "A spider";  # assume spider
-  $Contents = "A piece of candy" if ($Cmd =~ /^c/);
+  $Contents = "a spider";  # assume spider
+  $Contents = "a piece of candy" if ($Cmd =~ /^c/);
   # Secret "prank" variation!
-  $Contents = "A dismembered spider and smashed-up candy!?" if ($Cmd =~ /^p/);
+  if ($Cmd =~ /^p/) {
+    $Contents = "a dismembered spider and smashed-up candy!? Uh..";
+  }
 
   # If still here, is victim closing, or system via timeout
   # Write $Victim to Attacker file
@@ -109,14 +127,7 @@ sub fnPrune {
 # Handle teasing
 # -----------------------
 sub fnTease {
-  if ($Players =~ /$UserCh/gsio) {
-    # Ineligible, shunt w/log
-    print ("[Box] Sorry, $UserName, you have opened the box too recently. Try again later.");
-    fnLog ("$0: Player $UserCh ineligible because in $Game/players.txt");
-    exit(0);
-  }
-
-  # Somehow we're about to tease current victim - don't,
+  # If Somehow we're about to tease current victim - don't,
   # instead remind them we're waiting for them to reseal it (or timeout)
   if ($Victim =~ $UserCh) {
     fnLog ("$0: Not teasing $UserCh because they are current victim. Reminding them.");
@@ -135,7 +146,7 @@ sub fnTease {
   fnLog ("$0: Teasing $UserCh because tease command");
 
   # Output attract msg directly to stdio, bot sends it to chat
-  print ("Psst! Hey $UserName, there is a box here, sealed by $AttackerName. Want to open it? Type BOX HELP for info.");
+  print ("Psst! Hey $UserName, there is a box here sealed by $AttackerName. Want to open it? Type BOX HELP for info.");
 
 }
 
