@@ -1,0 +1,149 @@
+#!/usr/bin/perl
+# Sample 'door game' for StageGhost/DTV 12xx2016 @garyd
+# Caller: Append user channelid to args, it is popped off first
+# Reset the game:  box reset 
+# Provide help  :  box help 
+# Tease/attract user if eligible to open box
+#                  box tease UserChannelID
+# Open the box:    box open UserChannelID
+# Reseal w/spider: box spider UserChannelID
+# Reseal w/candy:  box candy UserChannelID
+# Reseal w/easter egg "dead spider and an empty wrapper wtf"
+#                  box joke UserChannelID
+
+# Mostly hardwired datafiles (note: may need to truncate usernames)
+my $Game = "door_box";                   # relative path
+my $Players = `cat $Game/players.txt`;   # recent player ids
+my $Contents = `cat $Game/contents.txt`; # contents of box
+my $Help     = `cat $Game/help.txt`;     # response to help command
+my $Log      = "$Game/log.txt";          # for writing
+my $ScoreCmd = "commands/score";         # Command to change score
+my $Attacker = `cat $Game/attacker.txt`; # Ch ID of who last closed box
+chomp ($Attacker); chomp ($Contents);
+my $AttackerName = `./ytUserInfo $Attacker`; # Victim text name
+
+# To do: use only if X minutes fresh
+# else consider box closed by default
+my $Victim = `cat $Game/victim.txt`;     # CH id of active opener, if recent
+chomp ($Victim);
+my $VictimName = `./ytUserInfo $Victim`; # Victim text name
+
+# Main
+# -----------------------
+# Assume default 'tease' arg user ch id, else programmer error
+my $UserCh = pop (@ARGV);  # Pop off bottom
+my $Cmd = shift (@ARGV); 
+$Cmd = "tease" unless ($Cmd);
+unless ($Cmd && $UserCh) {
+  die ("\n$0 usage: ".`head -11 $0`."\n");  # Spit out header, shunt
+}  
+
+# Get the player's name for text messages
+my $UserName = `./ytUserInfo $UserCh`;
+
+# Tease: If player eligible, offer them the box (or end)
+if ($Cmd eq "tease") {
+  fnTease();
+  exit(0);  # done here
+}
+
+# Handle help (beware fuzzy match)
+if ($Cmd =~ /^h/) {
+  print ("[Box] $Help");      # Simply respond with help file to chat  
+  exit(0);
+}
+
+# Open the box (again fuzzy match)
+if ($Cmd =~ /^o/) {
+  # Make opener the 'current victim'
+  $Ignored = `echo '$UserCh' > $Game/victim.txt`;   # Rude
+  # Debit if contents spider, else credit
+  $Reward = "+1";  # string syntax
+  $Reward = "-1" if ($Contents =~ /spider/i);
+  $Ignored = `$ScoreCmd $Reward $UserCh`;  
+  print ("[Box] Ouch! $UserName has been bitten by a $Contents. Dang you, $AttackerName!");
+  exit(0);
+}
+
+# Close the box (again fuzzy match) with spider, candy or (secret!) prank!
+if ($Cmd =~ /^s|^c|^p/) {
+  # Allow close ONLY by $Victim or 'system' (to do: move this check to top)
+  unless ($UserCh eq $Victim) {
+    print ("[Box] Sorry, $UserName - $VictimName is currently holding the box. They have to seal it up, first."); 
+    exit(0);
+  }
+
+  # Set content string (to do: from list of random variations)
+  $Contents = "A spider";  # assume spider
+  $Contents = "A piece of candy" if ($Cmd =~ /^c/);
+  # Secret "prank" variation!
+  $Contents = "A dismembered spider and smashed-up candy!?" if ($Cmd =~ /^p/);
+
+  # If still here, is victim closing, or system via timeout
+  # Write $Victim to Attacker file
+  $Ignored = `echo '$Victim' > $Game/attacker.txt`;
+  # Write selected contents to contents file
+  $Ignored = `echo '$Contents' > $Game/contents.txt`;
+
+  # TO DO: Add player to recent players list
+  open (OUT, ">>$Game/players.txt");         # or ignore?
+  print (OUT "$Victim\n");                  # one ch id per line
+  close (OUT);
+
+  # Zero the victim file (its now ready for next victim)
+  $Ignored = `truncate --size=0 $Game/victim.txt`;
+
+  # Response to chat (note 'victim' is now attacker)
+  print ("[Box] $VictimName has sealed the box. I wonder who will open it? The end...for now?");
+
+  exit(0);  # done here
+}
+
+# Fin
+
+# Prune ie auto-close stale opened boxes with evil defaults
+# -----------------------
+sub fnPrune {
+}
+
+# Handle teasing
+# -----------------------
+sub fnTease {
+  if ($Players =~ /$UserCh/gsio) {
+    # Ineligible, shunt w/log
+    print ("[Box] Sorry, $UserName, you have opened the box too recently. Try again later.");
+    fnLog ("$0: Player $UserCh ineligible because in $Game/players.txt");
+    exit(0);
+  }
+
+  # Somehow we're about to tease current victim - don't,
+  # instead remind them we're waiting for them to reseal it (or timeout)
+  if ($Victim =~ $UserCh) {
+    fnLog ("$0: Not teasing $UserCh because they are current victim. Reminding them.");
+    print ("[Box] You are currently holding the box, $UserName. Use BOX SPIDER or BOX CANDY to reseal it.");
+    exit(0);
+  }
+
+  # Else, if $Victim IS set (not 'aged out'), all others ineligable till victim times out
+  if ($Victim) { 
+    fnLog ("$0: Not teasing $UserCh because $Victim has box open.");
+    print ("[Box] Sorry, $UserName, $VictimName has the box open. Try again in a little while.");
+    exit(0);
+  }
+
+  # All good to tease (available, or aged-out)
+  fnLog ("$0: Teasing $UserCh because tease command");
+
+  # Output attract msg directly to stdio, bot sends it to chat
+  print ("Psst! Hey $UserName, there is a box here, sealed by $AttackerName. Want to open it? Type BOX HELP for info.");
+
+}
+
+# Simple logger
+# -----------------------
+sub fnLog {
+  my $argMsg = shift (@_);
+  open (LOG, ">$Log") or die ("\n$0 fatality: Cant write to $Log");
+  print (LOG $argMsg);
+  close (LOG);
+}
