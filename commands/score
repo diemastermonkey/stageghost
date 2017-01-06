@@ -1,0 +1,61 @@
+#!/usr/bin/perl
+# Stageghost: Show (or manipulate?) a user's .score file
+# Only system or super elites should be able to change it :)
+# Should also be used internally by any game that needs to get/change
+# when used that way, NO output, so it can be called by other commands
+# 20161216 @garyd @diemastermonkey for DronesoundTV
+# Note: Requires user channel as 2nd arg, as in commands/shoutout
+# Usage:
+#   score [UserChId]         display score
+#   score +11                adds 11 (-7 to debit 7)
+#   score =101               set score to 101
+
+my $CmdName = "Score";
+my $CmdDesc = "Displays your score. Only the System can modify it."; 
+
+# Pop-off LAST arg as UserChannelID, via ytCheck - OR DIE
+my $UserCh = pop (@ARGV) if (@ARGV); chomp ($UserCh);
+die ("\n$0 Programmer error") unless ($UserCh);
+
+my $Arg = shift (@ARGV);              # Accepts only one word arg
+
+# Get user name for responses
+my $Name = `cat users/$UserCh.name`; chomp ($Name);
+# Get user sub/elite levels
+my $Sub = 1 if (-f "users/$UserCh.sub"); 
+my $Elite = 1 if (-f "users/$UserCh.elite"); 
+# Get current score (zero if no exist) - and create file if noexist
+`echo "1" > users/$UserCh.score` unless (-r "users/$UserCh.score");
+my $Score = scalar(`cat users/$UserCh.score`);
+
+# Handle (default) check score command ie no other args, and exit
+unless ($Arg) {
+  print ("[$CmdName] $Name, your current score is $Score"); 
+  exit(0);
+}
+
+# Remaining commands update the score from back end
+
+# Handle 'set', ie =1000, would be run only from back-end
+# Response doesn't need to be user-style
+# Drops through to update at bottom
+if ($Arg =~ /\=\d{1,6}/) {
+  $Score = scalar($Arg); $Score =~ s/\=//g;
+}
+
+# Handle normal math operations, +3, -4
+if ($Arg =~ /\+|\-/) {
+  $Score += int($Arg);
+}
+
+# Actually update user's score file
+open (OUT, ">users/$UserCh.score") or die ("Help! Failure in $0");
+print (OUT $Score);
+close (OUT);
+
+# SILENT when used by internally by other programs
+# print ("[$CmdName] $Name score is now $Score");
+# Debug
+# `echo \"$Name score is now $Score\" > $0.debug`;
+
+
