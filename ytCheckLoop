@@ -8,5 +8,5 @@ cd /pub/kits/sonicmonkeypi
 killall ytCheck   # in case leftovers
 while (true); do 
   ./ytCheck &> ytCheck-raw.txt 
-  sleep 7.0
+  sleep 6.5
 done

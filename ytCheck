@@ -258,7 +258,7 @@ foreach $item (@$items) {
 
     # If a NEW V2 command, script expects APPENDED msgauthorch
     # Temporary till all commands accept or ignore 2nd arg
-    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip|hi/) {
+    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip|hi|box/) {
       $Arg .= " $msgauthorchannel";  # Simply appends arg
       fnDebug ("New V2 command $Command , appending $msgauthorchannel");
     }
