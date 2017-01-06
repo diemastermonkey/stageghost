@@ -1,0 +1,1 @@
+Use BOX OPEN to open. Spiders take away a point, candy gives one. Use BOX SPIDER or BOX CANDY to seal it again. Use RTFM for more.
