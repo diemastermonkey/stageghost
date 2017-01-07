@@ -2,22 +2,26 @@
 # Start only the YouTube tools for DronesoundTV
 # 2016 @garyd @diemastermonkey
 
-# Muy importante
+# Muy importante: The post also updates or invalidates token
 cd /pub/kits/sonicmonkeypi
-./ytSinglePost "[Dronebot] Starting YT Tools" 
+./ytSinglePost "[StageGhost] Starting YT Tools" 
+
+# Important: Run ytGetStreamIDs at least once
+# to get channel, stream IDs etc
+./ytGetStreamIDs
 
 # Start YouTube OAuth Token Maintenance Loop
 cd /pub/kits/sonicmonkeypi
 killall ytRefreshLoop
 # Important! ytRefreshTokens BEFORE start RefreshLoop
-./ytSinglePost "[Dronebot] Oh crap, I am restarting..." 
+./ytSinglePost "[StageGhost] Oh crap, I am restarting..." 
 ./ytRefreshTokens  
 sleep 3
-./ytSinglePost "[Dronebot] Already ready..." 
+./ytSinglePost "[StageGhost] Already ready..." 
 ./ytRefreshLoop &
 sleep 1
 cd /pub/kits/sonicmonkeypi
-./ytSinglePost "[Dronebot] Hi, its me I am back..." 
+./ytSinglePost "[StageGhost] Hi, its me I am back..." 
 
 # Start YouTube Chat Polling Loop
 cd /pub/kits/sonicmonkeypi
