@@ -2,10 +2,11 @@
 # Simple example StageGhost user command
 # Write the numeric argument to a file
 
+FILTERFILE="config/dronetv.filter"
 
 # Give help and exit if no arg
 if test -z "$1" ; then
-  FILT=`cat DroneTV.filter | perl -ne 'chomp; print $_;'`
+  FILT=`cat $FILTERFILE | perl -ne 'chomp; print $_;'`
   echo "[Filter] Adjusts the low-pass filter frequency (currently $FILT hz). Usage: FILTER FrequencyHz"
   exit
 fi
