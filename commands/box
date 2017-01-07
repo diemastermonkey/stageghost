@@ -9,11 +9,11 @@
 # Reseal w/spider: box spider UserChannelID
 # Reseal w/candy:  box candy UserChannelID
 # Reseal w/easter egg "dead spider and an empty wrapper wtf"
-#                  box joke UserChannelID
+#                  box prank UserChannelID
 
 # Mostly hardwired datafiles (note: may need to truncate usernames)
 my $Game = "door_box";                   # relative path
-my $Players = `cat $Game/players.txt`;   # recent player ids
+my $Players = `tail -5 $Game/players.txt`;  # X recent player ids ineligible
 my $Contents = `cat $Game/contents.txt`; # contents of box
 my $Help     = `cat $Game/help.txt`;     # response to help command
 my $Log      = "$Game/log.txt";          # for writing
@@ -21,6 +21,11 @@ my $ScoreCmd = "commands/score";         # Command to change score
 my $Attacker = `cat $Game/attacker.txt`; # Ch ID of who last closed box
 chomp ($Attacker); chomp ($Contents);
 my $AttackerName = `./ytUserInfo $Attacker`; # Victim text name
+
+# Sound Effects (optional)
+my $SFXWin  = "./DroneTV 1 =189833";    # Have dronetv select/play sfx
+my $SFXLose = "./DroneTV 2 =68230";
+my $SFXClose= "./DroneTV 1 =19972";
 
 # To do: use only if X minutes fresh
 # else consider box closed by default
@@ -63,7 +68,13 @@ if ($Cmd eq "tease") {
 
 # Open the box (again fuzzy match)
 if ($Cmd =~ /^o/) {
-  # Make opener the 'current victim'
+  # If a victim already set, the box is already opened
+  if ($Victim) {
+    print ("[Box] The box is currently opened, by $VictimName.");
+    exit(0);
+  }
+
+  # Else make opener the 'current victim'
   $Ignored = `echo '$UserCh' > $Game/victim.txt`;   # Rude
   # Debit if contents spider, else credit
   $Reward = "+1";  # string syntax
@@ -74,15 +85,29 @@ if ($Cmd =~ /^o/) {
 
   # Response depending on outcome
   if ($Contents =~ /spider/i) { 
-    print ("[Box] Ouch, $UserName - you have been bitten by a $Contents! Dang you, $AttackerName! Your score is now $VictimScore.");
+    print ("[Box] Ouch, $UserName - the box contains $Contents! Dang you, $AttackerName! Your score is now $VictimScore. You have a few minutes to close the box...");
+    $Ignored = `$SFXLose`;        # Sound effects!
   } else {
-    print ("[Box] Lucky you, $UserName - the box contains $Contents! Your score is now $VictimScore. You can thank $AttackerName!");
+    print ("[Box] Lucky you, $UserName - the box contains $Contents! Your score is now $VictimScore. You can thank $AttackerName! You have a few minutes to close the box...");
+    $Ignored = `$SFXWin`;
   }
+
+  # NEW: KLUDGE - sleep X seconds, then close box automatically
+  # TO DO - make this a timeout when its next run
+  # sleep (60 * 3);
+  # If box still open, close it 
+  # if (-r "$Game/victim.txt") {
+  #  $Ignored = `commands/box default $Victim`;
+  #  # We've already had our output we have to singlepost now
+  #  `./ytSinglePost "[Box] Sorry $VictimName, I have closed the BOX by default."`;
+  # }
+  
   exit(0);   # done here
 }
 
 # Close the box (again fuzzy match) with spider, candy or (secret!) prank!
-if ($Cmd =~ /^s|^c|^p/) {
+# Also: d for default spider
+if ($Cmd =~ /^s|^ca|^p|^d/) {
   # Allow close ONLY by $Victim or 'system' (to do: move this check to top)
   unless ($UserCh eq $Victim) {
     print ("[Box] Sorry, $UserName - $VictimName is currently holding the box. They have to seal it up, first."); 
@@ -92,6 +117,7 @@ if ($Cmd =~ /^s|^c|^p/) {
   # Set content string (to do: from list of random variations)
   $Contents = "a spider";  # assume spider
   $Contents = "a piece of candy" if ($Cmd =~ /^c/);
+  $Contents = "the default spider" if ($Cmd =~ /^d/);
   # Secret "prank" variation!
   if ($Cmd =~ /^p/) {
     $Contents = "a dismembered spider and smashed-up candy!? Uh..";
@@ -113,9 +139,13 @@ if ($Cmd =~ /^s|^c|^p/) {
 
   # Response to chat (note 'victim' is now attacker)
   print ("[Box] $VictimName has sealed the box. I wonder who will open it? The end...for now?");
+  $Ignored = `$SFXClose`;  # Sound effects
 
   exit(0);  # done here
 }
+
+# Still Here? Assume a mistyped command, respond with help text
+print ("[Box] $Help");
 
 # Fin
 

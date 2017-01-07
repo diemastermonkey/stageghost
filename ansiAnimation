@@ -7,8 +7,13 @@
 # Example: ./ansiAnimation animations/bouncydog
 # For DronesoundTV by @diemastermonkey @garyd
 
+# Img2Text Ansi conversion options
+my $Format = "ansi";    # Alt: html, html3, svg, tga
 my $Width = 60;         # Applied ONLY at conversion
 my $Height = 20;
+my $Dither = "none";    # Alt: random, fstein
+my $Contrast = "";
+
 my $FrameDelay = 0.14;	# Delay between frames
 my $CredsRate = 3;      # Framerate of creds anim
 
@@ -41,7 +46,8 @@ unless (-r "$Image\-00.png.ans") {
     $Aname = $Frame; 
     $Aname =~ s/\-(\d)\./-0$1\./g; # Cleanup
     open (OUT, ">$Aname\.ans");
-    $Ans = `nice -n 16 img2txt --contrast=0.09 --width=$Width --height=$Height $Frame`;
+    # OG # $Ans = `nice -n 16 img2txt --contrast=0.09 --width=$Width --height=$Height $Frame`;
+    $Ans = `nice -n 16 img2txt --dither=$Dither --width=$Width --height=$Height $Frame`;
     print (OUT $Ans);
     close (OUT);
     $Ignored = `rm $Frame`;  # Remove temp
