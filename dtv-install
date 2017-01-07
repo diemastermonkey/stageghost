@@ -1,0 +1,44 @@
+sudo apt-get update
+echo "Installing sound tools..."
+sudo apt-get install sox
+sudo apt-get install mpg123
+sudo apt-get install mplayer2
+echo "Installing image tools..."
+sudo apt-get install caca-utils
+sudo apt-get install imagemagick
+echo "Installing visuals and tools..."
+sudo apt-get install bsdgames
+sudo apt-get install fortune-mod
+echo "Installing CPANM..."
+# sudo apt-get install cpanm
+curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+sudo cpanm Net::Twitter
+sudo cpanm URI::Escape
+sudo cpanm Cpanel::JSON::XS
+
+# Maintanence job setup notes
+echo "Important: Add maintenance jobs to crontab"
+echo "   crontab -e"
+echo " "
+echo "# DTV Cleanup jobs"
+echo "12 12 * * * /pub/kits/sonicmonkeypi/commands/.purges"
+echo "12 12 * * * /pub/kits/sonicmonkeypi/commands/.purged"
+echo "# Rollover log files"
+echo "3 23 * * * /pub/kits/sonicmonkeypi/commands/.purgelogs"
+echo " "
+
+# Other setup
+echo "Important: Add this to your root crontab!"
+echo "   sudo crontab -e"
+echo " "
+echo "# Start DronesoundTV programs"
+echo '@reboot sudo -u pi "/pub/kits/sonicmonkeypi/DroneTV-startup"'
+echo " "
+
+echo "Run ./DroneTV-startup now if desired."
+echo " "
+echo "Panel display at "
+echo " "
+echo "   http://thiscomputersaddress:8000/index.html "
+echo " "
+
