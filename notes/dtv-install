@@ -1,6 +1,11 @@
+#!/bin/sh
 # Incomplete StageGhost/DronesoundTV Setup Script
 # 2016 @garyd @diemastermonkey
 # STRONGLY RECOMMENDED: Read it and run bits manually
+
+head -5 $0
+echo "Delaying..."
+sleep 30
 
 # Install most prerequisites
 sudo apt-get update
@@ -14,6 +19,8 @@ sudo apt-get install imagemagick
 echo "Installing visuals and tools..."
 sudo apt-get install bsdgames
 sudo apt-get install fortune-mod
+echo "You have make, right? You need it...installing..."
+sudo apt-get install make
 echo "Installing CPANM..."
 echo "If it fails, an alternative for you might be: sudo apt-get install cpanm"
 sleep 15
@@ -27,7 +34,7 @@ sudo cpanm Cpanel::JSON::XS
 # Make some directories
 echo "Making directories - you may need more, too..."
 echo "Hope you are in the install root directory..."
-sleep 15
+sleep 20
 mkdir users
 mkdir cache
 mkdir animations
