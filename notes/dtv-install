@@ -1,23 +1,42 @@
+# Incomplete StageGhost/DronesoundTV Setup Script
+# 2016 @garyd @diemastermonkey
+# STRONGLY RECOMMENDED: Read it and run bits manually
+
+# Install most prerequisites
 sudo apt-get update
 echo "Installing sound tools..."
 sudo apt-get install sox
 sudo apt-get install mpg123
 sudo apt-get install mplayer2
 echo "Installing image tools..."
-sudo apt-get install caca-tools
+sudo apt-get install caca-utils
 sudo apt-get install imagemagick
 echo "Installing visuals and tools..."
 sudo apt-get install bsdgames
 sudo apt-get install fortune-mod
 echo "Installing CPANM..."
-# sudo apt-get install cpanm
+echo "If it fails, an alternative for you might be: sudo apt-get install cpanm"
+sleep 15
 curl -L http://cpanmin.us | perl - --sudo App::cpanminus
-sudo cpanm Net::Twitter
+echo "If there were no errors, these modules should install..."
+sleep 15
+echo "Skipping/optional: sudo cpanm Net::Twitter"
 sudo cpanm URI::Escape
 sudo cpanm Cpanel::JSON::XS
 
+# Make some directories
+echo "Making directories - you may need more, too..."
+echo "Hope you are in the install root directory..."
+sleep 15
+mkdir users
+mkdir cache
+mkdir animations
+mkdir links
+mkdir images
+mkdir backgrounds
+
 # Maintanence job setup notes
-echo "Important: Add maintenance jobs to crontab"
+echo "Strongly Suggested: Add maintenance jobs to crontab"
 echo "   crontab -e"
 echo " "
 echo "# DTV Cleanup jobs"
@@ -26,19 +45,23 @@ echo "12 12 * * * /pub/kits/sonicmonkeypi/commands/.purged"
 echo "# Rollover log files"
 echo "3 23 * * * /pub/kits/sonicmonkeypi/commands/.purgelogs"
 echo " "
+sleep 10
 
 # Other setup
-echo "Important: Add this to your root crontab!"
+echo "Recommended: Start the bot from reboot crontab"
 echo "   sudo crontab -e"
 echo " "
 echo "# Start DronesoundTV programs"
 echo '@reboot sudo -u pi "/pub/kits/sonicmonkeypi/DroneTV-startup"'
 echo " "
+sleep 10
 
-echo "Run ./DroneTV-startup now if desired."
-echo " "
 echo "Panel display at "
 echo " "
 echo "   http://thiscomputersaddress:8000/index.html "
 echo " "
+sleep 10
+echo "Run ./DroneTV-startup now if desired."
+echo " "
 
+# Fin

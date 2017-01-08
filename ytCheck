@@ -181,7 +181,7 @@ foreach $item (@$items) {
   # s/ nothing | a | the | and | or | if | is | i | are | on | these | this / /ig;
   s/\|//g;	# Rampant paranoia filters
   s/\\//g;
-  # s/\///g;    # to allow urls
+  # s/\///g;    # Retired to allow urls - /
   s/\(|\)//g;
   # to allow urls # s/\://g;     # space more polite
   s/\$|\?|\`|\"|\^|\&|\*|\'|\<|\>//g;      # New: Permit % ; !
@@ -247,7 +247,7 @@ foreach $item (@$items) {
     fnDebug ("Command $Command Arg $Arg \n ");
 
     # These commands get you on the showcase display
-    if ($Command =~ /drone|mix|shout|sing|bling|mood|sub/) {
+    if ($Command =~ /shout|sing|bling|sub/) {
       $ignored = `cp users/$msgauthorchannel\.jpg panels/requestor.jpg`;  # new path
       $ignored = `cp users/$msgauthorchannel\.jpg requestor.jpg`;
       $ignored = `cp users/$msgauthorchannel\.name panels/requestor.name`;  # new path
@@ -258,17 +258,27 @@ foreach $item (@$items) {
 
     # If a NEW V2 command, script expects APPENDED msgauthorch
     # Temporary till all commands accept or ignore 2nd arg
-    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip|hi|box/) {
+    if ($Command =~ /theme|style|shout|sub|songs|score|bg|tip|hi|box/i) {
       $Arg .= " $msgauthorchannel";  # Simply appends arg
       fnDebug ("New V2 command $Command , appending $msgauthorchannel");
     }
 
     # V3 Commands: Accept multi-word user args, and appends msgauthorch
-    if ($Command =~ /title|note/) {
+    if ($Command =~ /title|note/i) {
       # Multi-word AllArgs should be quoted
       $Arg = "\"" . $AllArgs . "\"";
       $Arg .= " $msgauthorchannel";  # Simply appends arg
       fnDebug ("New V3 command $Command , Args with msgauthor is $Arg");
+    }
+
+    # SPECIAL handling: "/me" emote pre-pends msg id, 2-command delete/post
+    # also remove the / as thats just syntax
+    if ($Command =~ /\/me|\.me/i) {
+      # Easter Egg!
+      unless ($AllArgs) { $AllArgs = "has discovered the emote command."; }
+      $Arg = "$msgid \"$AllArgs\" $msgauthorchannel";
+      $Command = ".me";
+      fnDebug ("Special handling for ME command: Arg is $Arg");
     }
 
     fnDebug ("Executing $Command $Arg ...");
