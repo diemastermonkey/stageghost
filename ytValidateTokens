@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+# Complete YT auth boostrap by validating the initial auth token
+# after ytAuthInit completed by user. Run once only, which provides
+# refresh tokens used for all subsequent transactions. Run again if
+# auth ever invalidated. 20170114 @garyd @diemastermonkey
+# Example valid response:
+# {
+#   "access_token" : "ya29.Ci_T-------AFWIOIQ",
+#   "expires_in" : 3600,
+#   "refresh_token" : "1/bR_Q2--------------------------eA",
+#   "token_type" : "Bearer"
+# }
+
+# Settings
+my $Get = "curl -X POST";
+my $Api = "https://accounts.google.com/o/oauth2/token";
+my $GrantType = "authorization_code";
+my $ConfigPath = "config";
+my $TempToken = fnConfigOrDie ("sg.yttemptoken");
+my $ClientId = fnConfigOrDie ("dronetv.youtubeclientid");
+my $ClientSecret = fnConfigOrDie ("dronetv.youtubeclientsecret");
+my $CallbackUrl = fnConfigOrDie ("sg.callbackurl");
+# Outfiles: Where results go
+my $OutFile = "$ConfigPath/dronetv.youtuberefreshtoken";
+
+# Prepare template
+my $Template = "$Get "
+  . "--data-urlencode \"code=$TempToken\" "
+  . "--data-urlencode \"client_id=$ClientId\" "
+  . "--data-urlencode \"client_secret=$ClientSecret\" "
+  . "--data-urlencode \"redirect_uri=$CallbackUrl\" "
+  . "--data-urlencode \"grant_type=$GrantType\" "
+  . " $Api";  # Dont quote url
+
+# Main
+# ----------------------------------------------------
+# Actually place request
+my $Response = `$Template`; chomp ($Response);
+open (OUT, ">$0.response");   # For downstream tests
+print (OUT $Response);
+close (OUT);
+open (OUT, ">$0.debug");      # For debug
+print (OUT "Template:\n$Template\n");
+close (OUT);
+
+# Parse desired field or fail
+#  "access_token" : "ya29.Ci_TA6FtaK2mQ_6jy5GbqvGiLem6fGfMYOUpVBMlPVU9uCfvxUi8WOJ0_R9S9Q161Q",
+$FieldName = "access_token";
+$RefreshToken = $1 if ($Response =~ /\"$FieldName\"\s+\:\s+\"(.*)\"\,/m);
+print ("\nRefreshToken: $RefreshToken\n");
+
+unless (length($RefreshToken)) { 
+  die ("\n$0: Response did not contain a refresh token? Death."
+   . "\nResponse:\n$Response\n");
+}
+
+# Still here? Success, update config file
+print ("\nUpdating $OutFile");
+open (OUT, ">$OutFile") or die ("\nDeath: Cant update $OutFile\n");
+print (OUT $RefreshToken);
+close (OUT);
+
+# Fin
+
+# Function: Return a arg config entry or die
+sub fnConfigOrDie {
+  my $sField = shift (@_); chomp ($sField);
+  open (IN, "<$ConfigPath/$sField") 
+    or die ("\n$0: Config file $ConfigPath/$sField not found, fatal.\n");  
+  my @Temp = <IN>;   # CheapSlurp
+  close (IN);
+  grep (chomp($_), @Temp);
+  return (join ("\n", @Temp));   # Return as scalar
+}
