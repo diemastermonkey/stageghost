@@ -1,4 +1,1 @@
-#!/usr/bin/perl
-$x = `cat /pub/kits/sonicmonkeypi/cgi-bin/server.status`;
-chomp ($x);
-print ($x);
+3d=insert

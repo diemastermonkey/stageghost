@@ -3,8 +3,7 @@
 # Just write out data rec'd to config dir
 # @garyd 122016
 
-# my $Outfile = "/pub/kits/sonicmonkeypi/config/dronetv.youtubeoauthtoken"; # DEV FILENAME
-my $Outfile = "/pub/kits/stageghost/config/dronetv.youtubeoauthtoken";
+my $Outfile = "/pub/kits/sonicmonkeypi/config/dronetv.youtubeoauthtoken-DEV"; # DEV FILENAME
 my $Query = $ENV{'QUERY_STRING'};
 
 # Mandatory http header

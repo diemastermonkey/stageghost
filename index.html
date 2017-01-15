@@ -71,7 +71,7 @@
       fnLog ("Ajax success");
       fnStatus ("Idle");  // Might not stay long
 
-      // Only process new server responses
+      // Only process new server responses (later, smarter)
       if (data == sLastServerMsg) {
         return;  // Ignore, nothing new
       }
@@ -82,7 +82,7 @@
   
       // Special commands
       /*
-      if (data == "reload") {
+      if (data == "reload") {   // NOT safe till smarter ;)
         fnLog ("RELOAD command from server! Reloading...");
         window.location.reload(false);   // Crude reload all
         return;
@@ -96,6 +96,21 @@
         fnElementSet (aVal[0], aVal[1]);
         fnLog ("Element " + aVal[0] + " set to " + aVal[1]);
         return;  // Done here
+      }
+
+      // New: 'append' command, appendChild to page
+      // To do: support both local panels and CodePen/remote
+      // Ex:  +visitorlog (local) +3E4a58cc3F (codepen)
+      if (data.startsWith("+")) {
+        // Remove the +
+        // Handle local - append to content div
+        // remember, this sits 'above/outside' the content.html
+        var sHtml = data.substring (1, data.length);
+        $(".controller").before(sHtml);
+
+        // Handle remote 
+
+        return;
       }
 
       // If not tok=val pair, treat as source spec
