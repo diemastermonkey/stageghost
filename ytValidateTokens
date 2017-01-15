@@ -44,7 +44,7 @@ print (OUT "Template:\n$Template\n");
 close (OUT);
 
 # Parse desired field or fail
-#  "access_token" : "ya29.Ci_TA6FtaK2mQ_6jy5GbqvGiLem6fGfMYOUpVBMlPVU9uCfvxUi8WOJ0_R9S9Q161Q",
+#  "access_token" : "ya29.Ci_TA6----------61Q",
 $FieldName = "access_token";
 $RefreshToken = $1 if ($Response =~ /\"$FieldName\"\s+\:\s+\"(.*)\"\,/m);
 print ("\nRefreshToken: $RefreshToken\n");

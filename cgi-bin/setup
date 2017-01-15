@@ -14,9 +14,15 @@ my $ConfigPath = "config"; # Subdir for settings files
 # Onboard logs for 'fnSummaryLogs'
 my $sLogSummary;
 my @Logs = (
-  "log.txt", "DroneTV.debug", "DroneTV.creds",
-  "ytCheck-chat.log", "ytCheck.debug", "ytCheck.processed",
-  "remix.queue", "remix.debug", "PanelServerRefresh.debug"
+  "ytCheck-chat.log", "ytCheck.processed", "ytCheck.debug", "ytCheck.log",
+  "ytSinglePost.log", 
+  "ytMessageDelete.log", "ytCheapBan.log",
+  "ytUserInfo-raw.log", "ytUserInfo-raw.log", "ytUserSubscribe.debug",
+  "ytModifyBroadcast.debug",         
+  # Disused # "ytValidateTokens.debug",
+  "PanelServer.log", "PanelServer-raw.log", "PanelServerRefresh.debug",
+  "remix.queue", "remix.debug",                 # jukebox stuff
+  "log.txt", "DroneTV.debug", "DroneTV.creds"   # Dronesound stuff
 );
 
 # Mandatory http header
@@ -211,17 +217,16 @@ sub fnConfigWrite {
   }
 }    
 
-# Get summary of logs for diags
+# Summarize logs for diags
 sub fnLogSummary {
   my $rawlog;
   my $iLogLen = 10;
-  # Ware the hardwired path!
-  $sLogSummary .= "\n # Status # \n"
+  $sLogSummary .= "\n # Status # \n"   # Beware hardwired path
      . $Dash . "\n"
      . `commands/status` . "\n"; 
   foreach $Log (@Logs) {
     $sLogSummary .= "\n # $Log # \n"
-      . $Dash . "\n"
+      . "-" x 40 . "\n"
       . `tail -$iLogLen $Log` . "\n"
       . "-" x 40 . "\n";   
   }

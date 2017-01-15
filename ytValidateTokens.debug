@@ -1,0 +1,2 @@
+Template:
+curl -X POST --data-urlencode "code=" --data-urlencode "client_id=" --data-urlencode "client_secret=" --data-urlencode "redirect_uri=http://localhost:8000/cgi-bin/oauth2callback" --data-urlencode "grant_type=authorization_code"  https://accounts.google.com/o/oauth2/token
