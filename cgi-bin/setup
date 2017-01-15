@@ -17,8 +17,7 @@ my @Logs = (
   "ytCheck-chat.log", "ytCheck.processed", "ytCheck.debug", "ytCheck.log",
   "ytSinglePost.log", 
   "ytMessageDelete.log", "ytCheapBan.log",
-  "ytUserInfo-raw.log", "ytUserInfo-raw.log", "ytUserSubscribe.debug",
-  "ytModifyBroadcast.debug",         
+  "ytUserInfo-raw.log", "ytUserSubscribe.debug", "ytModifyBroadcast.debug",
   # Disused # "ytValidateTokens.debug",
   "PanelServer.log", "PanelServer-raw.log", "PanelServerRefresh.debug",
   "remix.queue", "remix.debug",                 # jukebox stuff
