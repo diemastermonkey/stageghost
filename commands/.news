@@ -1,0 +1,58 @@
+#!/usr/bin/perl
+# Simple news command, posting to chat and 'note' command
+# Usage:
+#    news  (no args)         Shows dronetv.news
+#    news  random            Selects randomly from dronetv.newslist
+#    news  "Up to 100 char"  Posts arg news once, sets in dronetv.news
+# Planned:
+#    news  git               Selects random matching item from dronetv.newslist
+#    news  @diemastermonkey  Takes latest from Twitter?
+#
+# 20170108 @garyd @diemastermonkey
+
+# Settable
+my $MaxLength = 100;
+my $PostCmd   = "./ytSinglePost";  # How posted to chat
+my $NoteCmd   = "commands/note";   # Used to post note: args text, fake ch
+my $User      = "news";            # Internal "meta user" under which posted
+my $PostPre   = "News Flash! ";    # For chat post only, preceeds news
+
+# Main
+# -----------------------
+my $Disallowed = "[\'\"\@\%\$\!\|\\|\/|\*|\&|\^|\`|\<|\>\[\]]";
+my $Text = shift (@ARGV);
+
+# If no args, post latest news item 
+unless ($Text) {
+  $Text = `cat config/dronetv.newslist | head -1`;
+  chomp ($Text);
+}
+
+# Minimal validation on proposed text
+if (length($Text) > $MaxLength) {
+  print ("Oops, titles limited to $MaxTitleLength characters, boss.");
+  exit(0);
+}
+
+# Drop out if matches any disallowed characters
+if ($Text =~ /$Disallowed/) {
+  print ("Aieyaa, totally disallowed some of those characters, no go.");
+  exit(0);
+}
+
+# Handle the 'random' version
+# Interpolate "_TIME_" tokens in text, if any
+if ($Text =~ /^random/i) {
+  my $TIME = `date '+%A %l:%M %p'`;
+  $Text = `cat config/dronetv.newslist | sort --random-sort | head -1`;
+  $Text =~ s/_TIME_/$TIME/gmo;
+}
+
+# Simply post using the note command and ytSinglePost
+# 
+$Ignored = `$NoteCmd '$Text' $User`;
+sleep (1);
+$Ignored = `$PostCmd '$PostPre $Text'`;
+
+# Silent when used on back end
+# print ("[News] News posted!");
