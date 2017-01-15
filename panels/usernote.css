@@ -3,7 +3,7 @@
 */
 
 .usernotes {
-  z-index: 0;
+  z-index: 2;        /* On top of main content */
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -23,8 +23,8 @@
   font-size: 1.4em;
   color: #FFFFFF;
   background-color: #8800ff;
-  background-opacity: 0.66 !important;
-  opacity: 0.85;
+  background-opacity: 0.75 !important;
+  opacity: 0.90;
   border-style: double;
   border-radius: 9px;
   padding: 4px !important;

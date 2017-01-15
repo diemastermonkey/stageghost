@@ -1,0 +1,131 @@
+#!/usr/bin/perl
+# Simple visitor-log generator supporting 
+# uses like traditional "counter wall" with sub counts
+# and profile images. Yech. Still, people may want it.
+# Produces HTML directly to stdio, with a DIV for each
+# of X recent visitors, based on timestamps in users/*.jpg
+# Note: Does not include html, body - insert this in body
+# 20170109 @garyd @diemastermonkey
+
+# Config
+my $Count = 4;				  # How many to show
+my $Users = "users";                      # Relative path
+my @Listing = `ls -1rt $Users/*.jpg | tail -$Count`;
+my $UserInfo = "./ytUserInfo";            # How to get missing json
+# Tokenized template, edit to taste (see also Fields)
+my $Template = `cat config/$0.template`;
+chomp ($Template);
+
+# Most of the supported fields, named same as json fields
+# To use, use token: _fieldname_ (case sensitive)
+# Other fields in userch.fieldname handled separately
+# FYI url=image
+my @Fields = (
+  "country", "subscriberCount", "videoCount", 
+  "title", "description", "customUrl", "url", 
+  "viewCount", "commentCount", "customUrl"
+);
+
+# Colors: Get configured random colors to use
+# with procgen scheme if no userch.color found
+open (IN, "<config/sg.colors");
+my @Colors = <IN>;
+close  (IN);
+
+# Main 
+# -------------------------------------------
+
+# Just iterate user listing, replacing template for each
+my $Out = "";
+grep (s/$Users\/|.jpg//go, @Listing);  # Remove path, jpg ext
+foreach $User (@Listing) {
+  chomp ($User);
+  print ("\nDEBUG: Processing user $User");
+
+  # Get deets on user
+  $json = fnJsonRead ($User);
+  if ($json == -1) {  
+    print ("\nDEBUG: User $User no json at all, skipping.");
+    next;
+  }
+  print ("\nDEBUG: Read ".length ($json)." bytes for $User");
+
+  $T = $Template;
+  # Prepare funky personal-color-or-procgen-random color
+  $UserColor = fnUserColor ($User);
+  # Also some manual onboard fields
+  $UserScore = fnOnboard ($User, "score");
+  $UserTitle = fnOnboard ($User, "name"); # Q: Get from json instead?
+  $T =~ s/_USERSCORE_/$UserScore/gmo;
+  $T =~ s/_USERLEVEL_/$UserLevel/gmo;
+  $T =~ s/_USERCH_/$User/gmo;
+  $T =~ s/_USERCOLOR_/$UserColor/gmo;
+  $T =~ s/title/$UserTitle/gmo;
+
+  # Iterate supported json fields, interpolating in template
+  foreach $Field (@Fields) {
+    $Value = fnJsonFind ($Field, $json);
+    $Quoted = quotemeta ($Value);
+    $Exp = "\$T =~ s/$Field/$Quoted/gm"; # Pre-compiled exp
+    # This doesnt work, does it?? Of course it does
+    eval($Exp);
+  } 
+
+  $Out .= $T;                         # Accumulate output
+}	                              # End users foreach
+
+# Dump output (Bonus: To file)
+open (OUT, ">$0.html");       # Though incomplete html
+print (OUT $Out);
+close (OUT);
+
+# Fin
+
+# Function: Crudely grok argfield from argjson blob
+# without resorting to cpan requirements :(
+sub fnJsonFind {
+  my $argField = shift (@_);
+  my $argJson = shift (@_);
+  if ($argJson =~ /\"$argField\"\: \"(.*)\"/m) {
+    return ($1);  # Return submatch or empty
+  }
+}
+
+# Function: Return argch json. If nonexist, fetch w/fnUserInfo
+sub fnJsonRead {
+  my $argCh = shift (@_);
+  unless (-r "users/$argCh.json") {
+    $Ignored = `$UserInfo $argCh`;  # Blocks
+    $Ignored = sleep(1);         # SANITY THROTTLE
+  }
+  open (IN, "<users/$argCh.json") or return (-1);
+  my @all = <IN>;
+  close (IN);
+  return (join (/\n/, @all));       # return only scalars
+}
+
+# Function: Crude 'get onboard arg user arg field - or -1
+sub fnOnboard {
+  my $argCh = shift (@_);
+  my $argField = shift (@_);
+  open (IN, "<users/$argCh.$argField") or return (-1);
+  my @all = <IN>;
+  close (IN);
+  return (join (/\n/, @all));
+}
+
+# Function: Return either (arg) userchid.color, or
+# a procedurally-generated color using channel ID as seed!
+# Leans on linux 'sum' ie checksum to userid-to-integer seed
+sub fnUserColor {
+  my $argCh = shift (@_);
+  my $Color = `cat users/$argCh.color`; chomp ($Color);
+  # If empty or invalid, seed to an int checksum of their chid
+  if (length($Color) < 6) {      # Also ignores invalid rgb
+    my $procseed = int(`echo $argCh | sum`);
+    print ("\nDEBUG: sum $argCh is $procseed");
+    srand ($procseed);
+    $Color = @Colors[int(rand(scalar(@Colors)))]; # per-user default
+  } 
+  return ($Color);
+}

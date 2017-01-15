@@ -1,0 +1,23 @@
+<!-- Visitor Card Template for PanelServerVisitorLog 
+     Note: Uses YT image urls, not onboard cache
+-->
+<span id="VisitorCard" class="VisitorCard" style="background-color:#_USERCOLOR_;">
+  <!-- <div class="VisitorImageSpan"> -->
+    <img src="url" 
+      class="VisitorImage"
+      onerror="this.src='emptypixel.png';">
+  <!-- </div> -->
+  <div>
+    <!-- OTHER INFO HERE --> 
+    <span class="VisitorScore">_USERSCORE_ pts</span><br />
+    <span class="VisitorStatus">Level _USERLEVEL_</span><br/>
+    <span class="VisitorCountry">country</span><br/>
+    <br/>
+    <span class="VisitorSubCount">Subs subscriberCount</span><br/>
+    <span class="VisitorViewCount">Views viewCount</span><br/>
+    <span class="VisitorVideoCount">Vids videoCount</span>
+    <hr>
+    <span class="VisitorCardName"><b>title</b></span>
+  </div>
+</span>
+

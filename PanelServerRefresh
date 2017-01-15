@@ -13,16 +13,20 @@
   my %Config;
   $Config {'MOODFILE'} = "DroneTV.mood";	# Location of various data
   $Config {'USERPATH'} = "users";
-  $Config {'MAXNAMELEN'} = `cat config/dronetv.maxnamelen`; chomp ($Config{'MAXNAMELEN'});
-  $Config {'NOTETIME'} = `cat config/dronetv.notetime`; chomp ($Config{'NOTETIME'});
+  $Config {'MAXNAMELEN'} = `cat config/dronetv.maxnamelen`;
+  chomp ($Config{'MAXNAMELEN'});
+  $Config {'NOTETIME'} = `cat config/dronetv.notetime`;
+  chomp ($Config{'NOTETIME'});
   $Config {'LOBBYFILE'} = "panels/lobby.html";
   $Config {'LOBBYIMAGELIST'} = "panels/lobbyimages.jsp";  # Just list of images
-  $Config {'LOBBYTIME'} = 20;  # How many mins user files considered active in lobby
-  $Config {'LOBBYSIZE'} = 14;  # Max user pics to be shown in lobby
-  $Config {'MUSICPLAYER'} = `cat config/dronetv.musicplayer`; chomp ($Config{'MUSICPLAYER'});
-  # $Config {'PLAYERTEST'} = "ps -ef | egrep -e '$MP .* remix' | wc -l"; # should be 3
+  $Config {'LOBBYTIME'} = 20;  # Mins user files considered active in lobby
+  $Config {'LOBBYSIZE'} = 13;  # Max user pics to be shown in lobby
+  $Config {'MUSICPLAYER'} = `cat config/dronetv.musicplayer`;
+  chomp ($Config{'MUSICPLAYER'});
   # Simpler player test: Just watch for imported.mp4
-  $Config {'PLAYERTEST'} = "ps -ef | egrep imported.mp4"; # If gte 1 is playing
+  my $TestString = `cat config/dronetv.ducktest`; 
+  chomp ($TestString);
+  $Config {'PLAYERTEST'} = "ps -ef | egrep $TestString"; # If gte 1 is playing
   # To detect if song playing
   $Config {'MIXCREDSCMD'} = "tail -1 remix.queue";
   $Config{'CREDS_LENGTH'} = 4;		# How many rows sfx creds shown
@@ -33,9 +37,8 @@
 
   # Mainline
   # --------------------------------------------------------
-  # $h = `cat PanelServer.header`; # No chomp! # chomp ($h);
   $b = `cat themes/$Theme/PanelServer.body`; chomp ($b);
-  # Snarf template
+  # Snarf templates
   $css = `cat themes/$Theme/PanelServer_Template.css`; chomp ($css);
   $rgb = `cat themes/$Theme/PanelServer.rgb`; chomp ($rgb); # Page color
   $bg = `cat themes/$Theme/PanelServer.bg`; chomp ($bg);    # BG Image
@@ -60,6 +63,19 @@
   $c_chatlog =~ s/$/\<br\>/gm;      # htmlify: linebreaks
   $c_chatlog =~ s/^drone/\<b\>drone\<\/b\>/gm;  # htmlify bold 'drone'
 
+  # 20170109 @garyd @diemastermonkey
+  # New: _HYPECONTENT_ contains whatever hype cmd generated
+  $i_hypetime = `cat config/stageghost.hypetime`;
+  chomp ($i_hypetime);
+  $c_hypecontent = " ";   # default to nothing
+  $test = `find -mmin -$i_hypetime -name PanelServerVisitorLog.html | xargs`;
+  if (length ($test) > 5) {    # Kludge
+    open (IN, "<PanelServerVisitorLog.html");
+    @temp = <IN>;
+    close (IN);
+    $c_hypecontent = join (/\n/, @temp);
+  }
+
   # Offsite image urls from files
   $img_wave = `cat DroneTV.waveform`; chomp ($img_wave);
   $img_spectro = `cat DroneTV.spectro`; chomp ($img_spectro);
@@ -71,43 +87,43 @@
   $c_random_video = @temp[int(rand(@temp))];
 
   # Image and other info about latest request (also: latest shoutout)
-  # YTCheck makes image 'requestor.jpg'
-  # Note: No longer 'times-out'
+  # YTCheck makes image 'requestor.jpg' Note: No longer 'times-out'
   $c_requestorimage = "emptypixel.png";
-  # OG # $k = `find ./requestor.jpg -mmin -3 | xargs`;
-  # $k = `find panels/requestor.id -mmin -3 | xargs`;  # To do: use .id file
-    $c_requestorimage = "requestor.jpg";   # Beware hardwired fnames 
-    $c_requestorname = `cat requestor.name`; chomp ($c_requestorname);
-    $c_requestorid = `cat panels/requestor.id`; chomp ($c_requestorid);
+  $c_requestorimage = "requestor.jpg";   # Beware hardwired fnames 
+  $c_requestorname = `cat requestor.name`; chomp ($c_requestorname);
+  $c_requestorid = `cat panels/requestor.id`; chomp ($c_requestorid);
 
-    # Check the radio button matching the user. 
-    # Sets c_membertoken to the token which sits 
-    # where 'checked' should be, in the HTML template
-    # it gets replaced interpolated later
-    $c_membertoken = "_CHECK_GUEST_";	                  # Assume guest
-    if (-r "$Config{'USERPATH'}/$c_requestorid.sub") {    # If .sub file exist
-      $c_membertoken = "_CHECK_MEMBER_" ;
-    }
-    if (-r "$Config{'USERPATH'}/$c_requestorid.elite") {  # If .elite file
-      $c_membertoken = "_CHECK_ELITE_";
-    }
+  # (New) freshrequestorimage ONLY if it is under LOBBYTIME mins
+  $c_freshrequestorimage = "emptypixel.png";  # Default
+  $temp = `find -mmin -$Config{'LOBBYTIME'} -name requestor.jpg | xargs`;
+  if ($temp) {
+    $c_freshrequestorimage = "requestor.jpg";    # kludge $temp 
+  }
 
-  # $Config{CREDS_LENGTH} latest credits from panels/credits.html replaces _CREDITS_HTML_
-  # They are table rows, insert inside a table
+  # Check the radio button matching the user. 
+  # Sets c_membertoken to the token which sits 
+  # where 'checked' should be, in the HTML template
+  # it gets replaced interpolated later
+  $c_membertoken = "_CHECK_GUEST_";	                  # Assume guest
+  if (-r "$Config{'USERPATH'}/$c_requestorid.sub") {    # If .sub file exist
+    $c_membertoken = "_CHECK_MEMBER_" ;
+  }
+  if (-r "$Config{'USERPATH'}/$c_requestorid.elite") {  # If .elite file
+    $c_membertoken = "_CHECK_ELITE_";
+  }
+
+  # Credits are table rows, insert inside a table
   $credits_html = `tail -$Config{'CREDS_LENGTH'} panels/credits.html`; chomp ($credits_html);
 
   # Fancier 'mix' credits - populate 'mix_creds' field with most recent
   # mix creds only if $Config{PLAYERTEST} returns something
-  # Example creds:
-  #   https://soundcloud.com/zaguan/broonzy
+  # Example creds: https://soundcloud.com/zaguan/broonzy
   @Test = `$Config{'PLAYERTEST'}`;
   if (@Test > 2) {
     # Bit kludge prepending text, but easier clean output
     $credsraw = `$Config{'MIXCREDSCMD'}`;
     $credsraw =~ s/http:\/\///g;		 # cleanups
-    # $credsraw =~ s/soundcloud.com/SoundCloud/g;	# kludge
     $credsraw =~ s/soundcloud.com\///g;	# kludge
-    # $credsraw =~ s/\/ /\/ /gso;	 # Insane but just spaces out /'s
     # Restrict to 24 chars
     if (length ($credsraw) > 35) { $credsraw = substr ($credsraw, 0, 35); }
     chomp ($credsraw);
@@ -122,9 +138,9 @@
   # ALSO replaces _LOBBY_ token in body and templates. WARE hardwired max limit!
   $p = $Config{'USERPATH'};
   $t = $Config{'LOBBYTIME'};
-  # $s = `find $p -mmin -$t -name \\*.jpg | tail -$Config{'LOBBYSIZE'} | xargs`;	
   $s = `find $p -mmin -$t -name \\*.jpg | tail -$Config{'LOBBYSIZE'} | xargs`;	
   chomp ($s);
+
   # Dump image list as js var to separate file for other stuff
   open (OUT, ">$Config{'LOBBYIMAGELIST'}");
   print (OUT "var sLobbyImageList = \"$s\";\n");
@@ -244,11 +260,14 @@
   $b =~ s/_REQUESTORNAME_/$c_requestorname/gso;
   $b =~ s/_REQUESTOR_IMAGE_/$c_requestorimage/gso;  # New syntax
   $b =~ s/_REQUESTOR_NAME_/$c_requestorname/gso;
+  # 20160109: 'Image only if fresh else empty pixel' token
+  $b =~ s/_FRESH_REQUESTOR_IMAGE_/$c_freshrequestorimage/gso; 
   $b =~ s/_LOBBY_/$LobbyContent/gso;
   $b =~ s/_USERNOTES_/$Notes/gso;     # See users/*.note
   $b =~ s/_MOOD_/$mood/gso;
   $b =~ s/_MIXCREDS_/$mix_creds/gso;
   $b =~ s/_MEDIA_ID_/$Config{'MEDIA_ID'}/gso;
+  $b =~ s/_HYPECONTENT_/$c_hypecontent/gso;
 
   # Update 'shoutout' radio button, kind of opposite logic:
   # c_membertoken is set to the text of the token we want 

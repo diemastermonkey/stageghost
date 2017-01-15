@@ -35,7 +35,7 @@ body  {
   /* background-color: #000000; */
   opacity 1.0;                   /* For transitions */
   background-repeat: no-repeat;
-  background-size: 100%;
+  background-size: cover;
 }
 
 /* The DronesoundTV Logo Must Be Visible At All Tymes and Humors
@@ -216,13 +216,20 @@ body  {
   width: 100%; height: 100%;
 }
 
+/* Override some user note settings */
 .usernote {
-  /* position: relative; */
   position: absolute;
+  width: auto;
   /* font-size: 1.4em; */
   color: #FFFFFF;
-  background-color: #_BRGB_;
+  background-color: #_BRGB_ !important;
   opacity: 0.60;
   overflow: hidden;
+}
+
+/* Override some from panels/visitorcard.css */
+.VisitorCard {
+  margin: 0.5%;
+  /* background-color: #_BRGB_ !important; */
 }
 
