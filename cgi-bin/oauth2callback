@@ -4,7 +4,7 @@
 # @garyd @diemastermonkey 20170115
 
 # Outfile is http server relative
-my $Outfile = "/config/sg.yttemptoken";
+my $Outfile = "config/sg.yttemptoken";
 my $AfterPage = "/cgi-bin/setup";    # Send user here after
 my $Query = $ENV{'QUERY_STRING'};
 
@@ -16,15 +16,15 @@ print ("</head>\n");
 
 # On fail
 unless ($Query) {
-  print ("No data received, sorry.");
-  print ("<br>Return to <a href='$AfterPage'>Setup Page</a><br>");
+  print ("<h1>No data received, sorry.</h1><br>");
+  print ("<h2>Return to <a href='$AfterPage'>Setup Page</a></h2><br>");
   print ("</body>\n"); print ("</html>");
   die;
 }
 
 # On success
-print ("Thank you, access configured.");
-print ("<br>Return to <a href='$AfterPage'>Setup Page</a><br>");
+print ("<h1>Thank you, authorization receieved!</h1><br>");
+print ("<h2>Return to <a href='$AfterPage'>Setup Page</a></h2><br>");
 print ("</body>\n"); print ("</html>");
 
 # Update files

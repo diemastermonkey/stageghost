@@ -11,6 +11,9 @@ my $sQuery = $ENV{'QUERY_STRING'};
 my @CGI = split (/\&/, $sQuery);
 my $sURL = "/cgi-bin/setup"; # Path to cgi
 my $ConfigPath = "config"; # Subdir for settings files
+# Get pre-generated approval url per settings
+my $AuthInit = `./ytAuthInit`; chomp ($AuthInit);
+
 # Onboard logs for 'fnSummaryLogs'
 my $sLogSummary;
 my @Logs = (
@@ -26,7 +29,8 @@ my @Logs = (
 
 # Mandatory http header
 print ("Content-type: text/html\n\n");
-print ("<!DOCTYPE html>\n");
+# print ("<!DOCTYPE html>\n");  # Bad form now?
+print ("<html>\n");
 print ("<head>\n");
 fnWebScript();		# Script must go in header
 print ("</head>\n");
@@ -45,7 +49,7 @@ foreach $Line (@CGI) {              # Parse CGI to Data hash
 # Get/display saved config
 fnConfigRead();
 
-# Edit field for display only, not submitted
+# Edit field for display and edit
 print ("
   <input type=\"text\" 
     onChange=\"fnEditValue();\"
@@ -92,6 +96,19 @@ if ($Empty) {
     . $Empty . "<br>"
     . "</div>"
   );
+}
+
+# Display AuthInit output only if key config items empty
+if (length ($Config{'sg.yttemptoken'}) == 0) {
+  # Webify ytAuthInit output meant for console
+  $AuthInit =~ s/\n/<br>/gmo; 
+  $AuthInit =~ s/(https.*$)/<a href='$1'>$1<\/a>/g;
+  fnWebPrintln (
+    "<br><div id='authint' class='authini'>"
+    . "<b>Note</b>: "
+    . "Authentication might not be set up...<br>"
+    . $AuthInit 
+    . "</div>");
 }
 
 # Diag logs
