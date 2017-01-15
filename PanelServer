@@ -1,18 +1,16 @@
 #!/usr/bin/python3
+# Super simple python serving loop w/cgi enabled
 
+# Enable http, CGI, error reporting
 import http.server
- 
-# import BaseHTTPServer
-# import CGIHTTPServer
-import cgitb; cgitb.enable()  ## This line enables CGI error reporting
- 
-# server = BaseHTTPServer.HTTPServer
-# handler = CGIHTTPServer.CGIHTTPRequestHandler
+import cgitb; cgitb.enable()
+# Set up server 
 server = http.server.HTTPServer
 handler = http.server.CGIHTTPRequestHandler
 server_address = ("", 8000)
-# handler.cgi_directories = ["cgi"]
- 
+# Set CGI paths, note / is 'http server root', not real root
+handler.cgi_directories = ["/cgi", "/cgi-bin"]
+# Serve forever 
 httpd = server(server_address, handler)
 httpd.serve_forever()
 
