@@ -1,5 +1,15 @@
-  "textMessageDetails": {
-   "messageText": "Cool. All done I think I dunno who knows check k? Bai."
-  }
+Command was: curl --silent -H "Content-Type: application/json" -X POST -d '{"snippet":{"authorChannelId":"UCBJjDo7AnKcpO5s9hNs1ngg","type":"textMessageEvent","textMessageDetails":{"messageText":"TEST"},"liveChatId":""}}' "https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&access_token="{
+ "error": {
+  "errors": [
+   {
+    "domain": "global",
+    "reason": "required",
+    "message": "Login Required",
+    "locationType": "header",
+    "location": "Authorization"
+   }
+  ],
+  "code": 401,
+  "message": "Login Required"
  }
 }
