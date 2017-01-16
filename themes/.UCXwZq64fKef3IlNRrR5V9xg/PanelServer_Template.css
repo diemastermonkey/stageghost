@@ -1,0 +1,199 @@
+/* StageGhost/DronesoundTV User Styling Template for youtube.com/dronesoundtv
+   1. Use the PasteBin "clone" feature to make and edit your own version.
+   2. Use the .STYLE command in chat, to import it. Type .STYLE for help.
+   3. Use "THEME mine" command in chat to activate it.
+
+   For detailed instructions see RTFM command.
+   @garyd @diemastermonkey @okbopdesign 2016  
+
+   The following tokens are replaced on render at server.
+   Use anywhere and as often as desired.
+
+   _BRGB_         Value set by the COLOR command
+   _BG_IMAGE_     Image selected by BG command
+   _C_MIDRIGHT_   Waveform image of latest sample played
+   _C_BOTTOM_     Rotates among creds, alerts, shoutouts
+   _REQUESTORIMAGE_
+      Profile image of user who droned <= 5m ago
+
+   NOTE: Anyone figuring-out how to poke the local filesystem
+   or browser instance will be perma-banned! 
+*/
+
+/* User-controlled background - you may use a SAFE, TASTEFUL image url */
+body  {
+  /* Example: static image */
+  /* background-image: url("http://tastefulgeometry.com/best.png");   */
+  /* Use the image set by BG command */
+  background-image: url("_BG_IMAGE_"); 
+  /* Example: Use the color set by COLOR command */
+  /* background-color: #_BRGB_; */
+  background-color: #000000;
+  opacity 1.0;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+
+/* The DronesoundTV Logo Must Be Visible At All Tymes and Humors. Of course we're kidding sheesh could you imagine?!
+*/
+.logo {
+  position: absolute;
+  top: 7%;
+  right: 7%;
+  width: 320px;
+  height: 200px;
+  /* background-image: url("_BG_IMAGE_");  */
+  background-image: url("http://i.makeagif.com/media/11-20-2015/uiCHdb.gif"); 
+  background-position: 65% 33%;
+  border-radius: 9px;
+  border-style: single;
+  border-width: 6px;
+  border-color: #_BRGB_;
+  z-index: 10;
+}
+
+/* Top layer atop everything, for graffiti tags
+   and temporary popups, etc
+*/
+.top {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
+  top: 0;
+  left: 0;
+  opacity: 1.0;
+  border: none;
+}
+
+/* Signage area of top layer. Actually this should be
+   shown occasionally to credit Freesound SoundCloud RPI */
+.signage {
+  display: block;
+  position: absolute;  /* wrong wrong wrong */
+  opacity: 0;          /* Start invisible script fades in/out */
+  background-opacity: 1.0;
+  background-color: #000000;
+  bottom: 2.5%;
+  left: 0%;
+  right: 0%;
+  width: 100%;
+  height: 10%;
+  padding: 0.30em;
+  vertical-align: middle;
+}
+
+/* Overlaid notice actually under overlay in this theme */
+.notice {
+  display: none;   /* Disabled till home found */
+  width: 600px;
+  overflow: auto;
+  position: absolute;
+  z-index: 0;
+  transition: opacity 5s left 7s;
+  opacity: 1.0;
+  top: 54%;
+  left: 60%;
+  border: 0px;
+  font-size: 0.10em;
+  font-color: #000000;
+  font-family: "Times New Roman", Times, serif;
+}
+
+/* Shoutout in this theme contains only profile image 
+   It should show through cutout so it's z index 0
+*/
+.shoutout {
+  position: absolute;
+  background-image: url("http://i.makeagif.com/media/1-01-2017/Jv2pyS.gif");
+  top: 0%;
+  left: 0%;
+  width: 100%; height: 100%;
+  z-index: 10;
+}
+
+/* Requestor img in body, in shoutout div */
+.requestorimage {
+  /* parent shoutout */
+  background-image: url("http://i.makeagif.com/media/1-01-2017/Jv2pyS.gif");
+  background-opacity: 0.5;
+  position: absolute;
+  top: 50%;
+  left: 74%;
+  width: 0px;  /* Starts flea size so zoom in */
+  height: 0px;
+  z-index: 10;
+}
+
+/* Animated foreground image in front of bg and masks. Not actually used in this theme, see theme "three" for an example. Disabled in the html, actually. It will be opened-up soon.
+*/
+.foreground {
+  background-image: url("backgrounds/abstractalpha01.png");
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  height: 100%;
+  width: 100%;
+}
+
+/* The RL Cutout Masks! Oh this is so clever...
+The toprightmask and main_left_mask objects are positioned above the Real Life "Pi Cam" and terminal capture screens, respectively. When visible and green, they "show through" the panel. This allows you to "turn those video sources on and off" from layout! Much other fun can be had by green-screened overlays, partial cutouts, etc. Experiment.
+*/
+
+/* This one is shown but underneath the "overlay", so it ends-up peeking-through alpha channel pixels in
+   the overlay's background image.
+*/
+.main_left_mask {
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  width: 40%;
+  height: 50%;
+  background-image: url("http://i.makeagif.com/media/1-01-2017/oN9_sL.gif");
+  background-size: 300% 300%;
+  background-position: -50% 22%;
+  background-opacity: 0.5;
+  background-color: #00FF00;
+  border-radius: 9px;
+  border-width: 6px;
+  border-style: solid;
+  border-color: #_BRGB_;
+}
+
+/* The "Pi Cam" is hidden in this theme, not even green */
+.toprightmask { display: none; }
+
+/* Waveform traditional position: Disabled in html in this theme
+*/
+.midright {
+  display: none;
+  position: absolute;
+  top: 72%;
+  left: 4.55em;
+  opacity: 1.00;
+  width: 239px;
+  height: 48px;
+}
+
+/* Messages and notices
+   Though named upper right, it's actually in the bottom in this theme. 
+*/
+.upperrightbox {
+  position: absolute;
+  z-index: 9;
+  overflow: hidden;
+  bottom: 2.5%;
+  left: 2.5%;
+  right: 2.5%;
+  width: 95%;
+  height: 10%;
+  padding: 0.40em;
+  background: _BG_IMAGE_;
+  background-color: #_BRGB_;
+  background-opacity: 0.5;
+  opacity: 1.0; 
+  vertical-align: text-bottom;
+}
