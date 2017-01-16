@@ -1,9 +1,12 @@
 #!/bin/sh
-# Just keep refreshing OAuth tokens
-# Note json response to request in ytRefreshTokens
-# gives best interval time (typically 3600 seconds)
-# though its hardwired here. -dmm
-cd /pub/kits/sonicmonkeypi
+# StageGhost 
+# Just keep refreshing OAuth tokens. Note that json response to request in ytRefreshTokens gives best interval (~ 3600 seconds), though its hardwired here.
+
+# Assume either the new- or old-school install dir
+cd /pub/kits/stageghost || cd /pub/kits/stageghost
+# Initial refresh, so can watch for problems
 ./ytRefreshTokens
-sleep 5
+echo "Delay: Last chance before starting loop..."
+sleep 30
+# Loop forever
 while (true); do ./ytRefreshTokens &> /dev/null ; sleep 3600; done
