@@ -1,0 +1,175 @@
+#!/usr/bin/perl
+# DOORS: Not-simple example of StageGhost door game
+# Framework for procedurally-generated 'world of rooms'
+# Inevitably, to be rendered on screen
+# Take input from chat to navigate/report
+# Hardwired for 64x64 rooms (-32 to +32)
+# 20170110 @garyd @diemastermonkey
+
+# Setup and data from game files
+my $Title = "DOOR";        # For output
+my $GameDir="door_doors";
+my $UserDir = "users";    # Where userfiles live
+my $PuzzleCmd= "doorpuzzle"; # see GameDir
+my $NpcCmd   = "npc";
+my $ScoreCmd = "commands/score";  # How to add/debit points
+my $DoorReward = +3;              # Points per unlocked door
+my $DoorPunish = -1;              # Debit per unlock failure
+my $WorldSeed = `cat $GameDir/worldseed.txt`; chomp ($WorldSeed);
+my $X = `cat $GameDir/x.txt`; chomp ($X);
+my $Y = `cat $GameDir/y.txt`; chomp ($Y);
+my $OGX = $X; my $OGY = $Y;  # For reporting
+# Calculate room number ie seed (also, world)
+# Wired for 64x64 rooms, world coords
+my $Seed = 
+  $WorldSeed            # Start w/world seed IMPORTANT
+  + ($Y + 32) * 64      # Offset into rows
+  + $X + 32;            # ...columns
+# TEST: Get only name of native resident if any
+my $NpcName = `$GameDir/$NpcCmd $Seed`;  # NPC Seed is room #
+my $NpcItem = `$GameDir/$NpcCmd $Seed item`; # Retrieve npc item, apple
+my $NpcState = `$GameDir/$NpcCmd $Seed state`; # Retrieve npc state, eating
+chomp ($NpcName); chomp ($NpcItem);
+
+# Fun stuff! Figure room title ie 'the ip frely memorial library'
+my @Types = `cat $GameDir/room_types.txt`;
+grep (chomp($_), @Types);
+my @Titles = `cat $GameDir/room_names.txt`;
+grep (chomp($_), @Titles);
+
+# Sub: Procgen arg room number (seed), return room name
+# TO DO: Generalize into a 'room' script as with 'npc'
+sub fnRoomName {
+  # Set room seed and 'procgen' some properties
+  srand (shift(@_));      # ATTN: Seed is set, order now important!
+  my $tName = 
+    "The "
+    . @Titles[int(rand(scalar(@Titles)))] . " " 
+    . @Types[int(rand(scalar(@Types)))];
+  return ($tName);
+}
+
+my $RoomName = fnRoomName ($Seed);
+
+# Handle args, or default msg and out
+my $UserCh = pop (@ARGV);    # V3 command, ytCheck appends id
+my $Args = shift (@ARGV); chomp ($Args);
+my @F = split (' ', $Args, 2);
+my $Arg = shift (@F);
+# Any remaining arg would be 'puzzle guess'
+my $Guess = shift (@F);
+
+# Handle help
+if ($Arg =~ /help/i) {
+  print ("[$Title] RoverBot 3000 is lost in our labrynth HQ...guide it home by remote-control! $Title NORTH moves it North, or just $Title N. Provide codes with $Title EAST [codeword]. RTFM for more.");
+  exit(0);
+}
+
+# If no user args at all, default location report
+# Append other details as needed
+# unless ($NpcName eq "nothing") { $Add = "$NpcName is here."; }
+unless ($NpcName eq "nothing") {
+  $Add = "$NpcName is here, $NpcState $NpcItem."
+}
+unless (length($Arg)) {
+  # Standard text plus any Add
+  print ("[$Title] In $RoomName, \#$Seed. Use $Title HELP for more info. $Add");
+  exit();
+}
+
+# Room-to-room movement (NOT camera movement)
+# south=down ie negative y, west=right ie positive x, etc. Dir for text only.
+if ($Arg =~ /^n/i) { $Y++; $Y = -32 if ($Y > 32); $Dir = "North"; }
+if ($Arg =~ /^s/i) { $Y--; $Y = 32 if ($Y < -32); $Dir = "South"; }
+if ($Arg =~ /^w/i) { $X--; $X = -32 if ($X > 32); $Dir = "West"; }
+if ($Arg =~ /^e/i) { $X++; $X = 32 if ($X < -32); $Dir = "East"; }
+# Not applied until below, in case random events!
+$NewSeed = $WorldSeed + ($Y + 32) * 64 + $X + 32;  # ie new room number
+
+# Handling for other commands, or random events 
+# that happen just because they ran room!
+
+# Figure what door is passed through, to procgen 
+# all four doors. We need a unique door number per room-room
+# access. Use door number as seed for access challenges!
+$DoorNumber = $Seed * $NewSeed ;
+$NextRoomName = fnRoomName ($NewSeed);  # Display only
+
+# If moved room, update files and run self w/no args to report
+if ($X != $OGX || $Y != $OGY) {
+
+  # Get puzzle text
+  $Puzzle = `$GameDir/$PuzzleCmd $DoorNumber`;
+
+  # If user already has key, set Authorized, drop through
+  $Test = `egrep $DoorNumber $UserDir/$UserCh.keys`;
+  if (length($Test)) {
+    $Authorized = 1; $Guess = "pass";  # fake
+    # $Msg = "Unlocking door $DoorNumber with your access!";
+    $Msg = "Unlocked with your code. ";   
+    $Seed = $NewSeed;   # Drop through to normal
+  }
+
+  # If no guess included, only deny with puzzle
+  unless (length($Guess)) {
+    print ("[$Title] The door $Dir into $NextRoomName is code-locked. Hint: $Puzzle");
+    exit(0);
+  }
+  
+  # Command included guess, test it (
+  # Beware hardwired pass/fail strings
+  $Guess = lc ($Guess);
+  $Test = `$GameDir/$PuzzleCmd $DoorNumber $Guess`;
+  if ($Test eq "pass") {
+    # Add to user's keys, drop-through to 'pass door'
+    `echo '$DoorNumber' >> $UserDir/$UserCh.keys`;
+    # $Msg = "Well done, you now have the code to Door $DoorNumber!";
+    $Msg = "Well done, you now have the code to this Door!";
+    $Authorized = 1;
+    $Ignored = `$ScoreCmd +$DoorReward $UserCh`; # Reward
+    $Seed = $NewSeed;  # Drop thru to normal
+  } else {
+    $Ignored = `$ScoreCmd +$DoorPunish $UserCh`; # Debit
+  }
+
+  # Last stop for no key or failed
+  unless ($Authorized) {
+    print ("[$Title] Access Denied to Door $DoorNumber: Challenge $Test.");
+    exit(0);
+  }
+   
+  fnWrite ("$GameDir/x.txt", $X);
+  fnWrite ("$GameDir/y.txt", $Y);
+  $Seed = $WorldSeed + ($Y + 32) * 64 + $X + 32; # To do: fnRoomToSeed
+  fnWrite ("$GameDir/seed.txt", $Seed);
+  # NO # fnWrite ("$GameDir/seed.txt", $NewSeed);
+
+  # Kibitz-post which door passing through
+  `./ytSinglePost '$Msg Moving into Room $NewSeed...' &`;
+
+  # Finally, the output from the new room, from self
+  # print (`$0`);     # Run self w/no args, return output
+  $r = `$0`;
+  # `./ytSinglePost '$r' &`;     # Run self w/no args, return output
+  print ("$r");     # Run self w/no args, return output
+}
+
+# Fin
+exit(0);
+
+# Returns lists of things only
+sub fnRead {
+  $f = shift (@_);
+  open (I, "<$f");
+  @d = <I>;
+  close (I);
+  return (join (/\n/, @d));  # Return scalar
+}
+
+sub fnWrite {
+  $f = shift (@_);
+  $d = shift (@_);
+  open (O, ">$f");
+  print (O $d);
+  close (O);
+}

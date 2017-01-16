@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+# DOORS NPC handler
+# Provide procgenerated name, pos, state or 'text' description of 
+# (arg 1) npc key, depending on args
+# Designed to permit 'player ghosts', ie one NPC per player!
+# For stalker enemies, pets, etc
+
+use Time::HiRes qw(gettimeofday);  # For clock-based procgens
+my $MSeconds = int((gettimeofday * 10)); # Hi-res msseconds
+my $Seconds = int((gettimeofday)); # seconds (discards ms)
+my $Slowtime = $Seconds / 10;      # special slow game time
+
+my $NPCKey = shift (@ARGV);   # Key as uid
+my $Command = shift (@ARGV);  # fieldname or others
+my $GameDir = "door_doors";
+my $WorldWidth = 64;
+my $WorldHeight = 64;
+my @Names = `cat $GameDir/npc_names.txt`; # Name pieces
+my @Types = `cat $GameDir/npc_types.txt`; # ie mouse, cat
+my @Items = `cat $GameDir/items.txt`; # ie apple, nuts
+grep (chomp ($_), @Types); grep (chomp ($_), @Names);
+grep (chomp ($_), @Items);
+
+# Figure the Seed
+my $Seed = `cat $GameDir/worldseed.txt`; chomp ($Seed);
+my $KeyMod = $NPCKey % 32768;    # Constrain to safe size
+my $Seed += $KeyMod;
+
+# NPC Data Struct
+my %Npc;
+# For now, static states - later, by npc/encounter type
+my @States = ("needing", "eating", "offering");
+
+# Procgen NPC
+# ------------------------------------
+# Seed to the world seed plus time, then procgen
+# Here out, ORDER MATTERS
+srand ($Seed);
+# TO DO: Tie to world density map:
+$Npc{'exists'} = 1 if (int(rand(3)) == 0);
+$Npc{'mobility'} = rand(0.9) + 0.1;  # Likelyhood of motion
+# For NPC object drops/steals/etc
+$Npc{'generatorseed'} = int(rand(32768));
+$Npc{'type'} = @Types[int(rand(scalar(@Types)))];
+$Npc{'name'} = "";  # See below for populate
+# Home room, not necessarily where it is now
+$Npc{'homex'} = 32 - int(rand(64));  # -32 to +32 home col / row
+$Npc{'homey'} = 32 - int(rand(64));
+$Npc{'room'}  = $Npc{'homey'} + 32 * 64 + $Npc{'homex'} + 32;
+# Pick NPCs inventory, literally all they ever have if anything
+$Npc{'item'} = @Items[int(rand(scalar(@Items)))];
+
+# Inventory curve determines whether they have
+# -1 (seeking), 0 (own), or +1 (trading out)
+# INSERT INVENTORY CURVE CODE HERE to calculate item count
+
+# Generate NPC name
+$Bits = int(rand(2)) + 2;    # Warning non-member prng!
+while ($Bits--) {
+  $Npc{'name'} .= @Names[int(rand(scalar(@Names)))];
+  if (int(rand(5)) == 0) { $Npc{'name'} .= "-"; } # Non-member
+}
+$Npc{'name'} = ucfirst ($Npc{'name'});
+# Generate NPC scheduled properties
+# Two offsets to timer wave create schedule diversity
+$Npc{'clockoffset'} = int(rand(3600));
+$Npc{'triggeroffset'} = (rand(3) - 1) * 0.5; # Smudge wave trig
+# Trigger state -1 to +1, ex seeking to having to offering
+# Using $Seconds, See also $MSeconds or Slowtime
+$Npc{'triggerstate'} =  
+  sin($Slowtime + $Npc{'clockoffset'}) 
+  + $Npc{'triggeroffset'};
+$Npc{'state'} = @States[int($Npc{'triggerstate'}) + 1]; # +1 cause array
+
+# Output
+# ------------------------------------
+# Output name by default if something 'exists', else "nothing"
+if ($Npc{'exists'}) {
+  # Default response just name
+  $Msg = $Npc{'name'}. " The " . $Npc{'type'};
+  # If $Command gave a field, return only that
+  $Msg = $Npc{lc($Command)} if (length($Command));
+  print ($Msg);
+} else {
+  print ("nothing");
+}
+
+
+

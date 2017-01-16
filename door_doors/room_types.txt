@@ -1,0 +1,23 @@
+Deck
+Lounge
+Hall
+Closet
+Shed
+Covered Patio
+Observation Deck
+Reflecting Pool
+Gym
+Training Room
+Suite
+Library
+Storage Facility
+Warehouse
+Research Library
+Observatory
+Laboratory
+Atrium
+Greenhouse
+Room
+Room
+Room
+Room

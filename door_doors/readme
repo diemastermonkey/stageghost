@@ -1,0 +1,14 @@
+An example 'Door Game' for StageGhost
+"Doors" - the world of procedurally-generated doors
+
+As an example, it demonstrates the 'door game' model:
+  Keeps and manages own data files
+  World is largely stateless
+  Player state part of player data, not world data
+  Inter-player messaging takes place in player data
+
+The game itself:
+Players "navigate a robot by remote" N, S, E, W through a grid of 4-sided rooms with doors on each side. Doors must be "unlocked" by de-scrambling a word, after which the player can pass through the door automatically. Player system-wide .score files are credited or debited appropriately. Some rooms are inhabited by an NPC, following their own schedule.
+
+Rudimentary procedural generation is used to provide unique but stateless properties for everything, including room names, door puzzles, and all NPC characteristics.
+

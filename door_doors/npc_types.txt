@@ -1,0 +1,34 @@
+Small Mouse
+Ordinary Mouse
+Large Mouse
+Huge Mouse
+Small Monkey
+Ordinary Monkey
+Huge Monkey
+Miniature Landshark
+Ordinary Landshark
+Huge Landshark
+Kitten
+Cat
+Old Cat
+Stray Cat
+Puppy
+Dog
+Old Dog
+Bird
+Weird Bird
+Bat
+Huge Bat
+Spider
+Snake
+Possum
+Other Robot
+Renegade Sock
+Administrator
+Security Guard
+Hacker
+Accountant
+Mail Clerk
+Pipe Fitter
+Thing Doer
+Cook

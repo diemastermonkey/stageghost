@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+# DOORS Puzzle handler
+# For now, only provides a scramble of procgen'd item from 'puzzles'
+# If one arg (seed), returns puzzle for that door
+# If two (seed and answer), returns "pass" or "fail"
+
+my $Seed = shift (@ARGV);
+my $Answer = shift (@ARGV);
+
+# Get all puzzles
+my @Puzzles = `cat door_doors/door_puzzles.txt`;
+grep (chomp ($_), @Puzzles);
+
+# Seed to the door, rands, order now crucial!
+srand ($Seed);
+$Puzzle = @Puzzles[int(rand(scalar(@Puzzles)))];
+# Scrambler
+@Letters = split (//, $Puzzle);
+while (@Letters) {
+  $Scramble .= splice (@Letters, int(rand(scalar(@Letters))), 1);
+}
+
+# If no 'Answer' arg, return scramble quietly for tools, exit
+unless ($Answer) {
+  print ($Scramble);
+  exit(0);
+}
+
+# Else compare answer to scramble
+if (lc($Answer) eq $Puzzle) {  # ie plaintext
+  print ("pass"); 
+} else {
+  print ("fail");
+}
