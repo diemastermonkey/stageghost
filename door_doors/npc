@@ -1,9 +1,14 @@
 #!/usr/bin/perl
 # DOORS NPC handler
-# Provide procgenerated name, pos, state or 'text' description of 
-# (arg 1) npc key, depending on args
-# Designed to permit 'player ghosts', ie one NPC per player!
-# For stalker enemies, pets, etc
+# Provide procgenerated name, or other properties of NPC
+#   door_doors/npc <NPCSEED> [property]
+# Examples:
+#   door_doors/npc 101      (returns 'nothing' or name)
+#   door_doors/npc state      (returns 'nothing' or state)
+# Use any property in %Npc ie item, room, generatorseed 
+# Designed to permit 'player ghosts', ie one NPC per player
+# For stalker enemies, pets
+# To do: Support inanimate persistent objects, broken/fixed machines etc
 
 use Time::HiRes qw(gettimeofday);  # For clock-based procgens
 my $MSeconds = int((gettimeofday * 10)); # Hi-res msseconds
