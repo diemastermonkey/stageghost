@@ -60,6 +60,7 @@ my $Get = "/usr/bin/curl --silent -o -";
 my $YTChannelID = fnConfigGet ("dronetv.channelid");
 my $YTChatID = fnConfigGet ("dronetv.livechatid");
 my $YTOAuthToken = fnConfigGet ("dronetv.youtubeoauthtoken");
+my $YTChatLimit = fnConfigGet ("sg.youtubechatlimit");
 # New: Abort if unconfigured or impossibly small
 if (length($YTChannelID . $YTChatID . $YTOauthToken) < 49) { 
   fnDebug ("Fatal: dronetv.channelid, livechatid and/or youtuboauthtoken are foobar.");
@@ -86,7 +87,7 @@ my @Processed = split (/\n/, `cat $0.processed`);
 
 # Limit to 200 in response, saves 300 responses
 # Via Oauth token:
-my $YTChat = "https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&liveChatId=$YTChatID&maxResults=200&access_token=$YTOAuthToken";
+my $YTChat = "https://www.googleapis.com/youtube/v3/liveChat/messages?part=snippet&liveChatId=$YTChatID&maxResults=$YTChatLimit&access_token=$YTOAuthToken";
 
 # Sound player function
 # ------------------------------------------------------
@@ -264,7 +265,7 @@ foreach $item (@$items) {
     }
 
     # V3 Commands: Accept multi-word user args, and appends msgauthorch
-    if ($Command =~ /title|note/i) {
+    if ($Command =~ /title|note|door/i) {
       # Multi-word AllArgs should be quoted
       $Arg = "\"" . $AllArgs . "\"";
       $Arg .= " $msgauthorchannel";  # Simply appends arg
@@ -315,7 +316,8 @@ foreach $item (@$items) {
     if (/^drone ([\w\d\-]+)/i) {
       $keyword = $&;
       $keyword =~ s/^drone //i;
-      $Ignored = `perl ytSinglePost "[Dronebot] Thank you for your request! Let me see what I can find about $keyword on Freesound..."`;
+      # Retired: No double-message, just the reply after search
+      # $Ignored = `perl ytSinglePost "[Dronebot] Thank you for your request! Let me see what I can find about $keyword on Freesound..."`;
     }  else {
       # Else nothing left for you go TO NEXT
       # NOTE: May want to limit this to X max un-request processed per run
@@ -344,15 +346,15 @@ foreach $item (@$items) {
 
 
   # For now, just tick-out to perl/sm - up to X runs
-  $runs = 1;  # Retired:  + int(rand(2));
+  $runs = 1 + int(rand(2));
 
   # Actually play drone request
   # Note: Passes magic 3rd arg, indicating a user request
   # print ("\nCmd: perl sonicmonkeypi $runs =$keyword ");
   fnPlay ("$Player $runs =$keyword Request >> log.txt ");
 
-  # NEW: Spawn GPIO flasher for this request
-  $Ignored = `/usr/bin/perl uiFlashRequestsOnce &`;
+  # RETIRED: Spawn GPIO flasher for this request
+  # $Ignored = `/usr/bin/perl uiFlashRequestsOnce &`;
 
   # Disabled: Fancy shoutout w/profile pic
   # $UserChannelName = `./ytUserInfo $msgauthorchannel`;
@@ -365,9 +367,9 @@ foreach $item (@$items) {
   # print (SHOUT `./ansiUser users/$msgauthorchannel.jpg | sed "s/^/ /"`);
   # close (SHOUT);
 
-  # Disabled: Mandatory throttle
+  # Mandatory throttle
   # print ("\nResting...");
-  # `sleep 0.5`;
+  `sleep 0.5`;
   
 }
 # Fin
