@@ -5,7 +5,7 @@
 # https://developers.google.com/youtube/v3/live/guides/auth/server-side-web-apps
 
 # Example: 
-# https://accounts.google.com/o/oauth2/auth?client_id=605616310598-8brqgknl09nqog35h3rp5ehndfrare76.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline`
+# https://accounts.google.com/o/oauth2/auth?client_id=60-----------------e76.apps.googleusercontent.com&redirect_uri=http%3A%2F%2Flocalhost%2Foauth2callback&scope=https://www.googleapis.com/auth/youtube&response_type=code&access_type=offline`
 
 # Simple, cheap, safe config file reader
 # Example use:
@@ -25,7 +25,6 @@ sub fnConfigGet {
 my $APIClientID = fnConfigGet("dronetv.youtubeclientid");
 my $APIResponseType = "code";                # See docs
 my $APIAccessType = "offline";
-# my $CallbackURL = "http://localhost:8000/cgi-bin/oauth2callback";
 my $CallbackURL = fnConfigGet ("sg.callbackurl");
 
 # Approval URL Template, pre-encoded
@@ -40,6 +39,6 @@ my $AuthURLTemplate = "https://accounts.google.com/o/oauth2/auth?"
   . "&access_type=$APIAccessType";
 
 # Send user to URL, callbackurl handles the rest
-print ("\n1. Open this URL in your browser. Approve the access, making sure to use the account you want to manage.\n2. When the \"oauth2callback\" fails (it will), copy the part after \"code=\" in the location bar URL.\n3. Paste that code into config/sg.yttemptoken\n4. Run ./ytValidateTokens\n5. Run ./ytRefreshTokens\n6. Run ./ytGetStreamIDs\n7. Check for errors, start ytTools\n# Approval URL # \n\n");
+print ("\n1. Open the following URL in your browser. Approve the access, using the account you want to manage.\n2. If the \"oauth2callback\" fails, copy the part after \"code=\" from the resulting URL.\n3. Put that code into config/sg.yttemptoken\n4. Run ./ytValidateTokens, then ./ytRefreshTokens, then ./ytGetStreamIDs\n5. Check for errors, then start ./ytTools-startup \n\n");
 print ($AuthURLTemplate);
 print ("\n");
