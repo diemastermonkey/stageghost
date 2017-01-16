@@ -22,10 +22,11 @@ sub fnConfigGet {
 
 # These tokens read from config, used in refresh request
 # Note dronetv.youtuberefreshtoken created by cgi-bin/oauth2callback !
+my $CallbackUrl = fnConfigGet ("sg.callbackurl");  # should match auth callback
 my $ClientID = fnConfigGet ("dronetv.youtubeclientid");
 my $ClientSecret = fnConfigGet ("dronetv.youtubeclientsecret");
 my $RefreshToken = fnConfigGet ("dronetv.youtuberefreshtoken");
-# The refreshed user oauth tokens go here:
+# Where output goes ie refreshed user oauth tokens:
 my $TokenFile = "config/dronetv.youtubeoauthtoken";
 my $JSONFile = "config/dronetv.youtubeoauthtoken.json"; # Disused as yet
 
@@ -34,26 +35,33 @@ if (length($ClientID . $ClientSecret . $RefreshToken) < 49) {
   die ("\n$0 Fatal: config/dronetv.youtubeclientid, youtuberefreshtoken and/or clientsecret are foobar\n");
 }
 
-# Weird note: My call is using a nonsense redirect_uri (which we ignore)
-$Raw = `/usr/bin/curl --silent -X POST -d "refresh_token=$RefreshToken" --data-urlencode "client_id=$ClientID" --data-urlencode "client_secret=$ClientSecret" --data-urlencode "redirect_uri=http://localhost/oauth2callback" --data-urlencode "grant_type=refresh_token" https://accounts.google.com/o/oauth2/token`;
+# Note: The callback url can be nonsense, as long as it
+# matches what was used in ytAuthInit and ytValidateTokens
+$Raw = `/usr/bin/curl --silent -X POST -d "refresh_token=$RefreshToken" --data-urlencode "client_id=$ClientID" --data-urlencode "client_secret=$ClientSecret" --data-urlencode "redirect_uri=$CallbackUrl" --data-urlencode "grant_type=refresh_token" https://accounts.google.com/o/oauth2/token`;
+chomp ($Raw);
 
-# Complete response for later tools
-open (OUT, "> config/dronetv.youtubeoauthtoken.json") or die ("\n$0 : $! \n");
+# Console response for og tools
+print ($Raw);
+
+# New: Dont update files if no access token found
+$Clean = $Raw;
+$Clean =~ s/\"//g;
+$Clean =~ s/\s+//g;
+$Clean =~ s/^.*access_token\://;
+$Clean =~ s/\,.*//g;
+unless (length($Clean)) {
+  die ("$0: No access_token received in response."
+      . "\nNo files updated, for safety. Death.");
+}
+ 
+# Json response for more sophisticated tools to come
+open (OUT, "> $JSONFile") or die ("$0: $! \n");
 print (OUT $Raw);
 close (OUT);
 
-# Complete response for existing tools
-print ($Raw);
-
-# Just the token for simple tools
-$Raw =~ s/\"//g;
-$Raw =~ s/\s+//g;
-$Raw =~ s/^.*access_token\://;
-$Raw =~ s/\,.*//g;
- 
-# Update production youtubeoauthtoken!
-open (OUT, "> $TokenFile") or die ("\n$0 : $! \n");
-print (OUT $Raw);
+# Update prod youtubeoauthtoken with just the token
+open (OUT, "> $TokenFile") or die ("$0: $! \n");
+print (OUT $Clean);
 close (OUT);
 
 # Fin

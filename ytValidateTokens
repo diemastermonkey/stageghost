@@ -12,7 +12,7 @@
 # }
 
 # Settings
-my $Get = "curl -X POST";
+my $Get = "curl --silent -o -X POST";
 my $Api = "https://accounts.google.com/o/oauth2/token";
 my $GrantType = "authorization_code";
 my $ConfigPath = "config";
@@ -30,7 +30,7 @@ my $Template = "$Get "
   . "--data-urlencode \"client_secret=$ClientSecret\" "
   . "--data-urlencode \"redirect_uri=$CallbackUrl\" "
   . "--data-urlencode \"grant_type=$GrantType\" "
-  . " $Api";  # Dont quote url
+  . " $Api";                    # Dont quote url
 
 # Main
 # ----------------------------------------------------
@@ -44,13 +44,14 @@ print (OUT "Template:\n$Template\n");
 close (OUT);
 
 # Parse desired field or fail
-#  "access_token" : "ya29.Ci_TA6----------61Q",
+#  ex target: "access_token" : "ya29.Ci_TA6----------61Q",
 $FieldName = "access_token";
 $RefreshToken = $1 if ($Response =~ /\"$FieldName\"\s+\:\s+\"(.*)\"\,/m);
-print ("\nRefreshToken: $RefreshToken\n");
+print ("\nRefreshToken: $RefreshToken");
 
 unless (length($RefreshToken)) { 
-  die ("\n$0: Response did not contain a refresh token? Death."
+  die ("\n$0: Response has no refresh token?"
+   . "\nNo files will be updated. Death."
    . "\nResponse:\n$Response\n");
 }
 
@@ -67,7 +68,7 @@ sub fnConfigOrDie {
   my $sField = shift (@_); chomp ($sField);
   open (IN, "<$ConfigPath/$sField") 
     or die ("\n$0: Config file $ConfigPath/$sField not found, fatal.\n");  
-  my @Temp = <IN>;   # CheapSlurp
+  my @Temp = <IN>;               # CheapSlurp
   close (IN);
   grep (chomp($_), @Temp);
   return (join ("\n", @Temp));   # Return as scalar
