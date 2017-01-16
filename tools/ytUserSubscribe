@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+# ---------------------------------------------------------------
+# YouTube API: Subscribe to (arg key) user IF they are a subscriber
+# New: Skip sub check if option "dronetv.subcheck" set false
+# 2016 @garyd @diemastermonkey
+# Pass YouTube ID in arg 1. Requires Cpanel::JSON::XS
+# ---------------------------------------------------------------
+
+# Shortcut to JSON deflation
+use Cpanel::JSON::XS qw(encode_json decode_json);
+
+# Settings 
+# -----------------------------------------------------
+my $UserPath = "users";		  # Relative path to user files
+my $YTUserTool = "./ytUserInfo";  # What updates info, returns name
+my $YTPost = "./ytSinglePost";    # What used to post to chat
+my $Get = "/usr/bin/curl --silent -o -";
+my $YTOauthToken = `cat config/dronetv.youtubeoauthtoken`; chomp ($YTOauthToken);
+my $YTKey = `cat config/dronetv.youtubeapikey`; chomp ($YTKey); # disused here
+my $YTChannelID = `cat config/dronetv.channelid`; chomp ($YTChannelID);
+my $YTChatID = `cat config/dronetv.livechatid`; chomp ($YTChatID);
+my $PreviousSub = "someone nice"; # Fall-back default
+
+# Read "sub-back check" option from config/dronetv.subcheck
+my $SubcheckOption = fnConfigGet("dronetv.subcheck");
+
+# Args or die
+$UserChannelID = shift (@ARGV)
+  or die ("\nUsage:\n\t$0 YOUTUBE_USER_CHANNEL_ID\n");
+chomp ($UserChannelID);
+
+# API strings (must be after args as interpolates them)
+# Proper UserInfo via Channels:List (vs Search)
+# From doc: GET https://www.googleapis.com/youtube/v3/channels?part=snippet&id=UCBJjDo7AnKcpO5s9hNs1ngg&maxResults=1&fields=items%2Fsnippet&key={YOUR_API_KEY}
+#
+# OG # my $YTUserInfo = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$UserChannelID&maxResults=1&fields=items%2Fsnippet&key=$YTKey";
+# 20161227 updated to use user oauth from config and access_token instead
+my $YTUserInfo = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=$UserChannelID&maxResults=1&fields=items%2Fsnippet&access_token=$YTOauthToken";
+
+# Subscriber record for "ChannelID" matching "User Ch ID"
+# Returns details only if "forChannelID" is subscribed!
+# Use same request but Oauth key/refresh token
+# instead of API key (yes, API Explorer sends you wrong way)
+# 
+# Example: curl "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=$YTChannelID&forChannelId=$UserChannelID&order=unread&access_token=$YTOauthToken"
+my $YTUserSub = "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&channelId=$YTChannelID&forChannelId=$UserChannelID&order=unread&access_token=$YTOauthToken";
+
+# Docs example for sub via json post
+# POST https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&key={YOUR_API_KEY}
+# {"snippet": {"resourceId": {"channelId": "UCXwZq64fKef3IlNRrR5V9xg"}}}
+
+# Main
+# ---------------------------------------------------------------
+# Force-clear the user's files to update all
+`rm $UserPath/$UserChannelID.sub &> /dev/null 2> /dev/null`; 
+`rm $UserPath/$UserChannelID.jpg &> /dev/null 2> /dev/null`; 
+`rm $UserPath/$UserChannelID.name &> /dev/null 2> /dev/null`; 
+`rm $UserPath/$UserChannelID.history &> /dev/null 2> /dev/null`; 
+`rm $UserPath/$UserChannelID.greeting &> /dev/null 2> /dev/null`; 
+
+# Update sub status right now (of .sub no exist, not a sub)
+$UserName = `$YTUserTool $UserChannelID`; chomp ($UserName);
+$Subscriber = 0;
+$Subscriber = 1 if (-f "$UserPath/$UserChannelID\.sub");
+
+# TO DO: EXIT WITH MESSAGE IF NOT SUBED
+# 20161123: Ignores subscriber state if "dronetv.subcheck" set to 0
+unless ($Subscriber == 1 || $SubcheckOption == 0) {
+  `$YTPost "[Sub] Hmm. $UserName, if you are subscribed, then you need to uncheck the box at https://youtube.com/account_privacy"`;
+  exit();
+}
+
+#  SUBSCRIBE TO THEIR CHANNEL
+# my $RawChat = `$Get "$YTUserInfo"`;  # Actually is info results
+# my $RawSub  = `$Get "$YTUserSub"`;   # Subscriber record if subbed
+
+# Crudely get/assume latest keys
+$ACCESS_TOKEN = `cat config/youtubeoauthtoken`;
+chomp ($ACCESS_TOKEN);
+$LIVECHAT_ID = `cat config/dronetv.livechatid`;
+chomp ($LIVECHAT_ID);
+
+# The insert request will probably have to use the oauth key (and parm name?)
+# Docs # $URI = "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&key=$YTOauthToken";
+# Tweaked:
+$URI = "https://www.googleapis.com/youtube/v3/subscriptions?part=snippet&access_token=$YTOauthToken";
+
+$CMD =  
+  # Curl post with json header and fields, brutally
+  "curl --silent -H \"Content-Type: application/json\" -X POST -d "
+  . "\'{\"snippet\":{\"resourceId\":{\"channelId\":\"$UserChannelID\"}}}\'"
+  . " \"$URI\"";
+
+$temp = `$CMD`;
+
+# Write shoutout 
+open (OUT, ">PanelServerNotice.html");
+print (OUT "<b>Welcome, $UserName !</b>");
+close (OUT);
+
+# Debug info
+open (OUT, ">ytUserSubscribe.debug");
+print (OUT $temp);
+close (OUT);
+
+# Chat post the previous sub
+# Note "PreviousSub" is name + link
+$PreviousSub = `cat panels/subscriber.last`; chomp ($PreviousSub);
+# `$YTPost "[Sub] Welcome, $UserName - you have a new sub!"`;
+`$YTPost "[Sub] Welcome, $UserName - you have a new sub! You are the newest member since $PreviousSub"`;
+
+# Bonus shoutout in chat
+# $Shout = `commands/shoutout $UserChannelID`; chomp ($Shout);
+# `$YTPost "$Shout"`;
+
+# Finally, write them out so they can be the next 'previous sub'
+# Ware the hardwirings, fix
+open (OUT, ">panels/subscriber.last");
+print (OUT "$UserName at https://www.youtube.com/channel/$UserChannelID");
+close (OUT);
+
+# Functions
+# -----------------------------------------------------
+
+# Simple, cheap, safe config file reader
+# Read a single value from a single thus-named file
+# Use a naming convention to support multi-user/session
+# Returns value or empty (q: what if value 'empty'?)
+# Example use:
+#   $Config{'DuckVolume'} = fnConfigGet ("dronetv.duckvolume");
+# -----------------------------------------------------
+sub fnConfigGet {
+  my $argFieldName = shift (@_) or return;
+  open (IN, "<config/$argFieldName") or return;
+  my @in = <IN>;        # Slurp all
+  close (IN);
+  $out = join ("\n", @in);
+
+  # Remove comments, blanks, limit to single line of data
+  $out =~ s/^#.*\n*$//gmo;
+  $out =~ s/^\s*$//gmo;
+  $out =~ s/\n|\r//gmo;
+
+  return ($out);
+}
+

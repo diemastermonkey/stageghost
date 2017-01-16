@@ -1,0 +1,7 @@
+#!/usr/bin/perl
+# Create a cleaned-up pic with ansiUser
+#
+$Pic=`echo "  _________________________________" ; ./ansiUser users/UCiiPTIG0LYV25b-FV732W5g.jpg | sed "s/^/ |/g;" | sed "s/\r/|/g;"; echo "  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"`;
+
+print ($Pic);
+

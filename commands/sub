@@ -17,7 +17,8 @@ $UserCh = shift (@ARGV) if (@ARGV);
 `./ytSinglePost "[Sub] Okay, I am subscribing to you now! Please sub back? The admin might limit this to subscribers, later."`;
 
 # Simply pass through
-`./ytUserSubscribe $UserCh`;
+# Old home # `./ytUserSubscribe $UserCh`;
+`tools/ytUserSubscribe $UserCh`;
 
 # Fin
 
