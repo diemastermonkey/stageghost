@@ -1,0 +1,108 @@
+<html>
+<!-- Panel Server Template
+     Tokens throughout replaced at render time
+     @diemastermonkey @garyd 2016 for DronesoundTV  
+-->
+<head>
+  <link rel="stylesheet" type="text/css" href="global.css">
+  <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+
+  <!-- DTV General-purpose animation tools -->
+  <script type="text/javascript" src="themes/.template/animation.js"></script>
+
+  <!-- New simple refresher -->
+  <script type="text/javascript">
+  <!--
+    var timer = null;
+    function auto_reload() {
+      // Would rather just...
+      // document.getElementById('notice').src = 
+      //  "PanelServerNotice.html";
+
+      // Instead, full refresh...
+      // window.location = 'http://192.168.1.6:8000'; // alt
+      window.location.reload(false);
+    }
+  //-->
+  </script>
+
+</head>
+
+<!-- Body onload starts both animator and page refresh -->
+<body 
+  onLoad="fnAnimate(); timer = setTimeout('auto_reload()', 26000);">
+<!-- Top left (main) panel green screen cover -->
+<div id="main_left_mask" class="main_left_mask">
+  <!-- Future Home Console -->
+</div>
+
+
+<!-- Requestor image usually shown only during showout
+-->
+<img src="_REQUESTORIMAGE_" id="requestorimage" class="requestorimage" 
+    onerror="this.src='emptypixel.png';" />
+
+<!-- Middle Right Panel aka Data (Disused)
+<div id="midright" class="midright">
+  <img class="waveform" id="waveform" src="_C_MIDRIGHT_" 
+   width="257" height="153">
+</div>
+-->
+
+<!-- Foreground image for animated overlays in front of mask 
+     Place after green screen unless you want to play with z-orders
+-->
+<!-- Disabled -->
+<div id="foreground" class="foreground">
+<!-- Image set by CSS -->
+</div>
+
+<!-- Not actually bottom panel with messages -->
+<div id="upperrightbox" class="upperrightbox">
+_C_BOTTOM_
+</div>
+
+<!-- Logo and under-logo makes possible
+     Setting 'bg' to 00ff00 and white showing
+     instead of whatever was behind it
+-->
+<div class="logo">
+  <img width="250" height="40"
+    src="panels/dtvlogo_greenscreen.png">
+</div>
+
+<!-- Top right panel green screen cover
+     When visible, content beneath is unmasked
+ -->
+<div id="toprightmask" class="toprightmask">
+Pi Cam
+</div>
+
+<!-- Final, usually-invisble full size overlay for things
+     like graffiti tagging, chat user avatars, 
+     and batman-style pow zing effects.
+-->
+<div id="top" class="top">
+  <!-- Notice overlay usually empty fades out via css -->
+  <div id="notice" class="notice">
+    <iframe src="PanelServerNotice.html" scrolling="no" 
+     frameBorder="0" seamless="seamless">
+    </iframe>
+  </div>
+
+   <!-- Signage in topmost layer -->
+   <div id="signage" class="signage">
+     <img src="emptypixel.png" width="40" />
+     <img src="panels/raspberrypi.png" width="32" height="32" />
+     <img src="emptypixel.png" width="40" />
+     <img src="panels/freesound.png" width="104" height="32" />
+     <img src="emptypixel.png" width="20" />
+     <img src="panels/soundcloud.png" />
+     <img src="emptypixel.png" width="20" />
+     <img src="emptypixel.png" width="20" />
+     <b>Type HELP</b> for instructions.
+   </div>
+</div>
+
+</body>
+</html>

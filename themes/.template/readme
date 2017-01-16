@@ -1,0 +1,12 @@
+Template for 'theme mine' command, allows users to make their own theme. See template files and commands/theme for details.
+
+PanelServer.body          HTML Template. Tokens replaced at render
+                          time by PanelServerRefresh. User has no
+                          control over this file.
+
+PanelServer_Template.css  CSS included after system-wide CSS files,
+                          replaceable via the .style command.
+
+PanelServer.rgb           Current value set by commands/color
+PanelServer.bg            Current bg image set by commands/bg
+animation.js              For transitions (mostly disused)
