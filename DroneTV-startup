@@ -38,3 +38,7 @@ echo " "
 echo " ...to start the lo-fi animations."
 echo " "
 
+# echo " "
+# echo " RUNNING CHANNEL HELLO WITH MUSIC! "
+# echo " "
+# ./DroneTV-hello
