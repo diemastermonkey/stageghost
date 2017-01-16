@@ -17,7 +17,8 @@ my $AuthInit = `./ytAuthInit`; chomp ($AuthInit);
 # Onboard logs for 'fnSummaryLogs'
 my $sLogSummary;
 my @Logs = (
-  "ytCheck-chat.log", "ytCheck.processed", "ytCheck.debug", "ytCheck.log",
+  "ytCheck-chat.log", "ytCheck.processed", "ytCheck-raw.txt", 
+  "ytCheck.debug", "ytCheck.log",
   "ytSinglePost.log", 
   "ytMessageDelete.log", "ytCheapBan.log",
   "ytUserInfo-raw.log", "ytUserSubscribe.debug", "ytModifyBroadcast.debug",

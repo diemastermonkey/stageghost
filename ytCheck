@@ -131,9 +131,15 @@ open (RAW, ">$0-raw.txt");	# DEBUG
 print (RAW $RawChat);
 close (RAW);
 
-# INSERT ERROR CHECKING HERE LIKE FOR UH REQUEST PI DUH
-
 my $decoded = decode_json $RawChat;
+
+#
+# INSERT ERROR CHECKING HERE LIKE FOR UH REQUEST PI DUH
+if (! $decoded) {
+  fnDebug ("Gah, the json response did not decode - death!");  
+  sleep (3);                     # Sanity delay
+  die();
+}
  
 # Simply iterate all items ignoring what we don't need
 # My goodness this is gross do something
@@ -232,7 +238,7 @@ foreach $item (@$items) {
 
   # General Purpose Command system
   # Act as conduit if found in @Commands (shunts)
-  fnDebug ("All commands: ".join (" ", @Commands));
+  fnDebug ("Total commands: ".scalar(@Commands));
   # Split into cmd/arg - update 20160909: Permit up to 2 args
   ($Command, $Arg) = split (/\s+/, $msgtext, 3); # Split into cmd/arg
   # For v3 commands, which accept entire string as argument
