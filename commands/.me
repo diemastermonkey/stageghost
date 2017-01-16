@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+# Old school IRC-style "/me" emotes
+# IE /me sighs becomes "Die Master Monkey sighs"
+# Bot deletes original message, reposts without username.
+# SPECIAL NOTE: Requires arg 1 of msg id to delete!
+# 2017 @garyd @diemastermonkey
+
+# Tools to  use
+my $MsgDelete = "./ytMessageDelete";
+my $MsgPost   = "./ytSinglePost";
+
+# Pop user ch id off end of args (via ytCheck)
+my $UserCh    = pop (@ARGV);
+my $UserName  = `./ytUserInfo $UserCh`; chomp ($UserName);
+my $MsgID     = shift (@ARGV);   # Special handling for caller
+# All remaining args (please quote them, caller) simply reposted
+my $Msg       = join (" ", @ARGV);
+
+# Delete the message
+$Ignored = `$MsgDelete $MsgID`;
+$Ignored = `$MsgPost '$UserName $Msg'`;
+
+# NO OUTPUT it's supposed to be an emote

@@ -1,8 +1,4 @@
 #!/bin/sh
-# Simply list user commands but not symlinks or hidden 
-# .files - that allows aliases and secret commands. 
-# 2016 @garyd @diemastermonkey for DronesoundTV
-
-LIST=`find commands/* -type f | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g'`
-echo "[Commands] Commands include: $LIST"
-# Fin
+# WEIRD! This string is cursed! Srsly try posting it via MessageInsert!
+# echo "New? Welcome! Type COMMANDS for lots to do, SUB for the sub bot."
+echo "New? Welcome! Type COMMANDS for lots to do. Try GAMES, too!"
