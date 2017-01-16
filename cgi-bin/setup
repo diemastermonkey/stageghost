@@ -69,7 +69,7 @@ fnWebPrintln (
 );  
 
 # Make list option for each key (field name)
-foreach $Line (keys(%Config)) {
+foreach $Line (sort(keys(%Config))) {
   fnWebPrintln ("<option>"
     . $Prefix . $Line         # Just name of field
     . "</option>"
@@ -80,7 +80,7 @@ fnWebPrintln ("<option selected value=''>Select...</option>");
 fnWebPrintln ("</select>");   # End select list
 
 # Also, hidden fields with the values, named with field name
-foreach $Line (keys(%Config)) {
+foreach $Line (sort(keys(%Config))) {     # PS sort superfluous
   fnWebPrintln (
     "<input type=\"hidden\" id=$Line value=\""
     . substr($Config{$Line}, 0, 96) 
