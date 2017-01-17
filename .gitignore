@@ -18,6 +18,9 @@
 *.users
 *.processed
 *.response
+requestor.id
+requestor.name
+requestor.jpg
 content.html
 index-NG.html
 log.txt
