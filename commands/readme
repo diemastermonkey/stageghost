@@ -1,0 +1,5 @@
+Chat-accessible ('front-end') commands. See admin guide for details.
+
+Executible files: All users may run, shown by 'commands'
+Hidden (.) files: Only .elite (or .sub) may run, shown in '.commands'
+All symlinks: Hidden to all and both commands, but execute normally.
