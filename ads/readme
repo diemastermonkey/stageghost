@@ -1,0 +1,1 @@
+Example input files for the intentionally misnamed 'adPlayer', which simulates typing code, commands and interactions in the terminal. Embedded symbols < and > control "human" or "system" behavior, respectively, and << inserts a delay. See adPlayer for more info.
