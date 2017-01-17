@@ -3,6 +3,6 @@
 # .files - that allows aliases and secret commands. 
 # 2016 @garyd @diemastermonkey for DronesoundTV
 
-LIST=`find commands/* -type f | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g' | xargs`
+LIST=`find commands/* -type f -executable | sed "s/commands//" | sed 's/\///' | xargs | sed 's/ /\, /g' | xargs`
 echo "[Commands] Commands include: $LIST"
 # Fin

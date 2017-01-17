@@ -4,6 +4,7 @@
 *.new
 *.dev
 *.old
+*.retired
 *.backup
 *.debug
 *.out
