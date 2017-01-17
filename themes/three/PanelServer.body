@@ -8,6 +8,8 @@
   <link rel="stylesheet" type="text/css" href="panels/ChatLobby.css">
   <link rel="stylesheet" type="text/css" href="panels/usernote.css">
   <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
+  <!-- Include VisitorCard styling: See PanelServerVisitorLog -->
+  <link rel="stylesheet" type="text/css" href="panels/visitorcard.css">
 
   <!-- DTV General-purpose animation tools -->
   <script type="text/javascript" src="panels/animation.js"></script>
@@ -37,13 +39,10 @@
   <!-- Future Home Console -->
 </div>
 
-
-<!-- Shoutout contains requestor images, more
-     Might be anywhere
--->
+<!-- User image, if fresh, under 'screen' overlay -->
 <div id="shoutout" class="shoutout">
   <img width="192" height="144"
-    src="_REQUESTORIMAGE_" class="requestorimage" 
+    src="_FRESH_REQUESTOR_IMAGE_" class="requestorimage" 
     onerror="this.src='emptypixel.png';" />
   <br />
 </div>
@@ -69,7 +68,7 @@ _C_BOTTOM_
 
 <!-- Chat Lobby -->
 <div id="lobby" align="left" 
-  style="position:absolute; top:70%; left:1.76em; align:left; outline-style:none; width:95%; color:#ffffff; padding:0; z-index:10; text-align:left; border-width:0;">
+  style="position:absolute; top:76%; left:1.76em; align:left; outline-style:none; width:95%; color:#ffffff; padding:0; z-index:10; text-align:left; border-width:0;">
 _LOBBY_
 </div>
 
@@ -108,6 +107,16 @@ Pi Cam
 <!-- User on-screen notes via commands/note -->
 <div id="usernotes" class="usernotes">
   _USERNOTES_
+</div>
+<!-- Hype Content, for now just the Hype Wall
+     Doesnt appear unless fresh
+-->
+<div id="hypecontentdiv"
+  class="hypecontent"
+  style="z-index:0; position:absolute; width:100%; height:100%; top:10%; left:
+3.9%;"
+>
+_HYPECONTENT_
 </div>
 </body>
 </html>

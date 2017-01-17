@@ -110,3 +110,17 @@ body  {
   opacity: 0.8; 
   vertical-align: text-bottom;
 }
+
+/* Overrides for hypecards aka visitor cards */
+.VisitorCard {
+  width: 34% !important;
+  margin-top: 16% !important;
+  margin-right: 1.5% !important;
+  opacity: 0.85;
+}
+
+.VisitorImage {
+  margin-top: 4px;
+  margin-left: 8px !important;
+  margin-right: 8px !important;
+}

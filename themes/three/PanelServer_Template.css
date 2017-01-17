@@ -80,8 +80,8 @@ body  {
 .requestorimage {
   /* pos relative to parent, shoutout */
   position: relative;
-  top: 34.5%;
-  left: 25%;
+  top: 32%;
+  left: 24%;
   z-index: 0;
 }
 
@@ -135,4 +135,8 @@ body  {
   vertical-align: text-bottom;
 }
 
-
+/* Override some visitor card styling to suit this theme */
+.VisitorCard {
+  margin-top: 9% !important;  
+  opacity: 0.75;
+}

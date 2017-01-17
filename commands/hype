@@ -1,4 +1,5 @@
 #!/bin/sh
 ./ytSinglePost 'Stand Clear! Activating Hype-o-Tron 3000...'
-./PanelServerVisitorLog > /dev/null
-commands/theme default system > /dev/null 
+k=`./PanelServerVisitorLog &> /dev/null|xargs`
+# Retired?
+# commands/theme default system > /dev/null 

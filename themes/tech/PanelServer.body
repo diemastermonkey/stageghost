@@ -2,7 +2,9 @@
 <head>
   <link rel="stylesheet" type="text/css" href="global.css">
   <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
-
+  <link rel="stylesheet" type="text/css" href="panels/usernote.css">
+  <!-- Include VisitorCard styling: See PanelServerVisitorLog -->
+  <link rel="stylesheet" type="text/css" href="panels/visitorcard.css">
 <script>
 <!--
 /*
@@ -146,6 +148,15 @@ Pi Cam
 <div id="usernotes" class="usernotes">
 _USERNOTES_
 </div>
-
+<!-- Hype Content, for now just the Hype Wall
+     Doesnt appear unless fresh
+-->
+<div id="hypecontentdiv"
+  class="hypecontent"
+  style="z-index:0; position:absolute; width:40%; height:90%; top:10%; left:
+2.5%; border:0px;"
+>
+_HYPECONTENT_
+</div>
 </body>
 </html>

@@ -1,97 +1,71 @@
 <!DOCTYPE html>
 <html>
-<!-- Typical StageGhost PanelServer Theme 
-     Replaceable parameters in form _TOKEN_ are
-     interpolated at run-time. They may be included
-     multiple times, but no validation is performed.
--->
 <head>
 <title>DronesoundTV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="panels/w3.css">
-
-<!-- DTV Panel System (to do: reinstate global.css) -->
+<!-- DTV Panel System -->
 <!-- <link rel="stylesheet" type="text/css" href="global.css"> -->
-
-<!-- This per-theme stylesheet is generated at runtime, also with interpolated tokens -->
 <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
-
-<!-- Global stylesheet for chatbubbles for lobby and elsewhere -->
+<!-- Chatbubbles for lobby and elsewhere -->
 <link rel="stylesheet" type="text/css" href="panels/ChatLobby.css">
-
+<link rel="stylesheet" type="text/css" href="panels/usernote.css">
 <!-- Include VisitorCard styling: See PanelServerVisitorLog -->
 <link rel="stylesheet" type="text/css" href="panels/visitorcard.css">
 
 <!-- Theme-wide color set (see 'color classes' below): 
     Also -indigo.css, green, red, black, grey etc
  -->
-<link rel="stylesheet" href="panels/w3-theme-indigo.css">
-<link rel="stylesheet" href="panels/font-awesome.min.css">
+<link rel="stylesheet" 
+  href="panels/w3-theme-indigo.css">
+<link rel="stylesheet" 
+  href="panels/font-awesome.min.css">
 
-<!-- (Disused) DTV General-purpose animation tools 
-<script type="text/javascript" src="panels/animation.js"></script>
+<!-- DISUSED: DTV General-purpose animation tools 
+  <script type="text/javascript" src="panels/animation.js"></script>
 -->
 
-<!-- New 'animation' support specific to "next gen" themes w/multi panels -->
-<script type="text/javascript" src="panels/multipanel.js"></script>
+  <!-- Support specific to "next gen" themes w/multi panels -->
+  <script type="text/javascript" src="panels/multipanel.js"></script>
 
-<!-- Simple refresher. To do: ajaxify -->
-<script type="text/javascript">
-  <!--
-    var timer = null;
-    function auto_reload() {
-      // Would rather just document.getElementById('notice').src =
-      // "PanelServerNotice.html"; Instead, full refresh...
-      window.location.reload(false);
-    }
-//-->
-</script>
+  <!-- DUPLICATE JQuery with index.html, for easy Ajax - fix that -->
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js">
+  </script>
 
+  <!-- New simple refresher -->
+  <script type="text/javascript">
+		<!--
+		  var timer = null;
+		  function auto_reload() {
+		    // Would rather just document.getElementById('notice').src =
+		    // "PanelServerNotice.html"; Instead, full refresh...
+		    window.location.reload(false);
+		  }
+		//-->
+  </script>
 </head>
 <!-- Body onload starts both animator and page refresh -->
-<body onLoad="fnStartAnimation(); timer = setTimeout('auto_reload()', 53050);">
-
-<!-- New: Bottom layer takes whole page, embed a live
-     stream from elsewhere via _MEDIA_ID_
--->
-<div id="video-embed-full" class="video-embed-full"
-  style="position: absolute; width:100%; height:100%; z-index:-1;">
-  <iframe 
-    src="https://www.youtube.com/embed/_MEDIA_ID_?autoplay=1&controls=0&start=13" 
-    width="100%" height="100%" 
-    autoplay="1"
-    autohide="1"
-    controls="0"
-    enablejsapi="1"
-    start="13"
-    fs="0"
-    iv_load_policy="3"
-    loop="1"
-    rel="0"
-    showinfo="1"
-    frameborder="0">
-  </iframe>
-</div>
-
+<body class="dtv-themed"
+  onLoad="fnStartAnimation(); timer = setTimeout('auto_reload()', 40150);">
 
 <!-- Tab ui will serve as top nav area -->
 <!-- <div class="w3-container">  -->
 <div class="w3-container">  <!-- Outermost container with border -->
   <div class="w3-border">
 
-	  <!-- Nav sits at top of same div as all content panels  -->
-		<ul class="w3-navbar dtv-rgb">
-		  <li><a id="em-btn" class="dtv-rgb w3-btn testbtn" 
-		    onclick="openCity(event, 'System')"></a></li>
-		  <li><a class="dtv-rgb w3-btn testbtn" 
-		    onclick="openCity(event, 'Channel')"></a></li>
-		  <li><a class="dtv-rgb w3-btn testbtn" 
-		    onclick="openCity(event, 'Content')"></a></li>
-		<!-- Shimmed-in status labels for mood, mix-in music, etc -->
-		<div align="right" id="mood-label" class="mood-label" 
-		 style="padding: 0.3em; align:right; font-family: Verdana,sans-serif;font-size: 15px;line-height:1.5; text-align: middle;">
-		  Mood <b>_MOOD_</b> _MIXCREDS_ &nbsp;
-		</div>
+	  <!-- Nav sits at top of same div as all content panels -->
+		<ul class="w3-navbar w3-indigo">
+		  <li><a id="System-btn" class="w3-btn testbtn" 
+		    onclick="openCity(event, 'System')">System</a></li>
+		  <li><a class="w3-btn testbtn" 
+		    onclick="openCity(event, 'Channel')">Channel</a></li>
+		  <li><a class="w3-btn testbtn" 
+		    onclick="openCity(event, 'Content')">Content</a></li>
+			<!-- Shimmed-in status labels for mood, mix-in music, etc -->
+			<div align="right" id="mood-label" class="mood-label" 
+					 style="padding: 0.3em; align:right; font-family: Verdana,sans-serif;font-size: 15px;line-height:1.5; text-align: middle;">
+				Mood <b>_MOOD_</b> _MIXCREDS_ &nbsp;
+			</div>
 		</ul>
     <div style="height:14px;"></div>  <!-- vertical spacing mod -->
     <!-- Each div below this is a screen that is rotated among --> 
@@ -102,13 +76,12 @@
 		  <!-- left panel, half page wide -->
 			<div class="w3-half">
 				<div class="w3-card-8 white">
-					<div class="w3-container dtv-rgb">
-						<!-- <h3>Spectrum</h3> -->
+					<div class="w3-container w3-indigo">
 						<b>Spectrum</b>
 					</div>
 					<div class="w3-full">     
 					 <div class="w3-card-8">
-						 <img src="_I_SPECTRO_" style="height:104px; width:99%"><p></p>
+						 <img src="_I_SPECTRO_" style="height:104px; width:99%" onerror="this.src='emptypixel.png';"><p></p>
 					 </div>                   <!-- End card 8 -->
 					</div>                   <!-- End w3-full -->
 				</div>                <!-- End card 8 white -->
@@ -117,18 +90,19 @@
 		  <!-- Right panel -->
 		  <div class="w3-half">
 		    <div class="w3-card-8 white">
-		      <div class="w3-container dtv-rgb">
-		        <!-- <h3>Waveform</h3> -->
+		      <div class="w3-container w3-indigo">
 		        <b>Waveform</b>
 		      </div>
 		      <div class="w3-full">     
 		        <div class="w3-card-8">
-		          <img src="_I_WAVEFORM_" style="height:104px; width:99%"><p></p>
+		          <img src="_I_WAVEFORM_"
+                               style="height:104px; width:99%"
+                               onerror="this.src='emptypixel.png';"><p></p>
 			      </div>                 <!-- End w3 card 8 -->
 		 	    </div>                        <!-- End full --> 
 		    </div>                    <!-- End card white -->
 		  </div>                            <!-- End half -->
-                  <br />
+			<br />
 
 			<!-- Creds in tables -->
 			<!-- mb not have	<div class="w3-container"> -->
@@ -137,9 +111,9 @@
 					<!-- Table -->
 					<!-- OG <table class="w3-table w3-striped w3-bordered"> -->
 					<table class="w3-table w3-bordered" 
-						style="background-color:rgba(0, 0, 0, 0.75); color: #_BRGB_;">
+						style="background-color:rgba(0, 0, 0, 0.75); color: #ffffff;">
 						<thead>
-							<tr class="dtv-rgb">
+							<tr class="w3-theme">
 								<th>ID</th>
 								<th>Sound Designer</th>
 								<th>Length</th>
@@ -148,6 +122,11 @@
 						</thead>
 						<tbody>
 							<!-- Table rows -->
+							<!-- Example proper format 
+							<tr>
+								<td>40872</td><td>Johnson</td><td>67</td><td>cello</td>
+							</tr>
+							-->
 							<!-- Replaceable token inserts matching table rows -->
 							_CREDITS_HTML_
 						</tbody>
@@ -165,12 +144,15 @@
 		  <div class="w3-full">
 				<!-- Each container tweaked to leave some room -->
 				<div class="w3-card-8 white" style="width:99%;">
-					<div class="w3-container">
+					<div class="w3-container w3-green">
+						<span style="opacity:0.5; text-align:right;"><h3>DronesoundTV Console</h3></span>
 					</div>
 					<!-- full container image -->
-					<!-- Invisible panel WARE kludged px stylings -->
+					<!-- Greenscreen overlay for console - WARE kludged px stylings -->
 					<div class="w3-full">     
-						<div class="w3-card-8" style="height:320px;">
+						<div class="w3-card-8" style="background:#00ff00; height:266px;">
+							<!-- Waveform example 
+							<img src="_I_WAVEFORM_" style="width:100%"> -->
 						</div>
 						<p></p>
 					</div>			<!-- End w3 full -->
@@ -187,7 +169,7 @@
       <!-- Note tweak on bg for the card so bg doesnt interfere -->
       <div class="w3-half" style="background-color:rgba(0, 0, 0, 0.75);">
 				<!-- header for shoutout -->
-				<div class="w3-container dtv-rgb">
+				<div class="w3-container w3-indigo">
 					<h3>Shoutout</h3>
 				</div>
         <form class="w3-container w3-card-4">
@@ -210,21 +192,19 @@
        -->
 
        <div class="w3-row">
-        <!-- Using radio buttons for shoutout with user level 
-             Replace _CHECK_level_ with "checked" to set checked
-             if desired, append 'disabled' to input to grey out 
-        -->
-        <div class="w3-half" style="background:none; color:white;">
-         <input id="check-guest" class="w3-radio white" type="radio" 
-          name="rank" value="guest" _CHECK_GUEST_>
-         <label class="w3-validate">Assimilant</label>
+        <!-- Using radio buttons for user level -->
+        <div class="w3-half" style="background:none; color:white;" >
+         <input id="male" class="w3-radio" type="radio" 
+          name="rank" value="member" checked>
+         <label style="color:#ffffff;" class="w3-validate white">Noob</label>
          <br>
-         <input id="check-member" class="w3-radio white" type="radio" 
-          name="rank" value="member" _CHECK_MEMBER_>
-         <label class="w3-validate">Hive Drone</label>
+         <input id="female" class="w3-radio white" type="radio" 
+          name="rank" value="super">
+         <label class="w3-validate">Member</label>
          <br>
-         <input id="check-elite" class="w3-radio white" type="radio" 
-          name="rank" value="elite" _CHECK_ELITE_>
+         <!-- if desired, append 'disabled' to input to grey out -->
+         <input id="unknown" class="w3-radio" type="radio" 
+          name="rank" value="">
          <label class="w3-validate">Elite</label>
         </div>
 
@@ -246,13 +226,13 @@
 			-->
       <div class="w3-half"  style="background-color:rgba(0, 0, 0, 0.75);">
 		    <div class="w3-card-8" style="width:99%; color:#ffffff;">
-		      <div class="w3-container dtv-rgb" 
+		      <div class="w3-container w3-indigo" 
 						style="width:99%; overflow:hidden;">
-		        <h3 style="color:#000000;">Chat Log</h3>
+		        <h3>Chat Log</h3>
 		      </div>					
 		      <!-- Chat log - Consider an icon here -->
 					<br />
-					<div style="height:240px; vertical-align: text-bottom; overflow:hidden;">
+					<div style="height:240px; vertical-align: bottom; overflow:hidden;">
 		      _C_CHATLOG_
 					</div>
 					<!-- ware kludged spacing below chat-->
@@ -268,11 +248,20 @@
 <!-- 
 	Original Nav was at top, moving to bottom for DTV 
 -->
-<ul class="w3-navbar" style="background:none;">
+<ul class="w3-navbar w3-theme">
   <li><a class="w3-black w3-padding-16" href="javascript:void(0)"><b>DronesoundTV</b></a></li>
+  <!-- Bottom nav retired
+		<li><a class="w3-btn" onclick="openCity(event, 'Content')">Content</a></li>
+		<li><a class="w3-btn" onclick="openCity(event, 'Credits')">Credits</a></li>
+		<li><a class="w3-btn" onclick="openCity(event, 'System')">System</a></li>
+  -->
 	<!-- LOBBY: Chat user icons.  Inserted by PanelServerRefresh. As a list item. 
 	-->
-	<li class="w3-left"><a class="w3-padding-4">_LOBBY_</a><li>
+	<li class="w3-right" style="padding-right: 2%;"\><a class="w3-padding-4">_LOBBY_</a><li>
+	<!-- 
+	  Sorta broken search gadget which was cool - fix it. DISABLED 
+	  <li class="w3-right"><a class="w3-padding-16" href="javascript:void(0)"><i class="fa fa-search"></i></a></li>
+	-->
 </ul>
 
 <!-- LOTS of disused sample code for reference, followed by
@@ -585,19 +574,20 @@ function move() {
   }
 }
 </script>
-<!-- User on-screen notes via commands/note -->
+
 <div id="usernotes" class="usernotes">
   _USERNOTES_
 </div>
+
 <!-- Hype Content, for now just the Hype Wall
      Doesnt appear unless fresh
 -->
-<div id="hypecontentdiv"
+<div id="hypecontentdiv" 
   class="hypecontent"
-  style="z-index:0; position:absolute; width:100%; height:100%; top:10%; left:
-3.3%;"
+  style="z-index:0; position:absolute; width:100%; height:100%; top:10%; left: 3.9%;"
 >
 _HYPECONTENT_
 </div>
+
 </body>
 </html>

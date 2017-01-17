@@ -23,19 +23,19 @@
 
 /* Set a user theme body class=dtv-themed to use these */
 .dtv-themed {
-  background-image: url("_BG_IMAGE_");   
+  background-image: url("_BG_IMAGE_"); 
   background-color: #_BRGB_;
 }
 
 /* User-controlled background - you may use a *safe tasteful* url */
 body  {
-  /* background-image: url("backgrounds/sunset1.gif");    */
-  /* background-color: #_BRGB_; */
-  background-color: #000000;
+  background-image: url("_BG_IMAGE_"); 
+  background-color: #_BRGB_; 
+  /* background-image: url("http://tastefulgeometry.com/best.png");   */
+  /* background-color: #000000; */
   opacity 1.0;                   /* For transitions */
   background-repeat: no-repeat;
-  background-size: 100%;
-  overflow: hidden;
+  background-size: cover;
 }
 
 /* The DronesoundTV Logo Must Be Visible At All Tymes and Humors
@@ -161,7 +161,6 @@ body  {
    the overlay's background image.
 */
 .main_left_mask {
-  display: none;	/* no green screen in this theme */
   position: absolute;
   top: 3%;
   left: 0.85em;
@@ -210,7 +209,6 @@ body  {
 /* Optional:  Constrain notes to area of screen
    by setting margins/width/padding/left/top etc here
 */
-
 .usernotes {
   z-index: 0;
   position: absolute;
@@ -218,39 +216,20 @@ body  {
   width: 100%; height: 100%;
 }
 
+/* Override some user note settings */
 .usernote {
-  /* position: relative; */
   position: absolute;
-  /* height: 23%; */
-  top: 5px !important;
-  height: auto;
   width: auto;
-  font-size: 2em;
+  /* font-size: 1.4em; */
   color: #FFFFFF;
-  background-color: #_BRGB_;
-  opacity: 0.80;
-  border-style: double;
-  padding: 3px !important;
-  padding-left:5px; padding-right:5px;
-  margin: 1px 1px 1px 1px !important;
+  background-color: #_BRGB_ !important;
+  opacity: 0.60;
   overflow: hidden;
 }
 
-/* New: Overriding w3*.css for lazy restyling their templates */
-.w3-navbar {
-  background-color: #_BRGB_;
-}
-.w3-indigo {
-  background-color: #_BRGB_;
-}
-.dtv-rgb {
-  background-color: #_BRGB_;
-  color: #000000;
+/* Override some from panels/visitorcard.css */
+.VisitorCard {
+  margin: 0.5%;
+  /* background-color: #_BRGB_ !important; */
 }
 
-/* Some overrides for visitorcards aka hype cards */
-.VisitorCard {
-  margin: 0.6%;
-  margin-top: 8% !important;
-  opacity: 0.66;
-}
