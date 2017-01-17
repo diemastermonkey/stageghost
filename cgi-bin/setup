@@ -11,7 +11,8 @@ my $sQuery = $ENV{'QUERY_STRING'};
 my @CGI = split (/\&/, $sQuery);
 my $sURL = "/cgi-bin/setup"; # Path to cgi
 my $ConfigPath = "config"; # Subdir for settings files
-# Get pre-generated approval url per settings
+my $ConfigHints = `cat config/sg.hints`; chomp ($ConfigHints);
+# What provides pre-generated approval url per settings
 my $AuthInit = `./ytAuthInit`; chomp ($AuthInit);
 
 # Onboard logs for 'fnSummaryLogs'
@@ -50,16 +51,23 @@ foreach $Line (@CGI) {              # Parse CGI to Data hash
 # Get/display saved config
 fnConfigRead();
 
+# New! Text description for the current config field
+print (
+  "<b>Description: </b>"
+  . "<input id='uiTextDescription' size='82' value='' "
+  . "style='width:60%; border:none; outline:none;' readonly><br><br>"
+);
+
 # Edit field for display and edit
 print ("
   <input type=\"text\" 
     onChange=\"fnEditValue();\"
     autofocus='autofocus' 
-    id=\"uiTextOut\" size=\"48\">
+    id=\"uiTextOut\" style='width:60%;'>
   <br><br>"
 );
 
-# Start the select list
+# Start inserting the select list
 fnWebPrintln (
   "<select id='fieldSelect' "
   # . "autofocus='autofocus' "
@@ -82,9 +90,17 @@ fnWebPrintln ("</select>");   # End select list
 
 # Also, hidden fields with the values, named with field name
 foreach $Line (sort(keys(%Config))) {     # PS sort superfluous
+  # Hidden field for setting value
   fnWebPrintln (
     "<input type=\"hidden\" id=$Line value=\""
     . substr($Config{$Line}, 0, 96) 
+    . "\">"
+  );
+
+  # Also insert hidden field with description from $ConfigHints
+  fnWebPrintln (
+    "<input type=\"hidden\" id=\"$Line\-description\" value=\""
+    . fnGetHint($Line) 
     . "\">"
   );
 }
@@ -142,11 +158,9 @@ sub fnWebForm {
   <form action="$sURL">
     Configuration 
     <input type="submit" id="submit" value="Submit"> <br>
-    $Dash
     <!-- Store single field/value update till submit   -->
     <input type="hidden" id="update" name="" value="">
   </form>
-  <br>
 END
 }  # End function
 
@@ -161,6 +175,10 @@ sub fnWebScript {
       var sField = document.getElementById('fieldSelect').value;
       var sValue = document.getElementById(sField).value;
       document.getElementById('uiTextOut').value = sValue; // Display 
+      // Also display description which is a span update
+      sField += "-description";
+      document.getElementById ('uiTextDescription').value = 
+        document.getElementById(sField).value; 
     }
 
     // To do: Combine into generic 'hide/show this' fn
@@ -247,6 +265,19 @@ sub fnLogSummary {
       . `tail -$iLogLen $Log` . "\n"
       . "-" x 40 . "\n";   
   }
+}
+
+# Search the $ConfigHints data glob for
+# (arg) config entry - return the description, or "unknown"
+sub fnGetHint {
+  my $argSetting = shift (@_);
+  my $tempHints = $ConfigHints;
+  if ($tempHints =~ s/$argSetting(.*)/$1/m) {
+    $tempHints = $1; 
+    $tempHints =~ s/^\s+//g;
+    return ($tempHints);   # Return last match
+  }
+  return ("No description for $argSetting");
 }
 
 # Fin

@@ -1,0 +1,39 @@
+dronetv.channelid         SG YouTube Channel ID of managed channel
+dronetv.description       SG Safe copy of channel description used by ytModifyBroadcast
+dronetv.ducktest          DTV Expression which if matched means music is playing
+dronetv.duckvolume        DTV Volume at which samples played while music is playing
+dronetv.empty             SG An empty config file for setup page testing
+dronetv.expletives        SG List of curse words that trigger ytCheapBan
+dronetv.filter            DTV Frequency of system wide low pass filter
+dronetv.freesoundtoken    DTV Freesound API token used for SFX commands
+dronetv.livebroadcastid   SG ID of managed broadcast as per ytGetStreamIDs
+dronetv.livechatid        SG ID of managed livestream livechat as per ytGetStreamIDs
+dronetv.livestreamid      SG ID of managed livestreamid as per ytGetStreamIDs
+dronetv.maxnamelen        DTV Maximum length of username in panel displays
+dronetv.musicplayer       DTV Syntax prefix to play downloaded music for the MIX command
+dronetv.newslist          DTV Brief news items for NEWS and other commands
+dronetv.notetime          DTV Time in minutes that user NOTEs remain active
+dronetv.overlap           DTV Percentage of sample lengths that overlap while playing
+dronetv.restload          DTV Fallback to safe onboard samples when this load reached
+dronetv.searchdepth       DTV Search results limit for Freesound keyword queries 150 to 500
+dronetv.subcheck          DTV If 1 then SUB command verifies user is sub else it ignores
+dronetv.title             SG Title of managed stream as last set by ytModifyBroadcast
+dronetv.titles            SG Random titles used by TITLE RANDOM command
+dronetv.videourl          SG Full URL of current live stream as per ytGetStreamIDs
+PanelServerVisitorLog.template  SG Template for user cards used by HYPE and other commands
+dronetv.volume                  DTV Playback volume of samples under normal conditions
+dronetv.wander                  DTV Dice sides for 1 in x chance that similar sounds followed
+dronetv.youtubeapikey           SG Actual Google YouTube Developer API Key
+dronetv.youtubeclientid         SG Actual Google YouTube Developer Oauth Client ID
+dronetv.youtubeclientsecret     SG Actual Google YouTube Developer Oauth Client Secret
+dronetv.youtubeoauthtoken       SG Refreshable token managed by ytRefreshTokens token only
+dronetv.youtubeoauthtoken.json  SG Refreshable token managed by ytRefreshTokens in json
+dronetv.youtuberefreshtoken     SG Token used only to refresh dronetv youtubeoauthtoken
+sg.callbackurl            SG Callback for ytAuthInit. Broken is ok, but remain same during auth
+sg.colors                 SG Colors available to COLOR RANDOM command and others
+sg.hints                  SG Config setting descriptions shown in setup incl this message
+sg.youtubechatlimit       SG Max latest chat messages retrieved by ytCheck
+sg.yttemptoken            SG Temp token used only during ytValidateTokens initial setup
+stageghost.hypetime       SG Minutes that HYPE content remains active on screen
+stageghost.userrefresh    SG Minutes user data cached locally (used by ytUserInfo)
+soundcloud-client-id.txt  DTV Optional Soundcloud API ID for use with MIX command
