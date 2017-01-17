@@ -1,0 +1,2 @@
+#!/usr/bin/perl
+$s="...";@i=split(//,"\\/|");while($s){$_=@i[rand(3)];$s.="." if(/\\/);chop($s) if(/\//);print "\n$s$_";`sleep 0.25`;} # :)
