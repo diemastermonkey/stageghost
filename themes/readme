@@ -1,1 +1,1 @@
-StageGhost themes: See the Admin Guide for more info. Note that themes without a . in front are "secret" themes, not shown by the THEMES command.
+StageGhost themes: See the Admin Guide for more info. Note that themes with a . in front are "secret" themes, not shown by the THEMES command. The .shoutout theme is used by the SHOUTOUT command.

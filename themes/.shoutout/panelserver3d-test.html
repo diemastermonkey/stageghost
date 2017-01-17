@@ -15,9 +15,8 @@
     <!-- TO DO: jquery also included in controller, fix that! -->
     <script type="text/javascript" src="/panels/jquery.min.js"></script>
     <script type="text/javascript" src="/panels/controller.js"></script>
-    <!-- 20170117, moved to three.js on googleapis -->
-    <script src="https://ajax.googleapis.com/ajax/libs/threejs/r83/three.min.js"></script>
-    <script type="text/javascript" src="/panels/Tween.js"></script>		
+    <script type="text/javascript" src="three.js"></script>
+    <script type="text/javascript" src="Tween.js"></script>		
     <!-- Include some external panel elements via jsp -->
     <script type="text/javascript" src="/panels/lobbyimages.jsp"></script>
 
@@ -154,7 +153,7 @@
           new THREE.PlaneGeometry (32, 32), 
           new THREE.MeshBasicMaterial(
             // { map: oSkyTex, shading: THREE.FlatShading }
-            { map: oSkyTex, fog: false, shading: THREE.FlatShading, refractionRatio: 0 }
+            { map: oSkyTex, shading: THREE.FlatShading, refractionRatio: 0 }
           )
         );
 
@@ -306,9 +305,9 @@
       // Light sources
       var oAmbientLight = new THREE.AmbientLight (0x777777); 
       scene.add (oAmbientLight);
-      // var oPointLight = new THREE.PointLight (0xffffff, 1, 100);
-      // oPointLight.position.set (0, 0, 3);
-      // scene.add (oPointLight);
+      var oPointLight = new THREE.PointLight (0xffffff, 1, 100);
+      oPointLight.position.set (0, 0, 3);
+      scene.add (oPointLight);
             
       // Set up render/page, add the scene to dom
       renderer = new THREE.WebGLRenderer();

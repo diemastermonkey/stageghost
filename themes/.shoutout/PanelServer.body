@@ -4,15 +4,11 @@
 <head>
 <title>DronesoundTV</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="panels/usernote.css">
 <link rel="stylesheet" href="panels/w3.css">
-
 <!-- This per-theme stylesheet is generated at runtime, also with interpolated tokens -->
 <link rel="stylesheet" type="text/css" href="PanelServer_Main.css">
-
 <!-- Theme-wide color set (see 'color classes' below): 
     Also -indigo.css, green, red, black, grey etc
-    DISUSED - remove?
  -->
 <link rel="stylesheet" href="/panels/w3-theme-indigo.css">
 <link rel="stylesheet" href="/panels/font-awesome.min.css">
@@ -21,15 +17,13 @@
   body { width: 100%; height: 100%; }
 </style>
 
-<!-- 3d kit 3d-intro.js, ThreeJS.org, Tween and 3D Font stuff -->
+<!-- Theme-specific all 3d kit 3d-intro.js, using Three and Tween -->
 <script type="text/javascript" src="/panels/three.js"></script>
+<!-- For fancy three.js font stuff -->
 <script type="text/javascript" src="/panels/GeometryUtils.js"></script>
 <script type="text/javascript" src="/panels/Tween.js"></script>
-
-<!-- For 3d chat lobby bubbles -->
+<!-- For chat lobby bubbles (probably remove) -->
 <script type="text/javascript" src="/panels/lobbyimages.jsp"></script>
-<!-- For 3d 'active sound' objects aka soundlights -->
-<script type="text/javascript" src="/panels/SamplesJS.js"></script>
 
 <!-- Simple refresher. To do: ajaxify -->
 <script type="text/javascript">
@@ -37,18 +31,27 @@
     var timer = null;
 
     function init () {
-      // Add chat lobby if populated (via 3d-scene.js)
-      fnLobbyInit();
+      // Make 3d text for shoutout (unless no name 'title' given)
+      var sTitle = document.getElementById('title').value;
+      if (sTitle == " " || sTitle == "") {
+        fnDefault();  // Make a default message instead
+        return;  // Let 3d-intro.js handle it
+      }
 
-      // New: "SoundsLights" correlate to current sounds
-      // BROKEN: 
-      fnSoundLights (aSoundLights);  // via 3d-intro.js, SamplesJS.js
+      fnLog ("Panel: Making 3d text for " + sTitle);
+      // Make a title heading 
+      fnMakeText (
+        "/assets/droid_sans_regular.typeface.json",
+        "Shoutout  to",
+        0, 1.7, -2.9  // New xyz  pos args
+      );
 
-      // AUTO SHOUTOUT DISABLED (remove to clear it)
-      // Use it for 'default' message instead
-      // var sTitle = document.getElementById('title').value;
-      fnDefault();  // Make a default message instead
-      return;  // Let 3d-intro.js handle it
+      // Make the 3d text (via 3d-intro.js)
+      fnMakeText (
+        "/assets/droid_sans_regular.typeface.json",
+        sTitle,
+        0, -0.2, -2.9 
+      );
     }
 
     // Default text if no title
@@ -63,7 +66,7 @@
       fnMakeText (
         "/assets/droid_sans_regular.typeface.json",
         "DronesoundTV",
-        0, 1.0, -2.9 
+        0, -0.2, -2.9 
       );
     }
 
@@ -75,23 +78,16 @@
 
     // Simple logging feature
     function fnLog (argString) {
-      console.log ("3d-scene: " + argString);
+      console.log ("3d-intro: " + argString);
     }
 //-->
 </script>
 </head>
 <!-- Body onload starts both Three.js render clock and page refresh -->
-<body onLoad="init(); timer = setTimeout('auto_reload()', 55050); fnSoundLights(aSoundLights);">
-  <script type="text/javascript" src="/panels/3d-scene.js"></script>
-  <script type="text/javascript" src="/panels/SamplesJS.js"></script>
+<body onLoad="init(); timer = setTimeout('auto_reload()', 55050);">
+  <script type="text/javascript" src="/panels/3d-intro.js"></script>
   <div>
-   <!-- Disused? -->
    <input type="hidden" id="title" value="_REQUESTOR_NAME_ ">
-  </div>
-
-  <!-- User on-screen notes via commands/note -->
-  <div id="usernotes" class="usernotes">
-    _USERNOTES_
   </div>
 </body>
 </html>
