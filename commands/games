@@ -1,0 +1,3 @@
+#!/bin/sh
+# Just inform about available games
+echo '[Games] Glad you asked! Type BOX, to open the box - if you dare. Then, please help RoverBot 3000 by typing DOOR HELP. Stick around, upgrades are constant!'
