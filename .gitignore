@@ -4,14 +4,17 @@
 *.new
 *.dev
 *.old
+*.backup
 *.debug
 *.out
 *.creds
 *.log
 *-raw.txt
 *.mood
+*.theme
 *.spectro
 *.waveform
+*.pitch
 *.users
 *.processed
 *.response
