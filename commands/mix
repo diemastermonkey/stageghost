@@ -74,7 +74,7 @@ sub fnGetField {
 # ------------------------------------------------------
 $Arg = shift (@ARGV); chomp ($Arg);
 unless ($Arg) {
-  print ("[Mix] Plays from http://soundcloud.com. Use MIX and the share link (author MUST permit downloads). MIX RANDOM plays a random track. To replay type: MIX AGAIN");
+  print ("[Mix] MIX RANDOM plays from the jukebox. Use MIX (share link) to play from SoundCloud (see RTFM). To replay the previous play type MIX AGAIN");
   exit();
 }
 
@@ -84,8 +84,8 @@ $Search = shift (@ARGV);  # Or empty
 # If special arg "random", pick from urls in files in ./links/*
 if ($Arg =~ /^rand|^random|^rnd/i) {   # variations supported
 
-  # Quick response to chat even before selection
-  `./ytSinglePost "[Mix] Random track request, ok! Let me see what we have laying around..." &`;
+  # Retired: Quick response to chat even before selection
+  # `./ytSinglePost "[Mix] Random track request, ok! Let me see what we have laying around..." &`;
 
   # Get contents of a random file from ./links/*
   # Append (optional 2nd arg) search string if present
@@ -109,7 +109,7 @@ if ($Arg =~ /^rand|^random|^rnd/i) {   # variations supported
 # If mplayer already busy, decline - really sloppy
 $Running = `ps -ef | egrep "mplayer --novideo" | egrep -v "grep" | xargs`;
 if ($Running =~ /mplayer/) {
-  print ("[Mix] Something is playing, queues are coming soon. Playing now: $LAST");
+  print ("[Mix] Jukebox busy: Queues are coming soon. Playing now: $LAST");
   exit();
 }
 
@@ -140,9 +140,6 @@ unless ($Replay) {
   `echo "REPONSE $RESPONSE" >> remix.debug`;
 }
 
-# Respond now, though perms could still be wrong
-`./ytSinglePost "[Mix] Playing $Author...remember stream delay! Props to http://soundcloud.com/$Permalink" &`;
-
 # Ditch w/error to chat if empty response (kludge only if not replay)
 if ($Replay == 0) {
   if (! length ($RESPONSE)) {
@@ -156,6 +153,12 @@ if ($Replay == 0) {
     exit();
   }
 }
+
+# Respond now, though perms could still be wrong
+`./ytSinglePost "[Mix] Playing $Author...remember stream delay! Props to http://soundcloud.com/$Permalink" &`;
+
+# New! Post a "Note" to the screen, under the 'nowplaying' meta account
+`commands/note \"$Author\" nowplaying`;
 
 # If still here it is valid and metadata exists
 # Write to creds and Panel notice right away
@@ -173,28 +176,22 @@ unless ($Replay) {
 # To do: Check it exists and pre-check mplayer can handle
 # Note if replay we havent downloaded, just replay file in place
 
-# New! Post a "Note" to the screen, under the 'nowplaying' meta account
-`commands/note \"$Author\" nowplaying`;
-
 # New! Set a stream title with the now playing, too
 $TS=`date '+%A %l:%M %p'`;
-`commands/title \"$TS Now Playing $Author! The Raspberry Pi YouTube Chatbot Project\" nowplaying`;
+# `commands/title \"$TS Now Playing $Author! The Raspberry Pi YouTube Chatbot Project\" nowplaying`;
+`commands/title \"$TS Now Playing $Author! Raspberry Pi Chatbot Project\" nowplaying &> /dev/null`;
 
 # New! Kludge but cool - silence any currently-playing samples
 # ..but allow any others about to play to proceed. IE duck-out the intro.
 # New: First play onboard tape stop, then kill plays, then tape start
-# `sleep 0.33`;
-`killall play &`;
+# `killall play`;
 `play -q -V0 --volume 1.6 $StopSfx &`;  # 'stop' play, eject
+# `play -q -V0 --volume 1.0 $StartSfx &`; # insert tape, 'start'
 # Play with configured player
 fnPlay ("$Player remix/imported.mp4");
-# Retired # `play -q -V0 --volume 1.0 $StartSfx &`; # insert tape, 'start'
-
-# Kludge: Remix temp file (in case errors get this far)
 
 # For good measure append second alternate attribution to creds
 `echo " Props to $Author http://soundcloud.com/$Permalink" >> DroneTV.creds`;
-
 
 # New: Place wasteful second reqeust for metadata files and displays
 # Because preceeding fetch too inflexible. Fix that asap.
