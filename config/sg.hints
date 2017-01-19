@@ -32,6 +32,7 @@ dronetv.youtuberefreshtoken     SG Token used only to refresh dronetv youtubeoau
 sg.callbackurl            SG Callback for ytAuthInit. Broken is ok, but remain same during auth
 sg.colors                 SG Colors available to COLOR RANDOM command and others
 sg.hints                  SG Config setting descriptions shown in setup incl this message
+sg.theme                  SG Current panel theme as set by THEME and others
 sg.youtubechatlimit       SG Max latest chat messages retrieved by ytCheck
 sg.yttemptoken            SG Temp token used only during ytValidateTokens initial setup
 stageghost.hypetime       SG Minutes that HYPE content remains active on screen
